@@ -336,6 +336,61 @@ export const asyncRouterMap = [
       }
     ]
   },
+
+  {
+    path: '/stockInfo',
+    component: Layout,
+    redirect: 'noredirect',
+    alwaysShow: true,
+    name: 'stockInfoManage',
+    meta: {
+      title: '朝菜猫商品管理',
+      icon: 'goods'
+    },
+    children: [
+      {
+        path: 'list',
+        component: () => import('@/views/stockInfo/stockInfoList'),
+        name: 'stockInfoList',
+        meta: {
+          perms: ['GET /admin/goods/list', 'POST /admin/goods/delete'],
+          title: '商品列表',
+          noCache: true
+        }
+      },
+      {
+        path: 'create',
+        component: () => import('@/views/stockInfo/create'),
+        name: 'stockInfoCreate',
+        meta: {
+          perms: ['POST /admin/goods/create'],
+          title: '商品上架',
+          noCache: true
+        }
+      },
+      {
+        path: 'edit',
+        component: () => import('@/views/stockInfo/edit'),
+        name: 'stockInfoEdit',
+        meta: {
+          perms: ['GET /admin/goods/detail', 'POST /admin/goods/update', 'POST /admin/goods/catAndBrand'],
+          title: '商品编辑',
+          noCache: true
+        },
+        hidden: true
+      },
+      {
+        path: 'stockInfoComment',
+        component: () => import('@/views/stockInfo/comment'),
+        name: 'goodsComment',
+        meta: {
+          perms: ['GET /admin/comment/list', 'POST /admin/comment/delete'],
+          title: '商品评论',
+          noCache: true
+        }
+      }
+    ]
+  },
   {
     path: '/po',
     component: Layout,
@@ -454,7 +509,6 @@ export const asyncRouterMap = [
       }
     ]
   },
-
   {
     path: '/sys',
     component: Layout,
@@ -508,7 +562,6 @@ export const asyncRouterMap = [
       }
     ]
   },
-
   {
     path: '/config',
     component: Layout,
@@ -562,7 +615,6 @@ export const asyncRouterMap = [
       }
     ]
   },
-
   {
     path: '/stat',
     component: Layout,
