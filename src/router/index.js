@@ -337,6 +337,50 @@ export const asyncRouterMap = [
     ]
   },
   {
+    path: '/line',
+    component: Layout,
+    redirect: 'noredirect',
+    alwaysShow: true,
+    name: 'lineManage',
+    meta: {
+      title: '线路管理',
+      icon: 'goods'
+    },
+    children: [
+      {
+        path: 'list',
+        component: () => import('@/views/line/list'),
+        name: 'lineList',
+        meta: {
+          perms: ['GET /admin/line/list'],
+          title: '线路列表',
+          noCache: true
+        }
+      },
+      {
+        path: 'create',
+        component: () => import('@/views/line/create'),
+        name: 'lineCreate',
+        meta: {
+          perms: ['POST /admin/line/create'],
+          title: '添加线路',
+          noCache: true
+        }
+      },
+      {
+        path: 'edit',
+        component: () => import('@/views/line/edit'),
+        name: 'goodsEdit',
+        meta: {
+          perms: ['GET /admin/line/detail', 'POST /admin/line/update'],
+          title: '线路编辑',
+          noCache: true
+        },
+        hidden: true
+      }
+    ]
+  },
+  {
     path: '/po',
     component: Layout,
     redirect: 'noredirect',
