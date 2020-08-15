@@ -8,17 +8,17 @@ export function listStockInfoList(query) {
   })
 }
 
-export function deleteGoods(data) {
+export function deleteStockInfo(data) {
   return request({
-    url: '/goods/delete',
+    url: '/stockinfo/delete',
     method: 'post',
     data
   })
 }
 
-export function publishGoods(data) {
+export function publishStockInfo(data) {
   return request({
-    url: '/goods/create',
+    url: '/stockinfo/create',
     method: 'post',
     data
   })
@@ -32,9 +32,9 @@ export function detailStockInfo(id) {
   })
 }
 
-export function editGoods(data) {
+export function editStockInfo(data) {
   return request({
-    url: '/goods/update',
+    url: '/stockinfo/update',
     method: 'post',
     data
   })

@@ -349,31 +349,31 @@ export const asyncRouterMap = [
     },
     children: [
       {
-        path: 'list',
+        path: 'stockInfoList',
         component: () => import('@/views/stockInfo/stockInfoList'),
         name: 'stockInfoList',
         meta: {
-          perms: ['GET /admin/goods/list', 'POST /admin/goods/delete'],
+          perms: ['GET /admin/stockInfo/list', 'POST /admin/stockInfo/delete'],
           title: '商品列表',
           noCache: true
         }
       },
       {
-        path: 'create',
-        component: () => import('@/views/stockInfo/create'),
+        path: 'stockInfoCreate',
+        component: () => import('@/views/stockInfo/stockInfoCreate'),
         name: 'stockInfoCreate',
         meta: {
-          perms: ['POST /admin/goods/create'],
+          perms: ['POST /admin/stockInfo/stockInfoCreate'],
           title: '商品上架',
           noCache: true
         }
       },
       {
-        path: 'edit',
-        component: () => import('@/views/stockInfo/edit'),
+        path: 'stockInfoEdit',
+        component: () => import('@/views/stockInfo/stockInfoEdit'),
         name: 'stockInfoEdit',
         meta: {
-          perms: ['GET /admin/goods/detail', 'POST /admin/goods/update', 'POST /admin/goods/catAndBrand'],
+          perms: ['GET /admin/stockInfo/detail', 'POST /admin/stockInfo/update', 'POST /admin/stockInfo/catAndBrand'],
           title: '商品编辑',
           noCache: true
         },

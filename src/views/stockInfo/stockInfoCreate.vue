@@ -3,8 +3,7 @@
 
     <el-card class="box-card">
       <h3>商品介绍</h3>
-      <el-form ref="stockInfo" :rules="rules" :model="stockInfo" label-width="150px">
-
+      <el-form ref="stockInfo" :model="{stockInfo}" label-width="150px">
         <el-row>
           <el-col :span="12">
             <el-form-item label="展示图片">
@@ -35,8 +34,6 @@
             </el-form-item>
           </el-col>
         </el-row>
-
-
         <el-row>
           <el-col :span="12">
             <el-form-item label="小程序标题" prop="title">
@@ -49,8 +46,37 @@
             </el-form-item>
           </el-col>
         </el-row>
-
-
+        <el-row>
+          <el-col :span="12">
+            <el-form-item label="所属分类">
+              <el-cascader :options="categoryList" v-model="categoryIds" expand-trigger="hover"
+                           @change="handleCategoryChange"/>
+            </el-form-item>
+          </el-col>
+          <el-col :span="12">
+            <el-form-item label="所属小区">
+              <el-select
+                v-model="communities"
+                :remote-method="communityMethod"
+                :loading="communityLoading"
+                value-key="communityId"
+                class="filter-item"
+                multiple
+                clearable
+                filterable
+                remote
+                reserve-keyword
+                style="width:100%;"
+                placeholder="请输入小区名称">
+                <el-option
+                  v-for="item in communityList"
+                  :key="item.communityId"
+                  :label="item.communityName"
+                  :value="item"/>
+              </el-select>
+            </el-form-item>
+          </el-col>
+        </el-row>
         <el-row>
           <el-col :span="8">
             <el-form-item label="线上名称" prop="onlineName">
@@ -75,7 +101,6 @@
             </el-form-item>
           </el-col>
         </el-row>
-
         <el-row>
           <el-col :span="8">
             <el-form-item label="线下名称" prop="offlineName">
@@ -100,7 +125,6 @@
             </el-form-item>
           </el-col>
         </el-row>
-
         <el-row>
           <el-col :span="8">
             <el-form-item label="专柜价格" prop="counterPrice">
@@ -115,8 +139,8 @@
             </el-form-item>
           </el-col>
           <el-col :span="5">
-            <el-form-item label="销售方式" prop="saleType">
-              <el-input v-model="stockInfo.saleType"/>
+            <el-form-item label="工位" prop="station">
+              <el-input v-model="stockInfo.station"/>
             </el-form-item>
           </el-col>
           <el-col :span="5">
@@ -125,37 +149,16 @@
             </el-form-item>
           </el-col>
         </el-row>
-
-        <el-row>
-          <el-col :span="8">
-            <el-form-item label="入库价格" prop="inPrice">
-              <el-input v-model="stockInfo.inPrice" placeholder="0.00">
-                <template slot="append">元</template>
-              </el-input>
-            </el-form-item>
-          </el-col>
-          <el-col :span="8">
-            <el-form-item label="出库价格" prop="outPrice">
-              <el-input v-model="stockInfo.outPrice" placeholder="0.00">
-                <template slot="append">元</template>
-              </el-input>
-            </el-form-item>
-          </el-col>
-          <el-col :span="8">
-            <el-form-item label="库存" prop="stock">
-              <el-input v-model="stockInfo.stock"/>
-            </el-form-item>
-          </el-col>
-        </el-row>
-
         <el-row>
           <el-col :span="8">
             <el-form-item label="上架类型" prop="onSaleType">
               <el-select v-model="stockInfo.onSaleType" placeholder="请选择">
-                <el-option :label="小程序上线" value="1">小程序上线</el-option>
-                <el-option :label="微菜场上线" value="2">微菜场上线</el-option>
-                <el-option :label="小程序/微菜场上线" value="3">上线（小程序/微菜场）</el-option>
-                <el-option :label="下线" value="4">下线</el-option>
+                <el-option
+                  v-for="item in onlineOptions"
+                  :key="item.value"
+                  :label="item.label"
+                  :value="item.value">
+                </el-option>
               </el-select>
             </el-form-item>
           </el-col>
@@ -178,8 +181,60 @@
 
           </el-col>
         </el-row>
+        <el-row>
+          <el-col :span="8">
+            <el-form-item label="排序" prop="sort">
+              <el-input v-model="stockInfo.sort"/>
+            </el-form-item>
+          </el-col>
+          <el-col :span="6">
+            <el-form-item label="是否不限购" prop="isNotLimit">
+              <el-radio-group v-model="stockInfo.isNotLimit">
+                <el-radio :label="true">是</el-radio>
+                <el-radio :label="false">否</el-radio>
+              </el-radio-group>
+            </el-form-item>
 
+          </el-col>
+          <el-col :span="5">
+            <el-form-item label="限购数量" prop="limitNum">
+              <el-input v-model="stockInfo.limitNum"/>
+            </el-form-item>
 
+          </el-col>
+          <el-col :span="5">
+            <el-form-item label="工位" prop="station">
+              <el-input v-model="stockInfo.station"/>
+            </el-form-item>
+          </el-col>
+        </el-row>
+      </el-form>
+    </el-card>
+
+    <el-card class="box-card">
+      <h3>商品库存</h3>
+      <el-form ref="stockInfo"  :model="{stockInfo}" label-width="150px">
+        <el-row>
+          <el-col :span="8">
+            <el-form-item label="入库价格" prop="inPrice">
+              <el-input v-model="stockInfo.inPrice" placeholder="0.00">
+                <template slot="append">元</template>
+              </el-input>
+            </el-form-item>
+          </el-col>
+          <el-col :span="8">
+            <el-form-item label="出库价格" prop="outPrice">
+              <el-input v-model="stockInfo.outPrice" placeholder="0.00">
+                <template slot="append">元</template>
+              </el-input>
+            </el-form-item>
+          </el-col>
+          <el-col :span="8">
+            <el-form-item label="库存" prop="stock">
+              <el-input v-model="stockInfo.stock"/>
+            </el-form-item>
+          </el-col>
+        </el-row>
         <el-row>
           <el-col :span="8">
             <el-form-item label="是否报货" prop="isCargo">
@@ -200,227 +255,7 @@
             </el-form-item>
           </el-col>
         </el-row>
-
-        <el-row>
-          <el-col :span="8">
-            <el-form-item label="排序" prop="sort">
-              <el-input v-model="stockInfo.sort"/>
-            </el-form-item>
-          </el-col>
-          <el-col :span="6">
-            <el-form-item label="是否不限购" prop="isNotLimit">
-              <el-input v-model="stockInfo.isNotLimit"/>
-            </el-form-item>
-          </el-col>
-          <el-col :span="5">
-            <el-form-item label="限购数量" prop="limitNum">
-              <el-input v-model="stockInfo.limitNum"/>
-            </el-form-item>
-          </el-col>
-          <el-col :span="5">
-            <el-form-item label="工位" prop="station">
-              <el-input v-model="stockInfo.station"/>
-            </el-form-item>
-          </el-col>
-        </el-row>
-
-        <el-form-item label="所属分类">
-          <el-cascader :options="categoryList" v-model="categoryId" expand-trigger="hover"
-                       @change="handleCategoryChange"/>
-        </el-form-item>
-
-        <el-form-item label="所属品牌商">
-          <el-select v-model="stockInfo.brandId">
-            <el-option v-for="item in brandList" :key="item.value" :label="item.label" :value="item.value"/>
-          </el-select>
-        </el-form-item>
-
-        <el-form-item label="所属小区">
-          <el-select
-            v-model="communities"
-            :remote-method="communityMethod"
-            :loading="communityLoading"
-            value-key="communityId"
-            class="filter-item"
-            multiple
-            clearable
-            filterable
-            remote
-            reserve-keyword
-            style="width:100%;"
-            placeholder="请输入小区名称">
-            <el-option
-              v-for="item in communityList"
-              :key="item.communityId"
-              :label="item.communityName"
-              :value="item"/>
-          </el-select>
-        </el-form-item>
-
-        <el-form-item label="商品简介">
-          <el-input v-model="stockInfo.brief"/>
-        </el-form-item>
-
-        <el-form-item label="商品详细介绍">
-          <editor :init="editorInit" v-model="stockInfo.detail"/>
-        </el-form-item>
       </el-form>
-    </el-card>
-
-    <el-card class="box-card">
-      <h3>商品规格</h3>
-      <el-button :plain="true" type="primary" @click="handleSpecificationShow">添加</el-button>
-
-      <el-table :data="specifications">
-        <el-table-column property="specification" label="规格名"/>
-        <el-table-column property="value" label="规格值">
-          <template slot-scope="scope">
-            <el-tag type="primary">
-              {{ scope.row.value }}
-            </el-tag>
-          </template>
-        </el-table-column>
-        <el-table-column property="picUrl" label="规格图片">
-          <template slot-scope="scope">
-            <img v-if="scope.row.picUrl" :src="scope.row.picUrl" width="40">
-          </template>
-        </el-table-column>
-        <el-table-column align="center" label="操作" width="250" class-name="small-padding fixed-width">
-          <template slot-scope="scope">
-            <el-button type="danger" size="mini" @click="handleSpecificationDelete(scope.row)">删除</el-button>
-          </template>
-        </el-table-column>
-      </el-table>
-
-      <el-dialog :visible.sync="specVisiable" title="设置规格">
-        <el-form ref="specForm" :rules="rules" :model="specForm" status-icon label-position="left" label-width="100px"
-                 style="width: 400px; margin-left:50px;">
-          <el-form-item label="规格名" prop="specification">
-            <el-input v-model="specForm.specification"/>
-          </el-form-item>
-          <el-form-item label="规格值" prop="value">
-            <el-input v-model="specForm.value"/>
-          </el-form-item>
-          <el-form-item label="规格图片" prop="picUrl">
-            <el-upload
-              :headers="headers"
-              :action="uploadPath"
-              :show-file-list="false"
-              :on-success="uploadSpecPicUrl"
-              class="avatar-uploader"
-              accept=".jpg,.jpeg,.png,.gif">
-              <img v-if="specForm.picUrl" :src="specForm.picUrl" class="avatar">
-              <i v-else class="el-icon-plus avatar-uploader-icon"/>
-            </el-upload>
-          </el-form-item>
-        </el-form>
-        <div slot="footer" class="dialog-footer">
-          <el-button @click="specVisiable = false">取消</el-button>
-          <el-button type="primary" @click="handleSpecificationAdd">确定</el-button>
-        </div>
-      </el-dialog>
-    </el-card>
-
-    <el-card class="box-card">
-      <h3>商品库存</h3>
-      <el-table :data="products">
-        <el-table-column property="value" label="货品规格">
-          <template slot-scope="scope">
-            <el-tag v-for="tag in scope.row.specifications" :key="tag">
-              {{ tag }}
-            </el-tag>
-          </template>
-        </el-table-column>
-        <el-table-column property="productSn" width="150" label="货品规格编号"/>
-        <el-table-column property="unit" width="100" label="货品单位"/>
-        <el-table-column property="value" width="100" label="单位数值"/>
-        <el-table-column property="price" width="100" label="货品售价"/>
-        <el-table-column property="number" width="100" label="货品数量"/>
-        <el-table-column property="url" width="100" label="货品图片">
-          <template slot-scope="scope">
-            <img v-if="scope.row.url" :src="scope.row.url" width="40">
-          </template>
-        </el-table-column>
-        <el-table-column align="center" label="操作" width="100" class-name="small-padding fixed-width">
-          <template slot-scope="scope">
-            <el-button type="primary" size="mini" @click="handleProductShow(scope.row)">设置</el-button>
-          </template>
-        </el-table-column>
-      </el-table>
-
-      <el-dialog :visible.sync="productVisiable" title="设置货品">
-        <el-form ref="productForm" :model="productForm" status-icon label-position="left" label-width="100px"
-                 style="width: 400px; margin-left:50px;">
-          <el-form-item label="货品规格列" prop="specifications">
-            <el-tag v-for="tag in productForm.specifications" :key="tag">
-              {{ tag }}
-            </el-tag>
-          </el-form-item>
-          <el-form-item label="货品规格编号" prop="productSn">
-            <el-input v-model="productForm.productSn"/>
-          </el-form-item>
-          <el-form-item label="货品单位" prop="unit">
-            <el-select v-model="productForm.unit" placeholder="请选择">
-              <el-option v-for="(item, index) in unitList" :key="index" :label="item" :value="item"/>
-            </el-select>
-          </el-form-item>
-          <el-form-item label="单位数值" prop="value">
-            <el-input v-model="productForm.value"/>
-          </el-form-item>
-          <el-form-item label="货品售价" prop="price">
-            <el-input v-model="productForm.price"/>
-          </el-form-item>
-          <el-form-item label="货品数量" prop="number">
-            <el-input v-model="productForm.number"/>
-          </el-form-item>
-          <el-form-item label="货品图片" prop="url">
-            <el-upload
-              :headers="headers"
-              :action="uploadPath"
-              :show-file-list="false"
-              :on-success="uploadProductUrl"
-              class="avatar-uploader"
-              accept=".jpg,.jpeg,.png,.gif">
-              <img v-if="productForm.url" :src="productForm.url" class="avatar">
-              <i v-else class="el-icon-plus avatar-uploader-icon"/>
-            </el-upload>
-          </el-form-item>
-        </el-form>
-        <div slot="footer" class="dialog-footer">
-          <el-button @click="productVisiable = false">取消</el-button>
-          <el-button type="primary" @click="handleProductEdit">确定</el-button>
-        </div>
-      </el-dialog>
-    </el-card>
-
-    <el-card class="box-card">
-      <h3>商品参数</h3>
-      <el-button :plain="true" type="primary" @click="handleAttributeShow">添加</el-button>
-      <el-table :data="attributes">
-        <el-table-column property="attribute" label="商品参数名称"/>
-        <el-table-column property="value" label="商品参数值"/>
-        <el-table-column align="center" label="操作" width="100" class-name="small-padding fixed-width">
-          <template slot-scope="scope">
-            <el-button type="danger" size="mini" @click="handleAttributeDelete(scope.row)">删除</el-button>
-          </template>
-        </el-table-column>
-      </el-table>
-
-      <el-dialog :visible.sync="attributeVisiable" title="设置商品参数">
-        <el-form ref="attributeForm" :model="attributeForm" status-icon label-position="left" label-width="100px"
-                 style="width: 400px; margin-left:50px;">
-          <el-form-item label="商品参数名称" prop="attribute">
-            <el-input v-model="attributeForm.attribute"/>
-          </el-form-item>
-          <el-form-item label="商品参数值" prop="value">
-            <el-input v-model="attributeForm.value"/>
-          </el-form-item>
-        </el-form>
-        <div slot="footer" class="dialog-footer">
-          <el-button @click="attributeVisiable = false">取消</el-button>
-          <el-button type="primary" @click="handleAttributeAdd">确定</el-button>
-        </div>
-      </el-dialog>
     </el-card>
 
     <el-card class="box-card">
@@ -437,7 +272,7 @@
       </el-table>
 
       <el-dialog :visible.sync="rebateVisiable" title="设置商品返券">
-        <el-form ref="rebateForm" :model="rebateForm" status-icon label-position="left" label-width="100px"
+        <el-form ref="rebateForm" :model="{rebateForm}" status-icon label-position="left" label-width="100px"
                  style="width: 400px; margin-left:50px;">
           <el-form-item label="订单数量" prop="attribute">
             <el-input v-model="rebateForm.orders"/>
@@ -455,7 +290,7 @@
 
     <div class="op-container">
       <el-button @click="handleCancel">取消</el-button>
-      <el-button v-permission="['POST /admin/goods/update']" type="primary" @click="handleEdit">更新商品</el-button>
+      <el-button v-permission="['POST /admin/stockInfo/create']" type="primary" @click="handleEdit">新增商品</el-button>
     </div>
 
   </div>
@@ -505,7 +340,7 @@
 </style>
 
 <script>
-  import { detailGoods, editGoods, listCatAndBrand, detailStockInfo } from '@/api/stockInfo'
+  import { listCatAndBrand, detailStockInfo, publishStockInfo} from '@/api/stockInfo'
   import { createStorage, uploadPath } from '@/api/storage'
   import { listCommunity } from '@/api/community'
   import Editor from '@tinymce/tinymce-vue'
@@ -515,62 +350,38 @@
   export default {
     name: 'StockInfoEdit',
     components: { Editor },
-    onlineOptions: [{
-      value: '小程序上线 of',
-      label: '1'
-    }, {
-      value: '微菜场上线 fo',
-      label: '3'
-    }, {
-      value: '小程序&微菜场上线 oo',
-      label: '2'
-    }, {
-      value: '下线 ff',
-      label: '4'
 
-    }],
     data() {
       return {
+        onlineOptions: [{
+          value: 1,
+          label: '小程序上线'
+        }, {
+          value: 2,
+          label: '小程序&微菜场上线'
+        }, {
+          value: 3,
+          label: '微菜场上线'
+        }, {
+          value: 4,
+          label: '下线'
+        }],
         communityLoading: false,
         communityList: [],
         uploadPath,
-        newKeywordVisible: false,
-        newKeyword: '',
-        keywords: [],
-        galleryFileList: [],
         categoryList: [],
-        brandList: [],
         categoryIds: [],
         communities: [],
-        goods: { gallery: [], unit: '克' },
         stockInfo: [],
-        specVisiable: false,
         specForm: { specification: '', value: '', picUrl: '' },
-        specifications: [{ specification: '规格', value: '标准', picUrl: '' }],
-        productVisiable: false,
-        unitList: ['克', '个', '箱', '件', '盒', '份', '瓶', '袋', '桶'],
-        productForm: { id: 0, specifications: [], price: 0.00, number: 0, url: '', unit: '克', value: 0 },
-        products: [{
-          id: 0,
-          specifications: ['标准'],
-          price: 0.00,
-          number: 0,
-          url: '',
-          productSn: 1,
-          unit: '克',
-          value: 0
-        }],
-        attributeVisiable: false,
-        attributeForm: { attribute: '', value: '' },
-        attributes: [],
         rebateVisiable: false,
-        rebateForm: { orders: '', value: '' },
+        rebateForm: { orders: '',
+          value: '' },
         rebates: [],
         rules: {
-          goodsSn: [
-            { required: true, message: '商品编号不能为空', trigger: 'blur' }
-          ],
-          name: [{ required: true, message: '商品名称不能为空', trigger: 'blur' }]
+          value: [
+            { required: false, message: '请输入返券额度', trigger: 'blur' }
+          ]
         },
         editorInit: {
           language: 'zh_CN',
@@ -585,9 +396,11 @@
           images_upload_handler: function(blobInfo, success, failure) {
             const formData = new FormData()
             formData.append('file', blobInfo.blob())
+            debugger
             createStorage(formData)
               .then(res => {
                 success(res.data.data.url)
+                console.log(res.data.data.url)
               })
               .catch(() => {
                 failure('上传失败，请重新上传')
@@ -611,13 +424,13 @@
         if (this.$route.query.id == null) {
           return
         }
-
         const stockInfoId = this.$route.query.id
-
         detailStockInfo(stockInfoId).then(response => {
-          this.stockInfo = response.data.data
+          debugger
+          this.stockInfo = response.data.data.stockInfo
+          this.categoryIds = response.data.data.categoryIds
+          this.rebates = response.data.data.rebates
         })
-
         listCatAndBrand().then(response => {
           this.categoryList = response.data.data.categoryList
           this.brandList = response.data.data.brandList
@@ -653,30 +466,22 @@
         this.stockInfo.categoryId = value[value.length - 1]
       },
       handleCancel: function() {
-        this.$router.push({ path: '/goods/list' })
+        this.$router.push({ path: '/stockInfo/stockInfoList' })
       },
       handleEdit: function() {
-        if (this.stockInfo.isChoice && (this.stockInfo.limit === undefined || this.stockInfo.limit === '')) {
-          this.$message.error('请填写限购数量')
-          return false
-        }
-        const finalGoods = {
-          communities: this.communities,
-          goods: this.goods,
-          specifications: this.specifications,
-          products: this.products,
-          rebates: this.rebates,
-          attributes: this.attributes
-        }
-        editGoods(finalGoods)
+        const stockInfo = this.stockInfo
+        debugger
+        publishStockInfo(stockInfo)
           .then(response => {
+            debugger
             this.$notify.success({
-              title: '成功',
-              message: '创建成功'
+              title: '更新成功',
+              message: '更新成功'
             })
-            this.$router.push({ path: '/goods/list' })
+            this.$router.push({ path: '/stockInfo/stockInfoList' })
           })
           .catch(response => {
+            debugger
             MessageBox.alert('业务错误：' + response.data.errmsg, '警告', {
               confirmButtonText: '确定',
               type: 'error'

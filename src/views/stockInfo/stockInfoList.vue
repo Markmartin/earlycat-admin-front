@@ -23,10 +23,10 @@
       <el-select v-model="listQuery.isOnSale" clearable style="width: 200px" class="filter-item" placeholder="请选择售货状态">
         <el-option v-for="type in isOnSaleOptions" :key="type.value" :label="type.label" :value="type.value"/>
       </el-select>
-      <el-button v-permission="['GET /admin/goods/list']" class="filter-item" type="primary" icon="el-icon-search"
+      <el-button v-permission="['GET /admin/stockInfo/stockInfoList']" class="filter-item" type="primary" icon="el-icon-search"
                  @click="handleFilter">查找
       </el-button>
-      <el-button v-permission="['POST /admin/goods/create']" class="filter-item" type="primary" icon="el-icon-edit"
+      <el-button v-permission="['POST /admin/stockInfo/stockInfoCreate']" class="filter-item" type="primary" icon="el-icon-edit"
                  @click="handleCreate">添加
       </el-button>
       <el-button v-permission="['GET /admin/goods/list']" :loading="downloadLoading" class="filter-item" type="primary"
@@ -147,7 +147,7 @@
 </style>
 
 <script>
-  import { listGoods, deleteGoods, listCatAndBrand, listStockInfoList } from '@/api/stockInfo'
+  import { listGoods, deleteStockInfo, listCatAndBrand, listStockInfoList } from '@/api/stockInfo'
   import { getLodop } from '@/utils/lodopFuncs'
   import BackToTop from '@/components/BackToTop'
   import Pagination from '@/components/Pagination' // Secondary package based on el-pagination
@@ -247,7 +247,7 @@
         this.getList()
       },
       handleCreate() {
-        this.$router.push({ path: '/goods/create' })
+        this.$router.push({ path: '/stockInfo/stockInfoCreate' })
       },
       handlePrinter(row) {
         this.printerData = row
@@ -267,7 +267,7 @@
         }
       },
       handleUpdate(row) {
-        this.$router.push({ path: '/stockInfo/edit', query: { id: row.id } })
+        this.$router.push({ path: '/stockInfo/stockInfoEdit', query: { id: row.id } })
       },
       showDetail(detail) {
         this.goodsDetail = detail
@@ -279,7 +279,7 @@
           cancelButtonText: '取消',
           type: 'warning'
         }).then(() => {
-          deleteGoods(row).then(response => {
+          deleteStockInfo(row).then(response => {
             this.$notify.success({
               title: '成功',
               message: '删除成功'
