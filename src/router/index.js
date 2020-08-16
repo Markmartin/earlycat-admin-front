@@ -382,7 +382,7 @@ export const asyncRouterMap = [
       {
         path: 'stockInfoComment',
         component: () => import('@/views/stockInfo/comment'),
-        name: 'goodsComment',
+        name: 'stockInfoComment',
         meta: {
           perms: ['GET /admin/comment/list', 'POST /admin/comment/delete'],
           title: '商品评论',

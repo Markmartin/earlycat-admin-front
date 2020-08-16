@@ -8,11 +8,11 @@ export function listStockInfoList(query) {
   })
 }
 
-export function deleteStockInfo(data) {
+export function deleteStockInfo(id) {
   return request({
     url: '/stockinfo/delete',
-    method: 'post',
-    data
+    method: 'get',
+    params: { id }
   })
 }
 

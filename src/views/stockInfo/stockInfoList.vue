@@ -3,30 +3,21 @@
 
     <!-- 查询和其他操作 -->
     <div class="filter-container">
-      <el-input v-model="listQuery.goodsSn" clearable class="filter-item" style="width: 200px;" placeholder="请输入商品编号"/>
       <el-input v-model="listQuery.name" clearable class="filter-item" style="width: 200px;" placeholder="请输入商品名称"/>
       <el-cascader :options="categoryList" clearable class="filter-item" expand-trigger="hover" placeholder="请选择所属分类"
                    @change="handleCategoryChange"/>
-      <el-select v-model="listQuery.brandId" clearable class="filter-item" placeholder="请选择所属品牌商">
-        <el-option v-for="item in brandList" :key="item.value" :label="item.label" :value="item.value"/>
-      </el-select>
-      <el-select v-model="listQuery.isNew" clearable style="width: 200px" class="filter-item" placeholder="请选择是否新品状态">
-        <el-option v-for="type in isNewOptions" :key="type.value" :label="type.label" :value="type.value"/>
-      </el-select>
-      <el-select v-model="listQuery.isHot" clearable style="width: 200px" class="filter-item" placeholder="请选择是否热卖状态">
-        <el-option v-for="type in isHotOptions" :key="type.value" :label="type.label" :value="type.value"/>
-      </el-select>
-      <el-select v-model="listQuery.isChoice" clearable style="width: 200px" class="filter-item"
-                 placeholder="请选择限时特惠状态">
+      <el-select v-model="listQuery.isChoice" clearable style="width: 200px" class="filter-item" placeholder="请选择限时特惠状态">
         <el-option v-for="type in isChoiceOptions" :key="type.value" :label="type.label" :value="type.value"/>
       </el-select>
       <el-select v-model="listQuery.isOnSale" clearable style="width: 200px" class="filter-item" placeholder="请选择售货状态">
         <el-option v-for="type in isOnSaleOptions" :key="type.value" :label="type.label" :value="type.value"/>
       </el-select>
-      <el-button v-permission="['GET /admin/stockInfo/stockInfoList']" class="filter-item" type="primary" icon="el-icon-search"
+      <el-button v-permission="['GET /admin/stockInfo/stockInfoList']" class="filter-item" type="primary"
+                 icon="el-icon-search"
                  @click="handleFilter">查找
       </el-button>
-      <el-button v-permission="['POST /admin/stockInfo/stockInfoCreate']" class="filter-item" type="primary" icon="el-icon-edit"
+      <el-button v-permission="['POST /admin/stockInfo/stockInfoCreate']" class="filter-item" type="primary"
+                 icon="el-icon-edit"
                  @click="handleCreate">添加
       </el-button>
       <el-button v-permission="['GET /admin/goods/list']" :loading="downloadLoading" class="filter-item" type="primary"
@@ -119,7 +110,8 @@
       </el-form>
       <div slot="footer" class="dialog-footer">
         <el-button @click="createDialogVisible = false">取消</el-button>
-        <el-button v-permission="['GET /admin/goods/list']" type="primary" @click="handlePrinterSave">确定</el-button>
+        <el-button v-permission="['GET /admin/stockInfo/stockInfoList']" type="primary" @click="handlePrinterSave">确定
+        </el-button>
       </div>
     </el-dialog>
   </div>
@@ -244,7 +236,7 @@
       },
       handleFilter() {
         this.listQuery.page = 1
-        this.getList()
+        this.getStockInfoList()
       },
       handleCreate() {
         this.$router.push({ path: '/stockInfo/stockInfoCreate' })
@@ -279,7 +271,8 @@
           cancelButtonText: '取消',
           type: 'warning'
         }).then(() => {
-          deleteStockInfo(row).then(response => {
+          const stockInfoId = row.id
+          deleteStockInfo(stockInfoId).then(response => {
             this.$notify.success({
               title: '成功',
               message: '删除成功'
