@@ -25,10 +25,10 @@
                 :headers="headers"
                 :action="uploadPath"
                 :show-file-list="false"
-                :on-success="uploadPicUrl"
+                :on-success="uploadShareUrl"
                 class="avatar-uploader"
                 accept=".jpg,.jpeg,.png,.gif">
-                <img v-if="stockInfo.picUrl" :src="stockInfo.shareUrl" class="avatar">
+                <img v-if="stockInfo.shareUrl" :src="stockInfo.shareUrl" class="avatar">
                 <i v-else class="el-icon-plus avatar-uploader-icon"/>
               </el-upload>
             </el-form-item>
@@ -340,7 +340,7 @@
 </style>
 
 <script>
-  import { detailGoods, editGoods, listCatAndBrand, detailStockInfo, editStockInfo } from '@/api/stockInfo'
+  import { listCatAndBrand, detailStockInfo, editStockInfo } from '@/api/stockInfo'
   import { createStorage, uploadPath } from '@/api/storage'
   import { listCommunity } from '@/api/community'
   import Editor from '@tinymce/tinymce-vue'
@@ -424,7 +424,6 @@
         }
         const stockInfoId = this.$route.query.id
         detailStockInfo(stockInfoId).then(response => {
-          debugger
           this.stockInfo = response.data.data.stockInfo
           this.categoryIds = response.data.data.categoryIds
           this.rebates = response.data.data.rebates
@@ -468,7 +467,6 @@
       },
       handleEdit: function() {
         const stockInfo = this.stockInfo
-        debugger
         editStockInfo(stockInfo)
           .then(response => {
             debugger
@@ -507,6 +505,9 @@
       },
       uploadPicUrl: function(response) {
         this.stockInfo.picUrl = response.data.url
+      },
+      uploadShareUrl: function(response) {
+        this.stockInfo.shareUrl = response.data.url
       },
       uploadOverrun: function() {
         this.$message({
