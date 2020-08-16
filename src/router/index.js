@@ -370,7 +370,7 @@ export const asyncRouterMap = [
       {
         path: 'edit',
         component: () => import('@/views/line/edit'),
-        name: 'goodsEdit',
+        name: 'lineEdit',
         meta: {
           perms: ['GET /admin/line/detail', 'POST /admin/line/update'],
           title: '线路编辑',

@@ -20,13 +20,19 @@
       <el-table-column align="center" label="联系人" min-width="120px" prop="contact"/>
       <el-table-column align="center" label="手机号" min-width="120px" prop="phone"/>
 
-      <el-table-column align="center" label="状态" prop="type">
+      <el-table-column align="center" label="线路类型" prop="type">
         <template slot-scope="scope">
           <el-tag :type="scope.row.type ? 'success' : 'error' ">{{ scope.row.type ? '线下' : '线上' }}</el-tag>
         </template>
       </el-table-column>
 
-      <el-table-column align="center" label="创建时间" min-width="120px" prop="addTime"/>
+      <el-table-column align="center" label="社区列表" prop="">
+        <template slot-scope="scope">
+          <el-button type="primary" size="mini" @click="showCommunityList(scope.row)">社区列表</el-button>
+        </template>
+      </el-table-column>
+
+      <el-table-column align="center" label="创建时间" min-width="120px" prop="addTime" sortable/>
 
       <el-table-column align="center" label="操作" min-width="200" class-name="small-padding fixed-width">
         <template slot-scope="scope">
@@ -37,6 +43,23 @@
     </el-table>
 
     <pagination v-show="total>0" :total="total" :page.sync="listQuery.page" :limit.sync="listQuery.limit" @pagination="getList" />
+
+    <!-- 关联社区列表对话框 -->
+    <el-dialog :visible.sync="communitiesDialogVisible" title="关联社区列表">
+      <el-form label-width="100px">
+        <el-table :data="communityList" element-loading-text="正在查询中。。。" border fit highlight-current-row>
+          <el-table-column align="center" label="社区名称" min-width="120px" prop="name"/>
+          <el-table-column align="center" label="社区地址" min-width="120px" prop="province,city,county,addressDetail">
+            <template slot-scope="scope">
+              {{ scope.row.province }} {{ scope.row.city }} {{ scope.row.county }} {{ scope.row.addressDetail }}
+            </template>
+          </el-table-column>
+        </el-table>
+      </el-form>
+      <div slot="footer" class="dialog-footer">
+        <el-button @click="communitiesDialogVisible = false">取消</el-button>
+      </div>
+    </el-dialog>
 
   </div>
 </template>
@@ -98,13 +121,19 @@ export default {
         type: undefined,
         sort: 'add_time',
         order: 'desc'
-      }
+      },
+      communitiesDialogVisible: false,
+      communityList: null
     }
   },
   created() {
     this.getList()
   },
   methods: {
+    showCommunityList(row) {
+      this.communityList = row.communityList
+      this.communitiesDialogVisible = true
+    },
     getList() {
       this.listLoading = true
       listLine(this.listQuery).then(response => {

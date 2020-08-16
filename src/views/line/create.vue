@@ -66,7 +66,7 @@ export default {
         name: '',
         contact: '',
         phone: '',
-        type: ''
+        type: 0
       },
       rules: {
         name: [{ required: true, message: '线路名称不能为空', trigger: 'blur' }],
