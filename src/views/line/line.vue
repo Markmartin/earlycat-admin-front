@@ -61,6 +61,32 @@
       </div>
     </el-dialog>
 
+    <!--添加或编辑-->
+    <el-dialog :title="textMap[dialogStatus]" :visible.sync="dialogFormVisible">
+      <el-form ref="dataForm" :rules="rules" :model="dataForm" status-icon label-position="right" label-width="150px" style="width: 100%; padding-left:50px;">
+        <el-form-item label="线路名称" prop="name">
+          <el-input v-model="dataForm.name"/>
+        </el-form-item>
+        <el-form-item label="联系人" prop="contact">
+          <el-input v-model="dataForm.contact"/>
+        </el-form-item>
+        <el-form-item label="联系方式" prop="phone">
+          <el-input v-model="dataForm.phone"/>
+        </el-form-item>
+        <el-form-item label="线路类型" prop="type">
+          <el-radio-group v-model="dataForm.type">
+            <el-radio :label="0">线上</el-radio>
+            <el-radio :label="1">线下</el-radio>
+          </el-radio-group>
+        </el-form-item>
+      </el-form>
+      <div slot="footer" class="dialog-footer">
+        <el-button @click="dialogFormVisible = false">取消</el-button>
+        <el-button v-if="dialogStatus=='create'" type="primary" @click="createData">确定</el-button>
+        <el-button v-else type="primary" @click="updateData">确定</el-button>
+      </div>
+    </el-dialog>
+
   </div>
 </template>
 
@@ -91,7 +117,7 @@
 </style>
 
 <script>
-import { listLine, deleteLine } from '@/api/line'
+import { listLine, deleteLine, createLine, updateLine } from '@/api/line'
 import Pagination from '@/components/Pagination' // Secondary package based on el-pagination
 
 export default {
@@ -122,6 +148,22 @@ export default {
         sort: 'add_time',
         order: 'desc'
       },
+      dataForm: {
+        name: '',
+        contact: '',
+        phone: '',
+        type: 0
+      },
+      rules: {
+        name: [{ required: true, message: '线路名称不能为空', trigger: 'blur' }],
+        contact: [{ required: true, message: '联系人不能为空', trigger: 'blur' }],
+        phone: [{ required: true, message: '联系方式不能为空', trigger: 'blur' }]
+      },
+      textMap: {
+        update: '编辑',
+        create: '创建'
+      },
+      dialogFormVisible: false,
       communitiesDialogVisible: false,
       communityList: null
     }
@@ -151,10 +193,20 @@ export default {
       this.getList()
     },
     handleCreate() {
-      this.$router.push({ path: '/line/create' })
+      this.resetForm()
+      this.dialogStatus = 'create'
+      this.dialogFormVisible = true
+      this.$nextTick(() => {
+        this.$refs['dataForm'].clearValidate()
+      })
     },
     handleUpdate(row) {
-      this.$router.push({ path: '/line/edit', query: { id: row.id }})
+      this.dataForm = Object.assign({}, row)
+      this.dialogStatus = 'update'
+      this.dialogFormVisible = true
+      this.$nextTick(() => {
+        this.$refs['dataForm'].clearValidate()
+      })
     },
     handleDelete(row) {
       this.$confirm('确定要删除当前线路吗?', '提示', {
@@ -178,8 +230,63 @@ export default {
             })
           })
       }).catch(() => {})
+    },
+    resetForm() {
+      this.dataForm = {
+        name: '',
+        contact: '',
+        phone: '',
+        type: 0
+      }
+    },
+    createData() {
+      this.$refs['dataForm'].validate(valid => {
+        if (valid) {
+          createLine(this.dataForm)
+            .then(response => {
+              this.list.unshift(response.data.data)
+              this.dialogFormVisible = false
+              this.$notify.success({
+                title: '成功',
+                message: '新建线路成功'
+              })
+            })
+            .catch(response => {
+              this.$notify.error({
+                title: '失败',
+                message: response.data.errmsg
+              })
+            })
+        }
+      })
+    },
+    updateData() {
+      this.$refs['dataForm'].validate(valid => {
+        if (valid) {
+          updateLine(this.dataForm)
+            .then(() => {
+              for (const v of this.list) {
+                if (v.id === this.dataForm.id) {
+                  const index = this.list.indexOf(v)
+                  this.list.splice(index, 1, this.dataForm)
+                  break
+                }
+              }
+              this.dialogFormVisible = false
+              this.$notify.success({
+                title: '成功',
+                message: '更新线路信息成功'
+              })
+            })
+            .catch(response => {
+              this.$notify.error({
+                title: '失败',
+                message: response.data.errmsg
+              })
+            })
+        }
+      })
     }
-
   }
 }
 </script>

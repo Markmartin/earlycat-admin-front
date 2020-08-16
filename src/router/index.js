@@ -349,34 +349,13 @@ export const asyncRouterMap = [
     children: [
       {
         path: 'list',
-        component: () => import('@/views/line/list'),
+        component: () => import('@/views/line/line'),
         name: 'lineList',
         meta: {
           perms: ['GET /admin/line/list'],
           title: '线路列表',
           noCache: true
         }
-      },
-      {
-        path: 'create',
-        component: () => import('@/views/line/create'),
-        name: 'lineCreate',
-        meta: {
-          perms: ['POST /admin/line/create'],
-          title: '添加线路',
-          noCache: true
-        }
-      },
-      {
-        path: 'edit',
-        component: () => import('@/views/line/edit'),
-        name: 'lineEdit',
-        meta: {
-          perms: ['GET /admin/line/detail', 'POST /admin/line/update'],
-          title: '线路编辑',
-          noCache: true
-        },
-        hidden: true
       }
     ]
   },
