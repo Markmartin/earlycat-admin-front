@@ -40,3 +40,11 @@ export function detailLine(id) {
   })
 }
 
+export function listByType(type) {
+  return request({
+    url: '/line/listByType',
+    method: 'get',
+    params: { type }
+  })
+}
+

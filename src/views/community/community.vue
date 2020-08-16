@@ -107,6 +107,24 @@
           </div>
           <el-input v-model="dataForm.addressDetail"/>
         </el-form-item>
+        <el-form-item label="所属线上线路" prop="onlineId">
+          <el-select v-model="dataForm.onlineId" placeholder="请选择线路">
+            <el-option
+              v-for="item in onlineOptions"
+              :key="item.id"
+              :label="item.name"
+              :value="item.id"/>
+          </el-select>
+        </el-form-item>
+        <el-form-item label="所属线下线路" prop="offlineId">
+          <el-select v-model="dataForm.offlineId" placeholder="请选择线路">
+            <el-option
+              v-for="item in offlineOptions"
+              :key="item.id"
+              :label="item.name"
+              :value="item.id"/>
+          </el-select>
+        </el-form-item>
         <el-form-item label="经度" prop="longitude">
           <el-input v-model="dataForm.longitude"/>
         </el-form-item>
@@ -255,6 +273,7 @@ import { listAdmin } from '@/api/admin'
 import { listWxwork } from '@/api/wxwork'
 import { listCommunity, createCommunity, updateCommunity, deleteCommunity } from '@/api/community'
 import { listSubRegion } from '@/api/region'
+import { listByType } from '@/api/line'
 import { getToken } from '@/utils/auth'
 import Pagination from '@/components/Pagination' // Secondary package based on el-pagination
 
@@ -329,6 +348,8 @@ export default {
       provinceOptions: null,
       cityOptions: null,
       countyOptions: null,
+      onlineOptions: null,
+      offlineOptions: null,
       downloadLoading: false,
       dataForm: {
         deliveryPoints: [],
@@ -348,7 +369,9 @@ export default {
         telephone: undefined,
         status: undefined,
         wechatGroupUrl: '',
-        wechatGroupExpiredTime: undefined
+        wechatGroupExpiredTime: undefined,
+        onlineId: undefined,
+        offlineId: undefined
       },
       statusOptions: [{
         value: 1,
@@ -388,6 +411,8 @@ export default {
   created() {
     this.getList()
     this.getProvince()
+    this.getOnlineList()
+    this.getOfflineList()
   },
   methods: {
     pickerDateChange() {
@@ -478,6 +503,20 @@ export default {
         // this.globalOptions = response.data.data.list
       }).catch(() => {
         this.provinceOptions = []
+      })
+    },
+    getOnlineList() {
+      listByType(0).then(response => {
+        this.onlineOptions = response.data.data
+      }).catch(() => {
+        this.onlineOptions = []
+      })
+    },
+    getOfflineList() {
+      listByType(1).then(response => {
+        this.offlineOptions = response.data.data
+      }).catch(() => {
+        this.offlineOptions = []
       })
     },
     changeProvince: function(option, tag) {
