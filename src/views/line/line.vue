@@ -73,12 +73,20 @@
         <el-form-item label="联系方式" prop="phone">
           <el-input v-model="dataForm.phone"/>
         </el-form-item>
-        <el-form-item label="线路类型" prop="type">
+        <el-form-item v-if="dialogStatus=='create'" label="线路类型" prop="type">
           <el-radio-group v-model="dataForm.type">
             <el-radio :label="0">线上</el-radio>
             <el-radio :label="1">线下</el-radio>
           </el-radio-group>
         </el-form-item>
+        <!--UPDATE时线路类型不可修改-->
+        <el-form-item v-if="dialogStatus=='update'" label="线路类型" prop="type">
+          <el-radio-group v-model="dataForm.type">
+            <el-radio v-if="dialogStatus=='update'" :disabled="true" :label="0">线上</el-radio>
+            <el-radio v-if="dialogStatus=='update'" :disabled="true" :label="1">线下</el-radio>
+          </el-radio-group>
+        </el-form-item>
+
       </el-form>
       <div slot="footer" class="dialog-footer">
         <el-button @click="dialogFormVisible = false">取消</el-button>
