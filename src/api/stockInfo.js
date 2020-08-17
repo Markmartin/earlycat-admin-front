@@ -8,6 +8,28 @@ export function listStockInfoList(query) {
   })
 }
 
+export function findPageByParam(data, page, limit) {
+  return request({
+    url: `/stockinfo/findPageByParam`,
+    header:
+    method: 'post',
+    params: {
+      'page': page,
+      'limit': limit
+    },
+    data
+  })
+  // return request({
+  //   url: '/stockinfo/findPageByParam',
+  //   method: 'post',
+  //   params: {
+  //     'page': page,
+  //     'limit': limit
+  //   },
+  //   data
+  // })
+}
+
 export function deleteStockInfo(id) {
   return request({
     url: '/stockinfo/delete',

@@ -3,15 +3,10 @@
 
     <!-- 查询和其他操作 -->
     <div class="filter-container">
-      <el-input v-model="listQuery.name" clearable class="filter-item" style="width: 200px;" placeholder="请输入商品名称"/>
+      <el-input v-model="listQuery.stockInfo.name" clearable class="filter-item" style="width: 200px;"
+                placeholder="请输入商品名称"/>
       <el-cascader :options="categoryList" clearable class="filter-item" expand-trigger="hover" placeholder="请选择所属分类"
                    @change="handleCategoryChange"/>
-      <el-select v-model="listQuery.isChoice" clearable style="width: 200px" class="filter-item" placeholder="请选择限时特惠状态">
-        <el-option v-for="type in isChoiceOptions" :key="type.value" :label="type.label" :value="type.value"/>
-      </el-select>
-      <el-select v-model="listQuery.isOnSale" clearable style="width: 200px" class="filter-item" placeholder="请选择售货状态">
-        <el-option v-for="type in isOnSaleOptions" :key="type.value" :label="type.label" :value="type.value"/>
-      </el-select>
       <el-button v-permission="['GET /admin/stockInfo/stockInfoList']" class="filter-item" type="primary"
                  icon="el-icon-search"
                  @click="handleFilter">查找
@@ -23,7 +18,6 @@
       <el-button v-permission="['GET /admin/goods/list']" :loading="downloadLoading" class="filter-item" type="primary"
                  icon="el-icon-download" @click="handleDownload">导出
       </el-button>
-      <!-- <el-button class="filter-item" type="primary" icon="el-icon-printer" @click="handlePrinter">打印</el-button> -->
     </div>
 
     <!-- 查询结果 -->
@@ -139,7 +133,7 @@
 </style>
 
 <script>
-  import { listGoods, deleteStockInfo, listCatAndBrand, listStockInfoList } from '@/api/stockInfo'
+  import { listGoods, deleteStockInfo, listCatAndBrand, listStockInfoList, findPageByParam } from '@/api/stockInfo'
   import { getLodop } from '@/utils/lodopFuncs'
   import BackToTop from '@/components/BackToTop'
   import Pagination from '@/components/Pagination' // Secondary package based on el-pagination
@@ -149,46 +143,6 @@
     components: { BackToTop, Pagination },
     data() {
       return {
-        isNewOptions: [
-          {
-            label: '新品',
-            value: true
-          },
-          {
-            label: '非新品',
-            value: false
-          }
-        ],
-        isHotOptions: [
-          {
-            label: '热卖',
-            value: true
-          },
-          {
-            label: '普通',
-            value: false
-          }
-        ],
-        isChoiceOptions: [
-          {
-            label: '特惠',
-            value: true
-          },
-          {
-            label: '普通',
-            value: false
-          }
-        ],
-        isOnSaleOptions: [
-          {
-            label: '在售',
-            value: true
-          },
-          {
-            label: '未售',
-            value: false
-          }
-        ],
         categoryList: [],
         brandList: [],
         printerData: '',
@@ -198,13 +152,13 @@
         total: 0,
         listLoading: true,
         listQuery: {
-          isOnSale: '',
+          stockInfo: '',
           categoryId: undefined,
           page: 1,
           limit: 20,
-          name: undefined,
-          sort: 'add_time',
-          order: 'desc'
+          name: undefined
+          // sort: 'add_time',
+          // order: 'desc'
         },
         goodsDetail: '',
         detailDialogVisible: false,
@@ -220,11 +174,12 @@
     },
     methods: {
       handleCategoryChange(value) {
-        this.listQuery.categoryId = value[value.length - 1]
+        this.listQuery.stockInfo.categoryId = value[value.length - 1]
       },
       getStockInfoList() {
+        debugger
         this.listLoading = true
-        listStockInfoList(this.listQuery).then(response => {
+        findPageByParam(this.listQuery.stockInfo, this.listQuery.page, this.listQuery.limit).then(response => {
           this.list = response.data.data.list
           this.total = response.data.data.total
           this.listLoading = false
