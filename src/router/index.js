@@ -282,7 +282,7 @@ export const asyncRouterMap = [
     ]
   },
 
-  {
+  /*{
     path: '/goods',
     component: Layout,
     redirect: 'noredirect',
@@ -335,7 +335,7 @@ export const asyncRouterMap = [
         }
       }
     ]
-  },
+  },*/
 
   {
     path: '/stockInfo',
@@ -344,7 +344,7 @@ export const asyncRouterMap = [
     alwaysShow: true,
     name: 'stockInfoManage',
     meta: {
-      title: '朝菜猫商品管理',
+      title: '商品管理',
       icon: 'goods'
     },
     children: [
@@ -382,7 +382,7 @@ export const asyncRouterMap = [
       {
         path: 'stockInfoComment',
         component: () => import('@/views/stockInfo/comment'),
-        name: 'goodsComment',
+        name: 'stockInfoComment',
         meta: {
           perms: ['GET /admin/comment/list', 'POST /admin/comment/delete'],
           title: '商品评论',
