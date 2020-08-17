@@ -8,11 +8,33 @@ export function listStockInfoList(query) {
   })
 }
 
-export function deleteStockInfo(data) {
+export function findPageByParam(data, page, limit) {
+  return request({
+    url: `/stockinfo/findPageByParam`,
+    headers: { 'Content-Type': 'application/json' },
+    method: 'post',
+    params: {
+      'page': page,
+      'limit': limit
+    },
+    data
+  })
+  // return request({
+  //   url: '/stockinfo/findPageByParam',
+  //   method: 'post',
+  //   params: {
+  //     'page': page,
+  //     'limit': limit
+  //   },
+  //   data
+  // })
+}
+
+export function deleteStockInfo(id) {
   return request({
     url: '/stockinfo/delete',
-    method: 'post',
-    data
+    method: 'get',
+    params: { id }
   })
 }
 

@@ -25,7 +25,7 @@
                 :headers="headers"
                 :action="uploadPath"
                 :show-file-list="false"
-                :on-success="uploadPicUrl"
+                :on-success="uploadShareUrl"
                 class="avatar-uploader"
                 accept=".jpg,.jpeg,.png,.gif">
                 <img v-if="stockInfo.picUrl" :src="stockInfo.shareUrl" class="avatar">
@@ -287,10 +287,9 @@
         </div>
       </el-dialog>
     </el-card>
-
     <div class="op-container">
       <el-button @click="handleCancel">取消</el-button>
-      <el-button v-permission="['POST /admin/stockInfo/create']" type="primary" @click="handleEdit">新增商品</el-button>
+      <el-button v-permission="['POST /admin/stockInfo/create']" type="primary" @click="handlePublish">上架</el-button>
     </div>
 
   </div>
@@ -312,6 +311,8 @@
   }
 
   .avatar-uploader .el-upload {
+    width: 145px;
+    height: 145px;
     border: 1px dashed #d9d9d9;
     border-radius: 6px;
     cursor: pointer;
@@ -340,7 +341,7 @@
 </style>
 
 <script>
-  import { listCatAndBrand, detailStockInfo, publishStockInfo} from '@/api/stockInfo'
+  import { listCatAndBrand, publishStockInfo, editStockInfo } from '@/api/stockInfo'
   import { createStorage, uploadPath } from '@/api/storage'
   import { listCommunity } from '@/api/community'
   import Editor from '@tinymce/tinymce-vue'
@@ -348,7 +349,7 @@
   import { getToken } from '@/utils/auth'
 
   export default {
-    name: 'StockInfoEdit',
+    name: 'GoodsCreate',
     components: { Editor },
 
     data() {
@@ -369,42 +370,45 @@
         communityLoading: false,
         communityList: [],
         uploadPath,
+        newKeywordVisible: false,
+        newKeyword: '',
+        keywords: [],
         categoryList: [],
+        brandList: [],
         categoryIds: [],
         communities: [],
-        stockInfo: [],
+        stockInfo: { picUrl: '', gallery: [], unit: '克' },
+        specVisiable: false,
         specForm: { specification: '', value: '', picUrl: '' },
+        multipleSpec: false,
+        specifications: [{ specification: '规格', value: '标准', picUrl: '' }],
+        productVisiable: false,
+        unitList: ['克', '个', '箱', '件', '盒', '份', '瓶', '袋', '桶'],
+        productForm: { id: 0, specifications: [], price: 0.00, number: 0, url: '', unit: '克', value: 0 },
+        products: [{ id: 0, specifications: ['标准'], price: 0.00, number: 0, url: '', productSn: 1, unit: '克', value: 0 }],
+        attributeVisiable: false,
+        attributeForm: { attribute: '', value: '' },
+        attributes: [],
         rebateVisiable: false,
-        rebateForm: { orders: '',
-          value: '' },
+        rebateForm: { orders: '', value: '' },
         rebates: [],
         rules: {
-          value: [
-            { required: false, message: '请输入返券额度', trigger: 'blur' }
-          ]
+          stockInfoSn: [{ required: true, message: '商品编号不能为空', trigger: 'blur' }],
+          name: [{ required: true, message: '商品名称不能为空', trigger: 'blur' }]
         },
         editorInit: {
           language: 'zh_CN',
           convert_urls: false,
-          plugins: [
-            'advlist anchor autolink autosave code codesample colorpicker colorpicker contextmenu directionality emoticons fullscreen hr image imagetools importcss insertdatetime link lists media nonbreaking noneditable pagebreak paste preview print save searchreplace spellchecker tabfocus table template textcolor textpattern visualblocks visualchars wordcount'
-          ],
-          toolbar: [
-            'searchreplace bold italic underline strikethrough alignleft aligncenter alignright outdent indent  blockquote undo redo removeformat subscript superscript code codesample',
-            'hr bullist numlist link image charmap preview anchor pagebreak insertdatetime media table emoticons forecolor backcolor fullscreen'
-          ],
+          plugins: ['advlist anchor autolink autosave code codesample colorpicker colorpicker contextmenu directionality emoticons fullscreen hr image imagetools importcss insertdatetime link lists media nonbreaking noneditable pagebreak paste preview print save searchreplace spellchecker tabfocus table template textcolor textpattern visualblocks visualchars wordcount'],
+          toolbar: ['searchreplace bold italic underline strikethrough alignleft aligncenter alignright outdent indent  blockquote undo redo removeformat subscript superscript code codesample', 'hr bullist numlist link image charmap preview anchor pagebreak insertdatetime media table emoticons forecolor backcolor fullscreen'],
           images_upload_handler: function(blobInfo, success, failure) {
             const formData = new FormData()
             formData.append('file', blobInfo.blob())
-            debugger
-            createStorage(formData)
-              .then(res => {
-                success(res.data.data.url)
-                console.log(res.data.data.url)
-              })
-              .catch(() => {
-                failure('上传失败，请重新上传')
-              })
+            createStorage(formData).then(res => {
+              success(res.data.data.url)
+            }).catch(() => {
+              failure('上传失败，请重新上传')
+            })
           }
         }
       }
@@ -419,24 +423,14 @@
     created() {
       this.init()
     },
+
     methods: {
       init: function() {
-        if (this.$route.query.id == null) {
-          return
-        }
-        const stockInfoId = this.$route.query.id
-        detailStockInfo(stockInfoId).then(response => {
-          debugger
-          this.stockInfo = response.data.data.stockInfo
-          this.categoryIds = response.data.data.categoryIds
-          this.rebates = response.data.data.rebates
-        })
         listCatAndBrand().then(response => {
           this.categoryList = response.data.data.categoryList
           this.brandList = response.data.data.brandList
         })
       },
-
       communityMethod(query) {
         if (query !== '') {
           this.communityLoading = true
@@ -447,10 +441,7 @@
           }).then(response => {
             const list = []
             for (const idx in response.data.data.list) {
-              list.push({
-                communityId: response.data.data.list[idx].id,
-                communityName: response.data.data.list[idx].name
-              })
+              list.push({ communityId: response.data.data.list[idx].id, communityName: response.data.data.list[idx].name })
             }
             this.communityList = list
             this.communityLoading = false
@@ -468,25 +459,21 @@
       handleCancel: function() {
         this.$router.push({ path: '/stockInfo/stockInfoList' })
       },
-      handleEdit: function() {
-        const stockInfo = this.stockInfo
+      handlePublish: function() {
         debugger
-        publishStockInfo(stockInfo)
-          .then(response => {
-            debugger
-            this.$notify.success({
-              title: '更新成功',
-              message: '更新成功'
-            })
-            this.$router.push({ path: '/stockInfo/stockInfoList' })
+        const stockInfo = this.stockInfo
+        publishStockInfo(stockInfo).then(response => {
+          this.$notify.success({
+            title: '成功',
+            message: '创建成功'
           })
-          .catch(response => {
-            debugger
-            MessageBox.alert('业务错误：' + response.data.errmsg, '警告', {
-              confirmButtonText: '确定',
-              type: 'error'
-            })
+          this.$router.push({ path: '/stockInfo/stockInfoList' })
+        }).catch(response => {
+          MessageBox.alert('业务错误：' + response.data.errmsg, '警告', {
+            confirmButtonText: '确定',
+            type: 'error'
           })
+        })
       },
       handleClose(tag) {
         this.keywords.splice(this.keywords.indexOf(tag), 1)
@@ -509,6 +496,10 @@
       },
       uploadPicUrl: function(response) {
         this.stockInfo.picUrl = response.data.url
+      },
+      uploadShareUrl: function(response) {
+        this.stockInfo.shareUrl = response.data.url
+        thisdom.$forceUpdate();
       },
       uploadOverrun: function() {
         this.$message({
@@ -541,12 +532,8 @@
       },
       specChanged: function(label) {
         if (label === false) {
-          this.specifications = [
-            { specification: '规格', value: '标准', picUrl: '' }
-          ]
-          this.products = [
-            { id: 0, specifications: ['标准'], price: 0.0, number: 0, url: '', productSn: 1, unit: '克', value: 0 }
-          ]
+          this.specifications = [{ specification: '规格', value: '标准', picUrl: '' }]
+          this.products = [{ id: 0, specifications: ['标准'], price: 0.00, number: 0, url: '', productSn: 1, unit: '克', value: 0 }]
         } else {
           this.specifications = []
           this.products = []
@@ -564,7 +551,17 @@
         for (var i = 0; i < this.specifications.length; i++) {
           const v = this.specifications[i]
           if (v.specification === this.specForm.specification) {
-            index = i
+            if (v.value === this.specForm.value) {
+              this.$message({
+                type: 'warning',
+                message: '已经存在规格值:' + v.value
+              })
+              this.specForm = {}
+              this.specVisiable = false
+              return
+            } else {
+              index = i
+            }
           }
         }
 
@@ -619,16 +616,7 @@
             var z = specValues[x][combination[x]]
             specifications.push(this.specifications[z].value)
           }
-          products[productsIndex] = {
-            id: productsIndex,
-            specifications: specifications,
-            price: 0.0,
-            number: 0,
-            url: '',
-            productSn: (productsIndex + 1).toString(),
-            unit: '克',
-            value: 0
-          }
+          products[productsIndex] = { id: productsIndex, specifications: specifications, price: 0.00, number: 0, url: '', productSn: (productsIndex + 1).toString(), unit: '克', value: 0 }
           productsIndex++
 
           index++
@@ -651,6 +639,7 @@
         } while (isContinue)
 
         this.products = products
+        console.log(this.products)
       },
       handleProductShow(row) {
         this.productForm = Object.assign({}, row)
