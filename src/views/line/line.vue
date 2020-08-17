@@ -4,7 +4,7 @@
     <!-- 查询和其他操作 -->
     <div class="filter-container">
       <el-input v-model="listQuery.name" clearable class="filter-item" style="width: 200px;" placeholder="请输入线路名称"/>
-      <el-input v-model="listQuery.contact" clearable class="filter-item" style="width: 200px;" placeholder="请输入联系人"/>
+      <el-input v-model="listQuery.contact" clearable class="filter-item" style="width: 200px;" placeholder="请输入负责人"/>
       <el-input v-model="listQuery.phone" clearable class="filter-item" style="width: 200px;" placeholder="请输入手机号"/>
       <el-select v-model="listQuery.type" clearable style="width: 200px" class="filter-item" placeholder="请选择线路类型">
         <el-option v-for="type in types" :key="type.value" :label="type.label" :value="type.value"/>
@@ -18,7 +18,7 @@
     <el-table v-loading="listLoading" :data="list" element-loading-text="正在查询中。。。" border fit highlight-current-row>
       <el-table-column align="center" width="100px" label="线路ID" prop="id" sortable/>
       <el-table-column align="center" label="线路名称" min-width="120px" prop="name"/>
-      <el-table-column align="center" label="联系人" min-width="120px" prop="contact"/>
+      <el-table-column align="center" label="负责人" min-width="120px" prop="contact"/>
       <el-table-column align="center" label="手机号" min-width="120px" prop="phone"/>
 
       <el-table-column align="center" label="线路类型" prop="type">
@@ -68,11 +68,16 @@
         <el-form-item label="线路名称" prop="name">
           <el-input v-model="dataForm.name"/>
         </el-form-item>
-        <el-form-item label="联系人" prop="contact">
-          <el-input v-model="dataForm.contact"/>
-        </el-form-item>
-        <el-form-item label="联系方式" prop="phone">
-          <el-input v-model="dataForm.phone"/>
+        <el-form-item label="负责人" prop="contact">
+          <el-autocomplete
+            prefix-icon="el-icon-search"
+            class="inline-input"
+            v-model="dataForm.contact"
+            value-key="realname"
+            :fetch-suggestions="querySearch"
+            placeholder="请输入姓名"
+            @select="handleSelect"
+          ></el-autocomplete>
         </el-form-item>
         <el-form-item v-if="dialogStatus=='create'" label="线路类型" prop="type">
           <el-radio-group v-model="dataForm.type">
@@ -127,6 +132,7 @@
 
 <script>
 import { listLine, deleteLine, createLine, updateLine } from '@/api/line'
+import { allAdmin } from '@/api/admin'
 import Pagination from '@/components/Pagination' // Secondary package based on el-pagination
 
 export default {
@@ -159,14 +165,13 @@ export default {
       },
       dataForm: {
         name: '',
+        staffId: '',
         contact: '',
         phone: '',
         type: 0
       },
       rules: {
-        name: [{ required: true, message: '线路名称不能为空', trigger: 'blur' }],
-        contact: [{ required: true, message: '联系人不能为空', trigger: 'blur' }],
-        phone: [{ required: true, min: 11, max: 11, message: '手机号格式错误', trigger: 'blur' }]
+        name: [{ required: true, message: '线路名称不能为空', trigger: 'blur' }]
       },
       textMap: {
         update: '编辑',
@@ -174,13 +179,33 @@ export default {
       },
       dialogFormVisible: false,
       communitiesDialogVisible: false,
-      communityList: null
+      communityList: null,
+      restaurants: []
     }
   },
   created() {
     this.getList()
+    this.loadAllAdmin();
   },
+
   methods: {
+    querySearch(queryString, cb) {
+      var restaurants = this.restaurants;
+      var results = queryString ? restaurants.filter(this.createFilter(queryString)) : restaurants;
+      // 调用 callback 返回建议列表的数据
+      cb(results);
+    },
+    createFilter(queryString) {
+      return (restaurant) => {
+        return (restaurant.realname.toLowerCase().indexOf(queryString.toLowerCase()) === 0);
+      };
+    },
+    handleSelect(item) {
+      console.log(item)
+      this.dataForm.staffId=item.id
+      this.dataForm.contact=item.realname
+      this.dataForm.phone=item.phone
+    },
     showCommunityList(row) {
       this.communityList = row.communityList
       this.communitiesDialogVisible = true
@@ -195,6 +220,13 @@ export default {
         this.list = []
         this.total = 0
         this.listLoading = false
+      })
+    },
+    loadAllAdmin() {
+      allAdmin().then(response => {
+        this.restaurants = response.data.data
+      }).catch(() => {
+        this.restaurants = []
       })
     },
     handleFilter() {
@@ -243,6 +275,7 @@ export default {
     resetForm() {
       this.dataForm = {
         name: '',
+        staffId: '',
         contact: '',
         phone: '',
         type: 0
@@ -299,7 +332,7 @@ export default {
     handleDownload() {
       this.downloadLoading = true
       import('@/vendor/Export2Excel').then(excel => {
-        const tHeader = ['线路ID', '线路名称', '联系人', '手机号', '线路类型（0:线上 1:线下）', '创建时间']
+        const tHeader = ['线路ID', '线路名称', '负责人', '手机号', '线路类型（0:线上 1:线下）', '创建时间']
         const filterVal = ['id', 'name', 'contact', 'phone', 'type', 'addTime']
         excel.export_json_to_excel2(tHeader, this.list, filterVal, '线路信息')
         this.downloadLoading = false
