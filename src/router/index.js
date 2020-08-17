@@ -407,7 +407,7 @@ export const asyncRouterMap = [
         component: () => import('@/views/line/line'),
         name: 'lineList',
         meta: {
-          perms: ['GET /admin/line/list'],
+          perms: ['POST /admin/line/delete', 'GET /admin/line/list', 'POST /admin/line/update', 'POST /admin/line/create'],
           title: '线路列表',
           noCache: true
         }
