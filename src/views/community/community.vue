@@ -29,6 +29,8 @@
     <el-table v-loading="listLoading" :data="list" element-loading-text="正在查询中。。。" border fit highlight-current-row>
       <el-table-column align="center" width="100px" label="社区ID" prop="id" sortable/>
       <el-table-column align="center" width="100px" label="小区名" prop="name" sortable/>
+      <el-table-column align="center" width="100px" label="线上线路" prop="onlineName" />
+      <el-table-column align="center" width="100px" label="线下线路" prop="offlineName" />
 
       <el-table-column align="center" label="省市区">
         <template slot-scope="scope">
@@ -371,7 +373,9 @@ export default {
         wechatGroupUrl: '',
         wechatGroupExpiredTime: undefined,
         onlineId: undefined,
-        offlineId: undefined
+        onlineName: undefined,
+        offlineId: undefined,
+        offlineName: undefined
       },
       statusOptions: [{
         value: 1,
