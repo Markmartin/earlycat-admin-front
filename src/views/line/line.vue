@@ -166,7 +166,7 @@ export default {
       rules: {
         name: [{ required: true, message: '线路名称不能为空', trigger: 'blur' }],
         contact: [{ required: true, message: '联系人不能为空', trigger: 'blur' }],
-        phone: [{ required: true, message: '联系方式不能为空', trigger: 'blur' }]
+        phone: [{ required: true, min: 11, max: 11, message: '手机号格式错误', trigger: 'blur' }]
       },
       textMap: {
         update: '编辑',

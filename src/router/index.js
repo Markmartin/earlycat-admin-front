@@ -549,7 +549,7 @@ export const asyncRouterMap = [
         name: 'admin',
         meta: {
           perms: ['GET /admin/admin/list', 'POST /admin/admin/create', 'POST /admin/admin/update', 'POST /admin/admin/delete'],
-          title: '管理员',
+          title: '系统用户',
           noCache: true
         }
       },
