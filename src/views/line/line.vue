@@ -11,6 +11,7 @@
       </el-select>
       <el-button v-permission="['GET /admin/line/list']" class="filter-item" type="primary" icon="el-icon-search" @click="handleFilter">查找</el-button>
       <el-button v-permission="['POST /admin/line/create']" class="filter-item" type="primary" icon="el-icon-edit" @click="handleCreate">添加</el-button>
+      <el-button v-permission="['GET /admin/line/list']" :loading="downloadLoading" class="filter-item" type="primary" icon="el-icon-download" @click="handleDownload">导出</el-button>
     </div>
 
     <!-- 查询结果 -->
@@ -293,6 +294,15 @@ export default {
               })
             })
         }
+      })
+    },
+    handleDownload() {
+      this.downloadLoading = true
+      import('@/vendor/Export2Excel').then(excel => {
+        const tHeader = ['线路ID', '线路名称', '联系人', '手机号', '线路类型（0:线上 1:线下）', '创建时间']
+        const filterVal = ['id', 'name', 'contact', 'phone', 'type', 'addTime']
+        excel.export_json_to_excel2(tHeader, this.list, filterVal, '线路信息')
+        this.downloadLoading = false
       })
     }
   }
