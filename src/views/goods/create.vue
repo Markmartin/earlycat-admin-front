@@ -4,109 +4,251 @@
     <el-card class="box-card">
       <h3>商品介绍</h3>
       <el-form ref="goods" :rules="rules" :model="goods" label-width="150px">
-        <el-form-item label="商品编号" prop="goodsSn">
-          <el-input v-model="goods.goodsSn"/>
-        </el-form-item>
-        <el-form-item label="商品名称" prop="name">
-          <el-input v-model="goods.name"/>
-        </el-form-item>
-        <el-form-item label="专柜价格" prop="counterPrice">
-          <el-input v-model="goods.counterPrice" placeholder="0.00">
-            <template slot="append">元</template>
-          </el-input>
-        </el-form-item>
-        <el-form-item label="当前价格" prop="retailPrice">
-          <el-input v-model="goods.retailPrice" placeholder="0.00">
-            <template slot="append">元</template>
-          </el-input>
-        </el-form-item>
-        <el-form-item label="是否新品" prop="isNew">
-          <el-radio-group v-model="goods.isNew">
-            <el-radio :label="true">新品</el-radio>
-            <el-radio :label="false">非新品</el-radio>
-          </el-radio-group>
-        </el-form-item>
-        <el-form-item label="是否热卖" prop="isHot">
-          <el-radio-group v-model="goods.isHot">
-            <el-radio :label="false">普通</el-radio>
-            <el-radio :label="true">热卖</el-radio>
-          </el-radio-group>
-        </el-form-item>
-        <el-form-item label="限时特惠" prop="isChoice">
-          <el-radio-group v-model="goods.isChoice">
-            <el-radio :label="false">普通</el-radio>
-            <el-radio :label="true">特惠</el-radio>
-          </el-radio-group>
-        </el-form-item>
-        <el-form-item label="是否在售" prop="isOnSale">
-          <el-radio-group v-model="goods.isOnSale">
-            <el-radio :label="true">在售</el-radio>
-            <el-radio :label="false">未售</el-radio>
-          </el-radio-group>
-        </el-form-item>
-        <el-form-item label="限购数量" prop="limit">
-          <el-input v-model="goods.limit"/>
-        </el-form-item>
-
-        <el-form-item label="商品图片">
-          <el-upload
-            :action="uploadPath"
-            :show-file-list="false"
-            :headers="headers"
-            :on-success="uploadPicUrl"
-            class="avatar-uploader"
-            accept=".jpg,.jpeg,.png,.gif">
-            <img v-if="goods.picUrl" :src="goods.picUrl" class="avatar">
-            <i v-else class="el-icon-plus avatar-uploader-icon"/>
-          </el-upload>
-        </el-form-item>
-
-        <el-form-item label="宣传画廊">
-          <el-upload
-            :action="uploadPath"
-            :limit="5"
-            :headers="headers"
-            :on-exceed="uploadOverrun"
-            :on-success="handleGalleryUrl"
-            :on-remove="handleRemove"
-            multiple
-            accept=".jpg,.jpeg,.png,.gif"
-            list-type="picture-card">
-            <i class="el-icon-plus"/>
-          </el-upload>
-        </el-form-item>
-
-        <el-form-item label="商品单位">
-          <el-select v-model="goods.unit" placeholder="请选择">
-            <el-option v-for="(item, index) in unitList" :key="index" :label="item" :value="item"/>
-          </el-select>
-        </el-form-item>
-
-        <el-form-item label="关键字">
-          <el-tag v-for="tag in keywords" :key="tag" closable type="primary" @close="handleClose(tag)">
-            {{ tag }}
-          </el-tag>
-          <el-input
-            v-if="newKeywordVisible"
-            ref="newKeywordInput"
-            v-model="newKeyword"
-            class="input-new-keyword"
-
-            @keyup.enter.native="handleInputConfirm"
-            @blur="handleInputConfirm"/>
-          <el-button v-else class="button-new-keyword" type="primary" @click="showInput">+ 增加</el-button>
-        </el-form-item>
-
-        <el-form-item label="所属分类">
-          <el-cascader :options="categoryList" expand-trigger="hover" @change="handleCategoryChange"/>
-        </el-form-item>
-
-        <el-form-item label="所属品牌商">
-          <el-select v-model="goods.brandId">
-            <el-option v-for="item in brandList" :key="item.value" :label="item.label" :value="item.value"/>
-          </el-select>
-        </el-form-item>
-
+        <el-row>
+          <el-col :span="12">
+            <el-form-item label="小程序标题" prop="title">
+              <el-input v-model="goods.title"/>
+            </el-form-item>
+          </el-col>
+          <el-col :span="12">
+            <el-form-item label="小程序副标题" prop="subtitle">
+              <el-input v-model="goods.subtitle"/>
+            </el-form-item>
+          </el-col>
+        </el-row>
+        <el-row>
+          <el-col :span="8">
+            <el-form-item label="上架类型">
+              <el-select v-model="goods.saleType" placeholder="请选择">
+                <el-option
+                  v-for="item in onlineOptions"
+                  :key="item.value"
+                  :label="item.label"
+                  :value="item.value">
+                </el-option>
+              </el-select>
+            </el-form-item>
+          </el-col>
+          <el-col :span="8">
+            <el-form-item label="所属分类">
+              <el-cascader :options="categoryList" v-model="categoryIds" expand-trigger="hover" @change="handleCategoryChange"/>
+            </el-form-item>
+          </el-col>
+          <el-col :span="8">
+            <el-form-item label="所属品牌商">
+              <el-select v-model="goods.brandId">
+                <el-option v-for="item in brandList" :key="item.value" :label="item.label" :value="item.value"/>
+              </el-select>
+            </el-form-item>
+          </el-col>
+        </el-row>
+        <el-row>
+          <el-col :span="8">
+            <el-form-item label="关键字">
+              <el-tag v-for="tag in keywords" :key="tag" closable type="primary" @close="handleClose(tag)">
+                {{ tag }}
+              </el-tag>
+              <el-input v-if="newKeywordVisible" ref="newKeywordInput" v-model="newKeyword" class="input-new-keyword" @keyup.enter.native="handleInputConfirm" @blur="handleInputConfirm"/>
+              <el-button v-else class="button-new-keyword" type="primary" @click="showInput">+ 增加</el-button>
+            </el-form-item>
+          </el-col>
+          <el-col :span="8">
+            <el-form-item label="工位" prop="station">
+              <el-input v-model="goods.station"/>
+            </el-form-item>
+          </el-col>
+          <el-col :span="8">
+            <el-form-item label="商品单位">
+              <el-select v-model="goods.unit" placeholder="请选择">
+                <el-option v-for="(item, index) in unitList" :key="index" :label="item" :value="item"/>
+              </el-select>
+            </el-form-item>
+          </el-col>
+        </el-row>
+        <el-row>
+          <el-col :span="8">
+            <el-form-item label="线上名称" prop="onlineName">
+              <el-input v-model="goods.onlineName"/>
+            </el-form-item>
+          </el-col>
+          <el-col :span="6">
+            <el-form-item label="线上售价" prop="onlinePrice">
+              <el-input v-model="goods.onlinePrice" placeholder="0.00">
+                <template slot="append">元</template>
+              </el-input>
+            </el-form-item>
+          </el-col>
+          <el-col :span="5">
+            <el-form-item label="线上销量" prop="onlineSales">
+              <el-input v-model="goods.onlineSales"/>
+            </el-form-item>
+          </el-col>
+          <el-col :span="5">
+            <el-form-item label="线上规格" prop="onlineSpec">
+              <el-input v-model="goods.onlineSpec"/>
+            </el-form-item>
+          </el-col>
+        </el-row>
+        <el-row>
+          <el-col :span="8">
+            <el-form-item label="线下名称" prop="offlineName">
+              <el-input v-model="goods.offlineName"/>
+            </el-form-item>
+          </el-col>
+          <el-col :span="6">
+            <el-form-item label="线下价格" prop="offlinePrice">
+              <el-input v-model="goods.offlinePrice" placeholder="0.00">
+                <template slot="append">元</template>
+              </el-input>
+            </el-form-item>
+          </el-col>
+          <el-col :span="5">
+            <el-form-item label="线下销量" prop="offlineSales">
+              <el-input v-model="goods.offlineSales"/>
+            </el-form-item>
+          </el-col>
+          <el-col :span="5">
+            <el-form-item label="线下规格" prop="offlineSpec">
+              <el-input v-model="goods.offlineSpec"/>
+            </el-form-item>
+          </el-col>
+        </el-row>
+        <el-row>
+          <el-col :span="6">
+            <el-form-item label="商品编号" prop="goodsSn">
+              <el-input v-model="goods.goodsSn"/>
+            </el-form-item>
+          </el-col>
+          <el-col :span="6">
+            <el-form-item label="专柜价格" prop="counterPrice">
+              <el-input v-model="goods.counterPrice" placeholder="0.00">
+                <template slot="append">元</template>
+              </el-input>
+            </el-form-item>
+          </el-col>
+          <el-col :span="6">
+            <el-form-item label="当前价格" prop="retailPrice">
+              <el-input v-model="goods.retailPrice" placeholder="0.00">
+                <template slot="append">元</template>
+              </el-input>
+            </el-form-item>
+          </el-col>
+          <el-col :span="6">
+            <el-form-item label="限购数量" prop="limit">
+              <el-input v-model="goods.limit"/>
+            </el-form-item>
+          </el-col>
+        </el-row>
+        <el-row>
+          <el-col :span="6">
+            <el-form-item label="是否新品" prop="isNew">
+              <el-radio-group v-model="goods.isNew">
+                <el-radio :label="true">新品</el-radio>
+                <el-radio :label="false">非新品</el-radio>
+              </el-radio-group>
+            </el-form-item>
+          </el-col>
+          <el-col :span="6">
+            <el-form-item label="是否热卖" prop="isHot">
+              <el-radio-group v-model="goods.isHot">
+                <el-radio :label="false">普通</el-radio>
+                <el-radio :label="true">热卖</el-radio>
+              </el-radio-group>
+            </el-form-item>
+          </el-col>
+          <el-col :span="6">
+            <el-form-item label="限时特惠" prop="isChoice">
+              <el-radio-group v-model="goods.isChoice">
+                <el-radio :label="false">普通</el-radio>
+                <el-radio :label="true">特惠</el-radio>
+              </el-radio-group>
+            </el-form-item>
+          </el-col>
+          <el-col :span="6">
+            <el-form-item label="是否在售" prop="isOnSale">
+              <el-radio-group v-model="goods.isOnSale">
+                <el-radio :label="true">在售</el-radio>
+                <el-radio :label="false">未售</el-radio>
+              </el-radio-group>
+            </el-form-item>
+          </el-col>
+        </el-row>
+        <el-row>
+          <el-col :span="8">
+            <el-form-item label="入库价格" prop="inPrice">
+              <el-input v-model="goods.inPrice" placeholder="0.00">
+                <template slot="append">元</template>
+              </el-input>
+            </el-form-item>
+          </el-col>
+          <el-col :span="8">
+            <el-form-item label="出库价格" prop="outPrice">
+              <el-input v-model="goods.outPrice" placeholder="0.00">
+                <template slot="append">元</template>
+              </el-input>
+            </el-form-item>
+          </el-col>
+          <el-col :span="8">
+            <el-form-item label="库存" prop="stock">
+              <el-input v-model="goods.stock"/>
+            </el-form-item>
+          </el-col>
+        </el-row>
+        <el-row>
+          <el-col :span="8">
+            <el-form-item label="是否报货" prop="isCargo">
+              <el-radio-group v-model="goods.isCargo">
+                <el-radio :label="true">是</el-radio>
+                <el-radio :label="false">否</el-radio>
+              </el-radio-group>
+            </el-form-item>
+          </el-col>
+          <el-col :span="8">
+            <el-form-item label="报货规格" prop="cargoSpec">
+              <el-input v-model="goods.cargoSpec"/>
+            </el-form-item>
+          </el-col>
+          <el-col :span="8">
+            <el-form-item label="报货说明" prop="cargoRemark">
+              <el-input v-model="goods.cargoRemark"/>
+            </el-form-item>
+          </el-col>
+        </el-row>
+        <el-row>
+          <el-col :span="24">
+            <el-form-item label="商品图片">
+              <el-upload
+                :headers="headers"
+                :action="uploadPath"
+                :show-file-list="false"
+                :on-success="uploadPicUrl"
+                class="avatar-uploader"
+                accept=".jpg,.jpeg,.png,.gif">
+                <img v-if="goods.picUrl" :src="goods.picUrl" class="avatar">
+                <i v-else class="el-icon-plus avatar-uploader-icon"/>
+              </el-upload>
+            </el-form-item>
+          </el-col>
+        </el-row>
+        <el-row>
+          <el-col :span="24">
+            <el-form-item label="宣传画廊">
+              <el-upload
+                :action="uploadPath"
+                :headers="headers"
+                :limit="5"
+                :file-list="galleryFileList"
+                :on-exceed="uploadOverrun"
+                :on-success="handleGalleryUrl"
+                :on-remove="handleRemove"
+                multiple
+                accept=".jpg,.jpeg,.png,.gif"
+                list-type="picture-card">
+                <i class="el-icon-plus"/>
+              </el-upload>
+            </el-form-item>
+          </el-col>
+        </el-row>
         <el-form-item label="所属小区">
           <el-select
             v-model="communities"
@@ -128,11 +270,9 @@
               :value="item"/>
           </el-select>
         </el-form-item>
-
         <el-form-item label="商品简介">
           <el-input v-model="goods.brief"/>
         </el-form-item>
-
         <el-form-item label="商品详细介绍">
           <editor :init="editorInit" v-model="goods.detail"/>
         </el-form-item>
