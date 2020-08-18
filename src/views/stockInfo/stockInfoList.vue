@@ -28,6 +28,9 @@
       <el-table-column type="expand">
         <template slot-scope="props">
           <el-form label-position="left" class="table-expand">
+            <el-form-item label="商品id">
+              <span>{{ props.row.id }}</span>
+            </el-form-item>
             <el-form-item label="商品介绍">
               <span>{{ props.row.subtitle }}</span>
             </el-form-item>
@@ -40,8 +43,6 @@
           </el-form>
         </template>
       </el-table-column>
-
-      <el-table-column align="id" label="id" prop="id"/>
 
       <el-table-column align="center" label="小程序标题" prop="title"/>
 

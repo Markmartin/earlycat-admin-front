@@ -208,6 +208,14 @@
             </el-form-item>
           </el-col>
         </el-row>
+
+        <el-row>
+          <el-col :span="24">
+            <el-form-item label="商品详细介绍">
+              <editor :init="editorInit" v-model="stockInfo.remark"/>
+            </el-form-item>
+          </el-col>
+        </el-row>
       </el-form>
     </el-card>
 
