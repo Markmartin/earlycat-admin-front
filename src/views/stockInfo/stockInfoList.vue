@@ -3,10 +3,12 @@
 
     <!-- 查询和其他操作 -->
     <div class="filter-container">
-      <el-input v-model="listQuery.stockInfo.name" clearable class="filter-item" style="width: 200px;"
+      <el-input v-model="listQuery.stockInfo.offlineName" clearable class="filter-item" style="width: 200px;"
                 placeholder="请输入商品名称"/>
       <el-cascader :options="categoryList" clearable class="filter-item" expand-trigger="hover" placeholder="请选择所属分类"
                    @change="handleCategoryChange"/>
+      <el-cascader :options="onlineOptions" clearable class="filter-item" expand-trigger="hover" placeholder="销售类型"
+                   @change="handleOnlineChange"/>
       <el-button v-permission="['GET /admin/stockInfo/stockInfoList']" class="filter-item" type="primary"
                  icon="el-icon-search"
                  @click="handleFilter">查找
@@ -143,6 +145,19 @@
     components: { BackToTop, Pagination },
     data() {
       return {
+        onlineOptions: [{
+          value: 1,
+          label: '小程序上线'
+        }, {
+          value: 2,
+          label: '小程序&微菜场上线'
+        }, {
+          value: 3,
+          label: '微菜场上线'
+        }, {
+          value: 4,
+          label: '下线'
+        }],
         categoryList: [],
         brandList: [],
         printerData: '',
@@ -152,13 +167,9 @@
         total: 0,
         listLoading: true,
         listQuery: {
-          stockInfo: '',
-          categoryId: undefined,
+          stockInfo: {},
           page: 1,
           limit: 20,
-          name: undefined
-          // sort: 'add_time',
-          // order: 'desc'
         },
         goodsDetail: '',
         detailDialogVisible: false,
@@ -176,10 +187,13 @@
       handleCategoryChange(value) {
         this.listQuery.stockInfo.categoryId = value[value.length - 1]
       },
+      handleOnlineChange(value) {
+        this.listQuery.stockInfo.onSaleType = value[0]
+      },
       getStockInfoList() {
-        debugger
         this.listLoading = true
-        findPageByParam(this.listQuery.stockInfo, this.listQuery.page, this.listQuery.limit).then(response => {
+        var stockInfo =  this.listQuery.stockInfo;
+        findPageByParam(stockInfo, this.listQuery.page, this.listQuery.limit).then(response => {
           this.list = response.data.data.list
           this.total = response.data.data.total
           this.listLoading = false

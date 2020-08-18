@@ -11,7 +11,7 @@ export function listStockInfoList(query) {
 export function findPageByParam(data, page, limit) {
   return request({
     url: `/stockinfo/findPageByParam`,
-    header:
+    headers: { 'Content-Type': 'application/json' },
     method: 'post',
     params: {
       'page': page,

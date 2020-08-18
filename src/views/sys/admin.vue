@@ -10,7 +10,8 @@
           :label="item.label"
           :value="item.value"/>
       </el-select>
-      <el-input v-model="listQuery.username" clearable class="filter-item" style="width: 200px;" placeholder="请输入管理员名称"/>
+      <el-input v-model="listQuery.realname" clearable class="filter-item" style="width: 200px;" placeholder="请输入用户姓名"/>
+      <el-input v-model="listQuery.phone" clearable class="filter-item" style="width: 200px;" placeholder="请输入手机号"/>
       <el-button v-permission="['GET /admin/admin/list']" class="filter-item" type="primary" icon="el-icon-search" @click="handleFilter">查找</el-button>
       <el-button v-permission="['POST /admin/admin/create']" class="filter-item" type="primary" icon="el-icon-edit" @click="handleCreate">添加</el-button>
       <el-button v-permission="['GET /admin/admin/list']" :loading="downloadLoading" class="filter-item" type="primary" icon="el-icon-download" @click="handleDownload">导出</el-button>
@@ -18,23 +19,26 @@
 
     <!-- 查询结果 -->
     <el-table v-loading="listLoading" :data="list" element-loading-text="正在查询中。。。" border fit highlight-current-row>
-      <el-table-column align="center" label="管理员ID" prop="id" sortable/>
+      <el-table-column align="center" label="用户ID" prop="id" sortable/>
 
-      <el-table-column align="center" label="管理员名称" prop="username"/>
+      <el-table-column align="center" label="用户账号" prop="username"/>
+      <el-table-column align="center" label="用户姓名" prop="realname"/>
+      <el-table-column align="center" label="手机号" prop="phone"/>
+      <el-table-column align="center" label="OPENID" prop="openId"/>
 
-      <el-table-column align="center" label="管理员头像" prop="avatar">
+      <el-table-column align="center" label="用户头像" prop="avatar">
         <template slot-scope="scope">
           <img v-if="scope.row.avatar" :src="scope.row.avatar" width="40">
         </template>
       </el-table-column>
 
-      <el-table-column align="center" label="管理员类型" prop="type">
+      <el-table-column align="center" label="账号类型" prop="type">
         <template slot-scope="scope">
           <el-tag :key="scope.row.type" type="primary"> {{ formatType(scope.row.type) }} </el-tag>
         </template>
       </el-table-column>
 
-      <el-table-column align="center" label="管理员角色" prop="roleIds">
+      <el-table-column align="center" label="用户角色" prop="roleIds">
         <template slot-scope="scope">
           <el-tag v-for="roleId in scope.row.roleIds" :key="roleId" type="primary" style="margin-right: 20px;"> {{ formatRole(roleId) }} </el-tag>
         </template>
@@ -53,7 +57,7 @@
     <!-- 添加或修改对话框 -->
     <el-dialog :title="textMap[dialogStatus]" :visible.sync="dialogFormVisible">
       <el-form ref="dataForm" :rules="rules" :model="dataForm" status-icon label-position="left" label-width="100px" style="width: 400px; margin-left:50px;">
-        <el-form-item label="管理员类型" prop="type">
+        <el-form-item label="用户类型" prop="type">
           <el-select v-model="dataForm.type" placeholder="请选择">
             <el-option
               v-for="item in typeOptions"
@@ -62,13 +66,19 @@
               :value="item.value"/>
           </el-select>
         </el-form-item>
-        <el-form-item label="管理员名称" prop="username">
+        <el-form-item label="用户账号" prop="username">
           <el-input v-model="dataForm.username"/>
         </el-form-item>
-        <el-form-item label="管理员密码" prop="password">
+        <el-form-item label="用户姓名" prop="realname">
+          <el-input v-model="dataForm.realname"/>
+        </el-form-item>
+        <el-form-item label="手机号" prop="phone">
+          <el-input v-model="dataForm.phone"/>
+        </el-form-item>
+        <el-form-item v-if="dialogStatus=='create'" label="用户密码" prop="password">
           <el-input v-model="dataForm.password" type="password" auto-complete="off"/>
         </el-form-item>
-        <el-form-item label="管理员头像" prop="avatar">
+        <el-form-item label="用户头像" prop="avatar">
           <el-upload
             :headers="headers"
             :action="uploadPath"
@@ -80,7 +90,7 @@
             <i v-else class="el-icon-plus avatar-uploader-icon"/>
           </el-upload>
         </el-form-item>
-        <el-form-item label="管理员角色" prop="roleIds">
+        <el-form-item label="用户角色" prop="roleIds">
           <el-select v-model="dataForm.roleIds" multiple placeholder="请选择">
             <el-option
               v-for="item in roleOptions"
@@ -147,7 +157,8 @@ export default {
         page: 1,
         limit: 20,
         type: undefined,
-        username: undefined,
+        realname: undefined,
+        phone: undefined,
         sort: 'add_time',
         order: 'desc'
       },
@@ -155,6 +166,8 @@ export default {
         id: undefined,
         type: undefined,
         username: undefined,
+        realname: undefined,
+        phone: undefined,
         password: undefined,
         avatar: undefined,
         roleIds: []
@@ -167,12 +180,18 @@ export default {
       },
       rules: {
         username: [
-          { required: true, message: '管理员名称不能为空', trigger: 'blur' }
+          { required: true, min: 6, message: '用户账号至少6位', trigger: 'blur' }
+        ],
+        realname: [
+          { required: true, message: '用户姓名不能为空', trigger: 'blur' }
+        ],
+        phone: [
+          { required: true, min: 11, max: 11, message: '手机号格式不正确', trigger: 'blur' }
         ],
         type: [
-          { required: true, message: '管理员类型不能为空', trigger: 'blur' }
+          { required: true, message: '账号类型不能为空', trigger: 'blur' }
         ],
-        password: [{ required: true, message: '密码不能为空', trigger: 'blur' }]
+        password: [{ required: true, min: 6, message: '密码长度至少6位', trigger: 'blur' }]
       },
       typeOptions: [{
         value: 1,
@@ -238,6 +257,8 @@ export default {
       this.dataForm = {
         id: undefined,
         username: undefined,
+        realname: undefined,
+        phone: undefined,
         password: undefined,
         avatar: undefined,
         roleIds: []
@@ -263,7 +284,7 @@ export default {
               this.dialogFormVisible = false
               this.$notify.success({
                 title: '成功',
-                message: '添加管理员成功'
+                message: '添加用户成功'
               })
             })
             .catch(response => {
@@ -298,7 +319,7 @@ export default {
               this.dialogFormVisible = false
               this.$notify.success({
                 title: '成功',
-                message: '更新管理员成功'
+                message: '更新用户成功'
               })
             })
             .catch(response => {
@@ -311,7 +332,7 @@ export default {
       })
     },
     handleDelete(row) {
-      this.$confirm('确定要删除当前管理员吗?', '提示', {
+      this.$confirm('确定要删除当前用户吗?', '提示', {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
         type: 'warning'
@@ -320,7 +341,7 @@ export default {
           .then(response => {
             this.$notify.success({
               title: '成功',
-              message: '删除管理员成功'
+              message: '删除用户成功'
             })
             const index = this.list.indexOf(row)
             this.list.splice(index, 1)
@@ -336,13 +357,13 @@ export default {
     handleDownload() {
       this.downloadLoading = true
       import('@/vendor/Export2Excel').then(excel => {
-        const tHeader = ['管理员ID', '管理员名称', '管理员头像']
-        const filterVal = ['id', 'username', 'avatar']
+        const tHeader = ['用户ID', '用户账号', '用户姓名', '手机号', '用户头像']
+        const filterVal = ['id', 'username', 'realname', 'phone', 'avatar']
         excel.export_json_to_excel2(
           tHeader,
           this.list,
           filterVal,
-          '管理员信息'
+          '用户信息'
         )
         this.downloadLoading = false
       })

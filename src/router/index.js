@@ -282,7 +282,7 @@ export const asyncRouterMap = [
     ]
   },
 
-  {
+  /*{
     path: '/goods',
     component: Layout,
     redirect: 'noredirect',
@@ -335,7 +335,7 @@ export const asyncRouterMap = [
         }
       }
     ]
-  },
+  },*/
 
   {
     path: '/stockInfo',
@@ -344,7 +344,7 @@ export const asyncRouterMap = [
     alwaysShow: true,
     name: 'stockInfoManage',
     meta: {
-      title: '朝菜猫商品管理',
+      title: '商品管理',
       icon: 'goods'
     },
     children: [
@@ -386,6 +386,29 @@ export const asyncRouterMap = [
         meta: {
           perms: ['GET /admin/comment/list', 'POST /admin/comment/delete'],
           title: '商品评论',
+          noCache: true
+        }
+      }
+    ]
+  },
+  {
+    path: '/line',
+    component: Layout,
+    redirect: 'noredirect',
+    alwaysShow: true,
+    name: 'lineManage',
+    meta: {
+      title: '线路管理',
+      icon: 'goods'
+    },
+    children: [
+      {
+        path: 'list',
+        component: () => import('@/views/line/line'),
+        name: 'lineList',
+        meta: {
+          perms: ['POST /admin/line/delete', 'GET /admin/line/list', 'POST /admin/line/update', 'POST /admin/line/create'],
+          title: '线路列表',
           noCache: true
         }
       }
@@ -526,7 +549,7 @@ export const asyncRouterMap = [
         name: 'admin',
         meta: {
           perms: ['GET /admin/admin/list', 'POST /admin/admin/create', 'POST /admin/admin/update', 'POST /admin/admin/delete'],
-          title: '管理员',
+          title: '系统用户',
           noCache: true
         }
       },

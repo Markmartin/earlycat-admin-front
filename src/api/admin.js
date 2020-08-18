@@ -40,3 +40,10 @@ export function deleteAdmin(data) {
   })
 }
 
+export function allAdmin() {
+  return request({
+    url: '/admin/all',
+    method: 'get'
+  })
+}
+
