@@ -73,7 +73,6 @@
             prefix-icon="el-icon-search"
             class="inline-input"
             v-model="dataForm.contact"
-            value-key="realname"
             :fetch-suggestions="querySearch"
             placeholder="请输入姓名"
             @select="handleSelect"
@@ -153,6 +152,8 @@ export default {
       list: null,
       total: 0,
       listLoading: true,
+      dialogStatus: '',
+      downloadLoading: false,
       listQuery: {
         page: 1,
         limit: 20,
@@ -191,13 +192,16 @@ export default {
   methods: {
     querySearch(queryString, cb) {
       var restaurants = this.restaurants;
+      for(let i = 0; i < restaurants.length; i++) {
+        restaurants[i].value = restaurants[i].realname+'';
+      }
       var results = queryString ? restaurants.filter(this.createFilter(queryString)) : restaurants;
       // 调用 callback 返回建议列表的数据
       cb(results);
     },
     createFilter(queryString) {
       return (restaurant) => {
-        return (restaurant.realname.toLowerCase().indexOf(queryString.toLowerCase()) === 0);
+        return (restaurant.value.toLowerCase().indexOf(queryString.toLowerCase()) > -1);
       };
     },
     handleSelect(item) {
