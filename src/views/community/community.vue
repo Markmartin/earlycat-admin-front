@@ -62,7 +62,7 @@
 
       <el-table-column align="center" label="操作" min-width="200" class-name="small-padding fixed-width">
         <template slot-scope="scope">
-          <el-button v-permission="['GET /admin/community/read']" type="primary" size="mini" @click="showWxCode(scope.row)">小程序码</el-button>
+          <!--<el-button v-permission="['GET /admin/community/read']" type="primary" size="mini" @click="showWxCode(scope.row)">小程序码</el-button>-->
           <el-button v-permission="['POST /admin/community/update']" type="primary" size="mini" @click="handleUpdate(scope.row)">编辑</el-button>
           <el-button v-permission="['POST /admin/community/delete']" type="danger" size="mini" @click="handleDelete(scope.row)">删除</el-button>
         </template>
@@ -187,7 +187,7 @@
             <i v-else class="el-icon-plus avatar-uploader-icon"/>
           </el-upload>
         </el-form-item> -->
-        <el-form-item label="群组名" prop="weixinWorkGroupId">
+        <!--<el-form-item label="群组名" prop="weixinWorkGroupId">
           <el-select
             v-model="wxworkAdmin"
             :remote-method="wxworkMethod"
@@ -206,7 +206,7 @@
               :label="item.groupName"
               :value="item"/>
           </el-select>
-        </el-form-item>
+        </el-form-item>-->
         <!-- <el-form-item label="二维码有效期">
           <el-date-picker
             v-model="dataForm.wechatGroupExpiredTime"
