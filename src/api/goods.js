@@ -63,7 +63,6 @@ export function getPresellListByParam(data, page, limit) {
 
 //删除预售及预售物品
 export function deletePresellById(id) {
-  debugger
   return request({
     url: '/zcmpresell/deletePresell',
     method: 'get',
@@ -73,11 +72,19 @@ export function deletePresellById(id) {
 
 //查询所有预售物品
 export function getPressGoodsList(acStatus) {
-  debugger
   return request({
     url: '/goods/queryAllList',
     method: 'get',
     params: { acStatus }
+  })
+}
+
+//查询预售项目绑定的所有预售物品
+export function getPresellItemsByPid(id) {
+  return request({
+    url: '/zcmpresell/getPresellItemsByPid',
+    method: 'get',
+    params: { id }
   })
 }
 
