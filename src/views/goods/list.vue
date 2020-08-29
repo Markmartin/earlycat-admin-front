@@ -21,6 +21,9 @@
       <el-select v-model="listQuery.isOnSale" clearable style="width: 200px" class="filter-item" placeholder="请选择售货状态">
         <el-option v-for="type in isOnSaleOptions" :key="type.value" :label="type.label" :value="type.value"/>
       </el-select>
+      <el-select v-model="listQuery.acStatus" clearable style="width: 200px" class="filter-item" placeholder="请选择预售状态">
+        <el-option v-for="type in isPressOption" :key="type.value" :label="type.label" :value="type.value"/>
+      </el-select>
       <el-button v-permission="['GET /admin/goods/list']" class="filter-item" type="primary" icon="el-icon-search" @click="handleFilter">查找</el-button>
       <el-button v-permission="['POST /admin/goods/create']" class="filter-item" type="primary" icon="el-icon-edit" @click="handleCreate">添加</el-button>
       <el-button v-permission="['GET /admin/goods/list']" :loading="downloadLoading" class="filter-item" type="primary" icon="el-icon-download" @click="handleDownload">导出</el-button>
@@ -83,6 +86,12 @@
       <el-table-column align="center" label="专柜价格" prop="counterPrice"/>
 
       <el-table-column align="center" label="当前价格" prop="retailPrice"/>
+
+      <el-table-column align="center" label="预售类型" prop="acStatus">
+        <template slot-scope="scope">
+          <el-tag>{{ scope.row.acStatus == 1? '预售' : '非预售' }}</el-tag>
+        </template>
+      </el-table-column>
 
       <el-table-column align="center" label="是否新品" prop="isNew">
         <template slot-scope="scope">
@@ -167,6 +176,20 @@ export default {
   components: { BackToTop, Pagination },
   data() {
     return {
+      isPressOption: [
+        {
+          label: '非预售',
+          value: 0
+        },
+        {
+          label: '预售',
+          value: 1
+        },
+        {
+          label: '其他',
+          value: 2
+        }
+      ],
       isNewOptions: [
         {
           label: '新品',
@@ -217,6 +240,7 @@ export default {
       listLoading: true,
       listQuery: {
         isOnSale: '',
+        acStatus: undefined,
         categoryId: undefined,
         brandId: undefined,
         page: 1,

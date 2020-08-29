@@ -46,3 +46,38 @@ export function listCatAndBrand() {
     method: 'get'
   })
 }
+
+//获取预售列表
+export function getPresellListByParam(data, page, limit) {
+  return request({
+    url: `/zcmpresell/getPresellList`,
+    headers: { 'Content-Type': 'application/json' },
+    method: 'post',
+    params: {
+      'page': page,
+      'limit': limit
+    },
+    data
+  })
+}
+
+//删除预售及预售物品
+export function deletePresellById(id) {
+  debugger
+  return request({
+    url: '/zcmpresell/deletePresell',
+    method: 'get',
+    params: { id }
+  })
+}
+
+//查询所有预售物品
+export function getPressGoodsList(acStatus) {
+  debugger
+  return request({
+    url: '/goods/queryAllList',
+    method: 'get',
+    params: { acStatus }
+  })
+}
+

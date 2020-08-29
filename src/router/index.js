@@ -333,6 +333,16 @@ export const asyncRouterMap = [
           title: '商品评论',
           noCache: true
         }
+      },
+      {
+        path: 'presell',
+        component: () => import('@/views/goods/presell'),
+        name: 'goodsPresell',
+        meta: {
+          perms: ['GET /admin/comment/list', 'POST /admin/comment/delete'],
+          title: '预售管理',
+          noCache: true
+        }
       }
     ]
   },
