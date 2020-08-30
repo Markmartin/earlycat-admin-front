@@ -339,10 +339,21 @@ export const asyncRouterMap = [
         component: () => import('@/views/goods/presell'),
         name: 'goodsPresell',
         meta: {
-          perms: ['GET /admin/comment/list', 'POST /admin/comment/delete'],
+          perms: ['GET /admin/presell/list', 'POST /admin/presell/delete'],
           title: '预售管理',
           noCache: true
         }
+      },
+      {
+        path: 'presellItems',
+        component: () => import('@/views/goods/presellItems'),
+        name: 'presellItems',
+        meta: {
+          perms: ['POST /admin/presell/list'],
+          title: '预售物品',
+          noCache: true
+        },
+        hidden: true
       }
     ]
   },

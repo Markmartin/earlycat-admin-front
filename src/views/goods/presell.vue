@@ -13,15 +13,22 @@
 
     <!-- 查询结果 -->
     <el-table v-loading="listLoading" :data="list" element-loading-text="正在查询中。。。" border fit highlight-current-row>
-      <el-table-column align="center" label="标题" prop="title"/>
-      <el-table-column align="center" label="副标题" prop="subtitle"/>
+      <el-table-column align="center" label="标题"  prop="title"/>
+      <el-table-column align="center" label="副标题"  prop="subtitle"/>
       <el-table-column align="center" label="开始时间" width="160" prop="startTime"/>
       <el-table-column align="center" label="结束时间"  width="160" prop="endTime"/>
-      <el-table-column align="center" label="状态" prop="acStatus"/>
-      <el-table-column align="center" label="配送日期" width="100" prop="deliveryTime"/>
-      <el-table-column align="center" label="操作" width="250" class-name="small-padding fixed-width">
+      <el-table-column align="center" label="状态" width="80"  prop="acStatus">
+        <template slot-scope="scope">
+          <span v-if="scope.row.acStatus == 0">未开始</span>
+          <span v-if="scope.row.acStatus == 1">已开始</span>
+          <span v-if="scope.row.acStatus == 2">已结束</span>
+        </template>
+      </el-table-column>
+      <el-table-column align="center" label="配送日期" width="120" prop="deliveryTime"/>
+      <el-table-column align="center" fixed ="right" label="操作" width="270" class-name="small-padding fixed-width">
         <template slot-scope="scope">
           <el-button v-permission="['POST /admin/zcmpresell/update']" type="primary" size="mini" @click="handleUpdate(scope.row)">编辑</el-button>
+          <el-button v-permission="['POST /admin/zcmpresell/update']" type="primary" size="small" @click="handleItemGoods(scope.row)">编辑预售物品</el-button>
           <el-button v-permission="['POST /admin/zcmpresell/delete']" type="danger" size="mini" @click="handleDelete(scope.row)">删除</el-button>
         </template>
       </el-table-column>
@@ -40,15 +47,25 @@
         <el-form-item label="开始时间" prop="startTime">
           <el-date-picker
             v-model="dataForm.startTime"
+            value-format="yyyy-MM-dd HH:mm:ss"
             type="datetime"
-            placeholder="请选择日期时间">
+            placeholder="请选择开始日期时间">
           </el-date-picker>
         </el-form-item>
-        <el-form-item label="结束时间" prop="startTime">
+        <el-form-item label="结束时间" prop="endTime">
           <el-date-picker
             v-model="dataForm.endTime"
+            value-format="yyyy-MM-dd HH:mm:ss"
             type="datetime"
-            placeholder="请选择日期时间">
+            placeholder="请选择结束日期时间">
+          </el-date-picker>
+        </el-form-item>
+        <el-form-item label="配送日期" prop="deliveryTime">
+          <el-date-picker
+            v-model="dataForm.deliveryTime"
+            value-format="yyyy-MM-dd"
+            type="date"
+            placeholder="请选择配送日期">
           </el-date-picker>
         </el-form-item>
         <el-form-item label="活动状态" prop="acStatus">
@@ -109,7 +126,7 @@
 </style>
 
 <script>
-import { getPresellListByParam, deletePresellById, getPressGoodsList } from '@/api/goods'
+import { getPresellListByParam, deletePresellById, getPressGoodsList ,saveOrUpdatePresell} from '@/api/goods'
 import { uploadPath } from '@/api/storage'
 import { getToken } from '@/utils/auth'
 import Pagination from '@/components/Pagination' // Secondary package based on el-pagination
@@ -136,7 +153,6 @@ export default {
       selectDate:'',
       uploadPath,
       list: [],
-      presellGoodsList: [],
       listLoading: true,
       total: 0,
       catL1: {},
@@ -161,6 +177,7 @@ export default {
         update: '编辑',
         create: '创建'
       },
+
       rules: {
         name: [{ required: true, message: '类目名不能为空', trigger: 'blur' }]
       }
@@ -175,7 +192,6 @@ export default {
   },
   created() {
     this.getList()
-    this.getPressGoodsList()
   },
   methods: {
     getList() {
@@ -190,23 +206,15 @@ export default {
         this.listLoading = false
       })
     },
-    getPressGoodsList() {
-      let acstatus = 1 ;
-      getPressGoodsList(acstatus).then(response => {
-        this.presellGoodsList = response.data.data.list
-      })
-    },
-
     resetForm() {
       this.dataForm = {
         id: undefined,
-        name: '',
-        keywords: '',
-        level: 'L2',
-        pid: 0,
-        desc: '',
-        iconUrl: '',
-        picUrl: ''
+        title: '',
+        subtitle: '',
+        startTime: undefined,
+        endTime: undefined,
+        acStatus: 0,
+        url: ''
       }
     },
     onLevelChange: function(value) {
@@ -236,13 +244,10 @@ export default {
     },
     createData() {
       this.$refs['dataForm'].validate(valid => {
-        debugger
         if (valid) {
-          createCategory(this.dataForm)
+          saveOrUpdatePresell(this.dataForm)
             .then(response => {
               this.getList()
-              // 更新L1目录
-              this.getCatL1()
               this.dialogFormVisible = false
               this.$notify.success({
                 title: '成功',
@@ -256,6 +261,7 @@ export default {
               })
             })
         }
+        this.getList();
       })
     },
     handleFilter() {
@@ -272,18 +278,14 @@ export default {
     },
     updateData() {
       this.$refs['dataForm'].validate(valid => {
-        debugger
         if (valid) {
-          updateCategory(this.dataForm)
-            .then(() => {
-              this.getList()
+          saveOrUpdatePresell(this.dataForm).then(() => {
               this.dialogFormVisible = false
               this.$notify.success({
                 title: '成功',
                 message: '更新成功'
               })
-            })
-            .catch(response => {
+            }).catch(response => {
               this.$notify.error({
                 title: '失败',
                 message: response.data.errmsg
@@ -291,9 +293,9 @@ export default {
             })
         }
       })
+      this.getList();
     },
     handleDelete(row) {
-      debugger
       deletePresellById(row.id).then(response => {
         this.$notify({
           title: '成功',
@@ -304,7 +306,11 @@ export default {
         const index = this.list.indexOf(row)
         this.list.splice(index, 1)
       })
-    }
+    },
+
+    handleItemGoods(row) {
+      this.$router.push({ path: '/goods/presellItems', query: { id: row.id }})
+    },
   }
 }
 </script>
