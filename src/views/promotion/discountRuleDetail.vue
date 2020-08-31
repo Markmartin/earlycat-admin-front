@@ -39,29 +39,28 @@
 
     <!-- 添加或修改对话框 -->
     <el-dialog :title="textMap[dialogStatus]" :visible.sync="dialogFormVisible">
-      <el-form ref="dataForm" :rules="rules" :model="dataForm" status-icon label-position="left" label-width="100px"
-               style="width: 400px; margin-left:50px;">
+      <el-form ref="dataForm" :rules="rules" :model="dataForm" status-icon label-position="left" label-width="100px" style="width: 400px; margin-left:50px;">
         <el-form-item label="规则类型" prop="type">
           <el-select v-model="dataForm.type" placeholder="赠送物品">
             <el-option v-for="type in discountOption" :key="type.value" :label="type.label" :value="type.value"/>
           </el-select>
         </el-form-item>
-        <el-form-item label="达标金额" prop="limitAmount">
+        <el-form-item label="达标金额" prop="limitAmount" v-show ="dataForm.type === 1 || dataForm.type === 2 || dataForm.type === 3 ">
           <el-input v-model="dataForm.limitAmount" placeholder="0.00">
             <template slot="append">元</template>
           </el-input>
         </el-form-item>
-        <el-form-item label="立减金额" prop="reduceAmount">
+        <el-form-item label="立减金额" prop="reduceAmount" v-show ="dataForm.type === 1">
           <el-input v-model="dataForm.reduceAmount" placeholder="0.00">
             <template slot="append">元</template>
           </el-input>
         </el-form-item>
-        <el-form-item label="赠送物品" prop="goodsId">
+        <el-form-item label="赠送物品" prop="goodsId" v-show ="dataForm.type === 2">
           <el-select v-model="dataForm.goodsId" placeholder="赠送物品">
             <el-option v-for="item in presellGoodsList" :key="item.id" :label="item.name" :value="item.id"/>
           </el-select>
         </el-form-item>
-        <el-form-item label="数量" prop="count">
+        <el-form-item label="数量" prop="count" v-show ="dataForm.type === 1 || dataForm.type === 2 || dataForm.type === 3 ">
           <el-input v-model="dataForm.count"/>
         </el-form-item>
       </el-form>
@@ -154,8 +153,10 @@
           create: '创建'
         },
         rules: {
-          type: [{ required: true, message: '规则类型不能为空', trigger: 'blur' }],
-          limitAmount: [{ required: true, message: '达标金额不能为空', trigger: 'blur' }]
+          // type: [{ required: true, message: '规则类型不能为空', trigger: 'blur' }],
+          // limitAmount: [{ required: true, message: '达标金额不能为空', trigger: 'blur' }],
+          // goodsId: [{ required: this.goodsShow, message: '赠送物品不能为空', trigger: 'blur' }],
+          // reduceAmount: [{ required: this.limitAmountShow, message: '立减金额不能为空', trigger: 'blur' }]
         }
       }
     },
@@ -164,6 +165,12 @@
         return {
           'X-Wali-Token': getToken()
         }
+      },
+      goodsShow(){
+        return this.dataForm.type === 2
+      },
+      limitAmountShow(){
+        return dataForm.type === 1
       }
     },
     created() {
