@@ -126,7 +126,7 @@
 </style>
 
 <script>
-import { getPresellListByParam, deletePresellById, getPressGoodsList ,saveOrUpdatePresell} from '@/api/goods'
+import { getPresellListByParam, deletePresellById, saveOrUpdatePresell} from '@/api/goods'
 import { uploadPath } from '@/api/storage'
 import { getToken } from '@/utils/auth'
 import Pagination from '@/components/Pagination' // Secondary package based on el-pagination
@@ -150,12 +150,10 @@ export default {
           value: 2
         }
       ],
-      selectDate:'',
       uploadPath,
       list: [],
       listLoading: true,
       total: 0,
-      catL1: {},
       listQuery: {
         page: 1,
         limit: 20,
@@ -179,7 +177,10 @@ export default {
       },
 
       rules: {
-        name: [{ required: true, message: '类目名不能为空', trigger: 'blur' }]
+        title: [{ required: true, message: '标题不能为空', trigger: 'blur' }],
+        startTime: [{ required: true, message: '开始时间不能为空', trigger: 'blur' }],
+        endTime: [{ required: true, message: '结束时间不能为空', trigger: 'blur' }],
+        deliveryTime: [{ required: true, message: '配送日期不能为空', trigger: 'blur' }]
       }
     }
   },
@@ -217,11 +218,6 @@ export default {
         url: ''
       }
     },
-    onLevelChange: function(value) {
-      if (value === 'L1') {
-        this.dataForm.pid = 0
-      }
-    },
     handleCreate() {
       this.resetForm()
       this.dialogStatus = 'create'
@@ -232,15 +228,6 @@ export default {
     },
     uploadUrl: function(response) {
       this.dataForm.url = response.data.url
-    },
-    dateChange() {
-      if (this.pickerDate == null) {
-        this.dataForm.startTime = ''
-        this.dataForm.endTime = ''
-      } else {
-        this.listQuery.startTime = this.selectDate[0]
-        this.listQuery.startTime = this.selectDate[1]
-      }
     },
     createData() {
       this.$refs['dataForm'].validate(valid => {
