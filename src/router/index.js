@@ -496,6 +496,27 @@ export const asyncRouterMap = [
           title: '收益管理',
           noCache: true
         }
+      },
+      {
+        path: 'discountRule',
+        component: () => import('@/views/promotion/discountRule'),
+        name: 'discountRule',
+        meta: {
+          perms: ['GET /admin/income/list'],
+          title: '优惠规则',
+          noCache: true
+        }
+      },
+      {
+        path: 'discountRuleDetail',
+        component: () => import('@/views/promotion/discountRuleDetail'),
+        name: 'discountRuleDetail',
+        meta: {
+          perms: ['POST /admin/income/list'],
+          title: '优惠规则详情',
+          noCache: true
+        },
+        hidden: true
       }
     ]
   },
