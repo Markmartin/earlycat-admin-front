@@ -17,7 +17,7 @@
           </el-col>
         </el-row>
         <el-row>
-          <el-col :span="8">
+          <el-col :span="6">
             <el-form-item label="上架类型">
               <el-select v-model="goods.saleType" placeholder="请选择">
                 <el-option
@@ -29,12 +29,24 @@
               </el-select>
             </el-form-item>
           </el-col>
-          <el-col :span="8">
+          <el-col :span="6">
+            <el-form-item label="物品类型">
+              <el-select v-model="goods.acStatus" placeholder="请选择">
+                <el-option
+                  v-for="item in presellOptions"
+                  :key="item.value"
+                  :label="item.label"
+                  :value="item.value">
+                </el-option>
+              </el-select>
+            </el-form-item>
+          </el-col>
+          <el-col :span="6">
             <el-form-item label="所属分类">
               <el-cascader :options="categoryList" v-model="categoryIds" expand-trigger="hover" @change="handleCategoryChange"/>
             </el-form-item>
           </el-col>
-          <el-col :span="8">
+          <el-col :span="6">
             <el-form-item label="所属品牌商">
               <el-select v-model="goods.brandId">
                 <el-option v-for="item in brandList" :key="item.value" :label="item.label" :value="item.value"/>
@@ -149,10 +161,10 @@
             </el-form-item>
           </el-col>
           <el-col :span="6">
-            <el-form-item label="是否热卖" prop="isHot">
+            <el-form-item label="是否推荐" prop="isHot">
               <el-radio-group v-model="goods.isHot">
-                <el-radio :label="false">普通</el-radio>
-                <el-radio :label="true">热卖</el-radio>
+                <el-radio :label="false">不推荐</el-radio>
+                <el-radio :label="true">推荐</el-radio>
               </el-radio-group>
             </el-form-item>
           </el-col>
@@ -562,6 +574,26 @@ export default {
 
   data() {
     return {
+      presellOptions: [{
+        value: 0,
+        label: '非预售'
+      }, {
+        value: 1,
+        label: '预售'
+      }],
+      onlineOptions: [{
+        value: 1,
+        label: '小程序上线'
+      }, {
+        value: 2,
+        label: '小程序&微菜场上线'
+      }, {
+        value: 3,
+        label: '微菜场上线'
+      }, {
+        value: 4,
+        label: '下线'
+      }],
       communityLoading: false,
       communityList: [],
       uploadPath,

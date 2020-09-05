@@ -120,15 +120,15 @@
           return
         }
         this.listQuery.id = this.$route.query.id;
-        this.listLoading = true
+        this.listLoading = true;
           getPresellItemList(this.listQuery.id,this.listQuery.page,this.listQuery.limit).then(response => {
-          this.list = response.data.data
-          this.total = response.data.data.length
+            this.list = response.data.data.itemVos;
+            this.total = response.data.data.total;
           this.listLoading = false
         }).catch(() => {
-          this.list = []
-          this.total = 0
-          this.listLoading = false
+          this.list = [];
+          this.total = 0;
+          this.listLoading = false;
         })
       },
       getPressGoodsList() {
