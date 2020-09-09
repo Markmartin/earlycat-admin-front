@@ -27,6 +27,14 @@
 
       <el-table-column align="center" label="关键字" prop="keywords"/>
 
+      <el-table-column align="center" label="展示类型" prop="saleType">
+        <template slot-scope="scope">
+          <span v-if="scope.row.saleType == 1">线上</span>
+          <span v-if="scope.row.saleType == 2">线下</span>
+          <span v-if="scope.row.saleType == 3">线上&线下</span>
+        </template>
+      </el-table-column>
+
       <el-table-column align="center" min-width="100" label="简介" prop="desc"/>
 
       <el-table-column align="center" label="级别" prop="level">
@@ -56,6 +64,11 @@
           <el-select v-model="dataForm.level" @change="onLevelChange">
             <el-option label="一级类目" value="L1"/>
             <el-option label="二级类目" value="L2"/>
+          </el-select>
+        </el-form-item>
+        <el-form-item label="展示类型" prop="saleType">
+          <el-select v-model="dataForm.saleType"  placeholder="请选择展示类型">
+            <el-option v-for="item in saleTypeOption" :key="item.value" :label="item.label" :value="item.value"/>
           </el-select>
         </el-form-item>
         <el-form-item v-if="dataForm.level === 'L2'" label="父类目" prop="pid">
@@ -139,6 +152,20 @@ export default {
   name: 'Category',
   data() {
     return {
+      saleTypeOption: [
+        {
+          label: '线上',
+          value: 1
+        },
+        {
+          label: '线下',
+          value: 2
+        },
+        {
+          label: '线上&线下',
+          value: 3
+        }
+      ],
       uploadPath,
       list: [],
       listLoading: true,
