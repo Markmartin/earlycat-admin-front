@@ -58,7 +58,7 @@
         </template>
       </el-table-column>
 
-      <el-table-column align="center" label="商品编号" prop="goodsSn"/>
+<!--      <el-table-column align="center" label="商品编号" prop="goodsSn"/>-->
 
       <el-table-column align="center" min-width="100" label="名称" prop="name"/>
 

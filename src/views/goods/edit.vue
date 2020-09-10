@@ -126,26 +126,26 @@
           </el-col>
         </el-row>
         <el-row>
-          <el-col :span="6">
-            <el-form-item label="商品编号" prop="goodsSn">
-              <el-input v-model="goods.goodsSn"/>
-            </el-form-item>
-          </el-col>
-          <el-col :span="6">
+<!--          <el-col :span="6">-->
+<!--            <el-form-item label="商品编号" prop="goodsSn">-->
+<!--              <el-input v-model="goods.goodsSn"/>-->
+<!--            </el-form-item>-->
+<!--          </el-col>-->
+          <el-col :span="8">
             <el-form-item label="专柜价格" prop="counterPrice">
               <el-input v-model="goods.counterPrice" placeholder="0.00">
                 <template slot="append">元</template>
               </el-input>
             </el-form-item>
           </el-col>
-          <el-col :span="6">
+          <el-col :span="8">
             <el-form-item label="当前价格" prop="retailPrice">
               <el-input v-model="goods.retailPrice" placeholder="0.00">
                 <template slot="append">元</template>
               </el-input>
             </el-form-item>
           </el-col>
-          <el-col :span="6">
+          <el-col :span="8">
             <el-form-item label="限购数量" prop="limit">
               <el-input v-model="goods.limit"/>
             </el-form-item>
