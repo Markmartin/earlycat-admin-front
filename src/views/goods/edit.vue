@@ -30,7 +30,7 @@
             </el-form-item>
           </el-col>
           <el-col :span="6">
-            <el-form-item label="物品类型" >
+            <el-form-item label="限时类型" >
               <el-select v-model="goods.acStatus" placeholder="请选择">
                 <el-option
                   v-for="item in presellOptions"
@@ -216,12 +216,12 @@
             </el-form-item>
           </el-col>
           <el-col :span="8">
-            <el-form-item label="报货规格" prop="cargoSpec">
+            <el-form-item label="报货规格" prop="cargoSpec" v-show="goods.isCargo ==true">
               <el-input v-model="goods.cargoSpec"/>
             </el-form-item>
           </el-col>
           <el-col :span="8">
-            <el-form-item label="报货说明" prop="cargoRemark">
+            <el-form-item label="报货说明" prop="cargoRemark" v-show="goods.isCargo ==true">
               <el-input v-model="goods.cargoRemark"/>
             </el-form-item>
           </el-col>
@@ -533,10 +533,13 @@ export default {
     return {
       presellOptions: [{
         value: 0,
-        label: '非预售'
+        label: '正常'
       }, {
         value: 1,
         label: '预售'
+      }, {
+        value: 2,
+        label: '限时特价'
       }],
       onlineOptions: [{
         value: 1,

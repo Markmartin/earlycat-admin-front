@@ -3,7 +3,7 @@
 
     <!-- 查询和其他操作 -->
     <div class="filter-container">
-      <el-button v-permission="['POST /admin/presell/create']" class="filter-item" type="primary" icon="el-icon-edit" @click="handleCreate">添加预售物品</el-button>
+      <el-button v-permission="['POST /admin/presell/create']" class="filter-item" type="primary" icon="el-icon-edit" @click="handleCreate">添加限时销售物品</el-button>
     </div>
 
     <!-- 查询结果 -->
@@ -132,7 +132,15 @@
         })
       },
       getPressGoodsList() {
-        let acstatus = 1 ;
+        let acstatus ;
+        if(this.$route.query.type == null){
+          return
+        }
+        if(this.$route.query.type == 0){
+          acstatus = 1;
+        }else if(this.$route.query.type == 1){
+          acstatus = 2;
+        }
         getPressGoodsList(acstatus).then(response => {
           this.presellGoodsList = response.data.data.list
         })
