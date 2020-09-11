@@ -268,11 +268,13 @@ export default {
         if (valid) {
           saveOrUpdatePresell(this.dataForm).then(() => {
               this.dialogFormVisible = false
+              this.getList();
               this.$notify.success({
                 title: '成功',
                 message: '更新成功'
               })
             }).catch(response => {
+            this.getList();
               this.$notify.error({
                 title: '失败',
                 message: response.data.errmsg
@@ -284,6 +286,7 @@ export default {
     },
     handleDelete(row) {
       deletePresellById(row.id).then(response => {
+        this.getList();
         this.$notify({
           title: '成功',
           message: '删除成功',

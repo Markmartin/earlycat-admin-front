@@ -160,13 +160,14 @@
           if (valid) {
             debugger
             saveOrUpdatePresellItem(this.dataForm).then(response => {
-                this.init()
+              this.init();
                 this.dialogFormVisible = false
                 this.$notify.success({
                   title: '成功',
                   message: '创建成功'
                 })
               }).catch(response => {
+              this.init();
                 this.$notify.error({
                   title: '失败',
                   message: response.data.errmsg
@@ -194,11 +195,13 @@
           if (valid) {
             saveOrUpdatePresellItem(this.dataForm).then(() => {
               this.dialogFormVisible = false
+              this.init();
               this.$notify.success({
                 title: '成功',
                 message: '替换成功'
               })
             }).catch(response => {
+              this.init();
               this.$notify.error({
                 title: '失败',
                 message: response.data.errmsg
@@ -206,10 +209,10 @@
             })
           }
         })
-        this.init();
       },
       handleDelete(row) {
         deletePresellItemById(row.id).then(response => {
+          this.init();
           this.$notify({
             title: '移除成功',
             message: '移除成功',
@@ -219,6 +222,7 @@
           const index = this.list.indexOf(row)
           this.list.splice(index, 1)
         }).catch(response => {
+          this.init();
           this.$notify.error({
             title: '移除失败',
             message: response.data.errmsg
