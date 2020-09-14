@@ -6,19 +6,19 @@
       <el-form ref="goods" :rules="rules" :model="goods" label-width="150px">
         <el-row>
           <el-col :span="12">
-            <el-form-item label="小程序标题" prop="title">
+            <el-form-item label="标题" prop="title">
               <el-input v-model="goods.title"/>
             </el-form-item>
           </el-col>
           <el-col :span="12">
-            <el-form-item label="小程序副标题" prop="subtitle">
+            <el-form-item label="副标题" prop="subtitle">
               <el-input v-model="goods.subtitle"/>
             </el-form-item>
           </el-col>
         </el-row>
         <el-row>
           <el-col :span="6">
-            <el-form-item label="上架类型">
+            <el-form-item label="上架类型" prop="saleType">
               <el-select v-model="goods.saleType" placeholder="请选择">
                 <el-option
                   v-for="item in onlineOptions"
@@ -30,7 +30,7 @@
             </el-form-item>
           </el-col>
           <el-col :span="6">
-            <el-form-item label="物品类型">
+            <el-form-item label="限时类型" >
               <el-select v-model="goods.acStatus" placeholder="请选择">
                 <el-option
                   v-for="item in presellOptions"
@@ -42,7 +42,7 @@
             </el-form-item>
           </el-col>
           <el-col :span="6">
-            <el-form-item label="所属分类">
+            <el-form-item label="所属分类" prop="categoryId">
               <el-cascader :options="categoryList" v-model="categoryIds" expand-trigger="hover" @change="handleCategoryChange"/>
             </el-form-item>
           </el-col>
@@ -126,26 +126,26 @@
           </el-col>
         </el-row>
         <el-row>
-          <el-col :span="6">
-            <el-form-item label="商品编号" prop="goodsSn">
-              <el-input v-model="goods.goodsSn"/>
-            </el-form-item>
-          </el-col>
-          <el-col :span="6">
+<!--          <el-col :span="6">-->
+<!--            <el-form-item label="商品编号" prop="goodsSn">-->
+<!--              <el-input v-model="goods.goodsSn"/>-->
+<!--            </el-form-item>-->
+<!--          </el-col>-->
+          <el-col :span="8">
             <el-form-item label="专柜价格" prop="counterPrice">
               <el-input v-model="goods.counterPrice" placeholder="0.00">
                 <template slot="append">元</template>
               </el-input>
             </el-form-item>
           </el-col>
-          <el-col :span="6">
+  <!--        <el-col :span="8">
             <el-form-item label="当前价格" prop="retailPrice">
               <el-input v-model="goods.retailPrice" placeholder="0.00">
                 <template slot="append">元</template>
               </el-input>
             </el-form-item>
-          </el-col>
-          <el-col :span="6">
+          </el-col>-->
+          <el-col :span="8">
             <el-form-item label="限购数量" prop="limit">
               <el-input v-model="goods.limit"/>
             </el-form-item>
@@ -216,19 +216,19 @@
             </el-form-item>
           </el-col>
           <el-col :span="8">
-            <el-form-item label="报货规格" prop="cargoSpec">
+            <el-form-item label="报货规格" prop="cargoSpec" v-show="goods.isCargo ==true">
               <el-input v-model="goods.cargoSpec"/>
             </el-form-item>
           </el-col>
           <el-col :span="8">
-            <el-form-item label="报货说明" prop="cargoRemark">
+            <el-form-item label="报货说明" prop="cargoRemark" v-show="goods.isCargo ==true">
               <el-input v-model="goods.cargoRemark"/>
             </el-form-item>
           </el-col>
         </el-row>
         <el-row>
           <el-col :span="24">
-            <el-form-item label="商品图片">
+            <el-form-item label="商品图片" >
               <el-upload
                 :headers="headers"
                 :action="uploadPath"
@@ -533,10 +533,13 @@ export default {
     return {
       presellOptions: [{
         value: 0,
-        label: '非预售'
+        label: '正常'
       }, {
         value: 1,
         label: '预售'
+      }, {
+        value: 2,
+        label: '限时特价'
       }],
       onlineOptions: [{
         value: 1,
@@ -587,11 +590,14 @@ export default {
       rebateForm: { orders: '', value: '' },
       rebates: [],
       rules: {
-        goodsSn: [
-          { required: true, message: '商品编号不能为空', trigger: 'blur' }
-        ],
-        name: [{ required: true, message: '商品名称不能为空', trigger: 'blur' }],
-        saleType:  [{ required: true, message: '商家类型不能为空！', trigger: 'blur' }]
+        title: [{ required: true, message: '标题不能为空', trigger: 'blur' }],
+        saleType: [{ required: true, message: '上架类型不能为空', trigger: 'blur' }],
+        categoryId: [{ required: true, message: '物品种类不能为空', trigger: 'blur' }],
+        onlineName: [{ required: true, message: '线上名称不能为空', trigger: 'blur' }],
+        offlineName: [{ required: true, message: '线下名称不能为空', trigger: 'blur' }],
+        onlinePrice: [{ required: true, message: '线上价格不能为空', trigger: 'blur' }],
+        offlinePrice: [{ required: true, message: '线下价格不能为空', trigger: 'blur' }],
+        counterPrice: [{ required: true, message: '专柜价格不能为空', trigger: 'blur' }]
       },
       editorInit: {
         language: 'zh_CN',
@@ -699,6 +705,13 @@ export default {
       this.$router.push({ path: '/goods/list' })
     },
     handleEdit: function() {
+      let validateRes = false
+      this.$refs.goods.validate((valid) => {
+        validateRes = valid
+      })
+      if (!validateRes) {
+        return
+      }
       if (this.goods.isChoice && (this.goods.limit === undefined || this.goods.limit === '')) {
         this.$message.error('请填写限购数量')
         return false

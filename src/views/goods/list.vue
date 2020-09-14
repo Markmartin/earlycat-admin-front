@@ -58,7 +58,7 @@
         </template>
       </el-table-column>
 
-      <el-table-column align="center" label="商品编号" prop="goodsSn"/>
+<!--      <el-table-column align="center" label="商品编号" prop="goodsSn"/>-->
 
       <el-table-column align="center" min-width="100" label="名称" prop="name"/>
 
@@ -87,9 +87,11 @@
 
       <el-table-column align="center" label="当前价格" prop="retailPrice"/>
 
-      <el-table-column align="center" label="预售类型" prop="acStatus">
+      <el-table-column align="center" label="限时销售类型" width="110px" prop="acStatus">
         <template slot-scope="scope">
-          <el-tag>{{ scope.row.acStatus == 1? '预售' : '非预售' }}</el-tag>
+          <span v-if="scope.row.acStatus == 0">正常</span>
+          <span v-if="scope.row.acStatus == 1">预售</span>
+          <span v-if="scope.row.acStatus == 2">限时特价</span>
         </template>
       </el-table-column>
 
@@ -178,7 +180,7 @@ export default {
     return {
       isPressOption: [
         {
-          label: '非预售',
+          label: '正常',
           value: 0
         },
         {
@@ -186,7 +188,7 @@ export default {
           value: 1
         },
         {
-          label: '其他',
+          label: '限时特价',
           value: 2
         }
       ],

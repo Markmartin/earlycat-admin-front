@@ -3,7 +3,7 @@
 
     <!-- 查询和其他操作 -->
     <div class="filter-container">
-      <el-button v-permission="['POST /admin/presell/create']" class="filter-item" type="primary" icon="el-icon-edit" @click="handleCreate">添加预售物品</el-button>
+      <el-button v-permission="['POST /admin/presell/create']" class="filter-item" type="primary" icon="el-icon-edit" @click="handleCreate">添加限时销售物品</el-button>
     </div>
 
     <!-- 查询结果 -->
@@ -132,7 +132,15 @@
         })
       },
       getPressGoodsList() {
-        let acstatus = 1 ;
+        let acstatus ;
+        if(this.$route.query.type == null){
+          return
+        }
+        if(this.$route.query.type == 0){
+          acstatus = 1;
+        }else if(this.$route.query.type == 1){
+          acstatus = 2;
+        }
         getPressGoodsList(acstatus).then(response => {
           this.presellGoodsList = response.data.data.list
         })
@@ -160,13 +168,14 @@
           if (valid) {
             debugger
             saveOrUpdatePresellItem(this.dataForm).then(response => {
-                this.init()
+              this.init();
                 this.dialogFormVisible = false
                 this.$notify.success({
                   title: '成功',
                   message: '创建成功'
                 })
               }).catch(response => {
+              this.init();
                 this.$notify.error({
                   title: '失败',
                   message: response.data.errmsg
@@ -194,11 +203,13 @@
           if (valid) {
             saveOrUpdatePresellItem(this.dataForm).then(() => {
               this.dialogFormVisible = false
+              this.init();
               this.$notify.success({
                 title: '成功',
                 message: '替换成功'
               })
             }).catch(response => {
+              this.init();
               this.$notify.error({
                 title: '失败',
                 message: response.data.errmsg
@@ -206,10 +217,10 @@
             })
           }
         })
-        this.init();
       },
       handleDelete(row) {
         deletePresellItemById(row.id).then(response => {
+          this.init();
           this.$notify({
             title: '移除成功',
             message: '移除成功',
@@ -219,6 +230,7 @@
           const index = this.list.indexOf(row)
           this.list.splice(index, 1)
         }).catch(response => {
+          this.init();
           this.$notify.error({
             title: '移除失败',
             message: response.data.errmsg

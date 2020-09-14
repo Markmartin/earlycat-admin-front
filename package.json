@@ -1,7 +1,7 @@
 {
-  "name": "wali-admin",
+  "name": "zcm-admin",
   "version": "0.1.0",
-  "description": "wali-admin basing on vue-element-admin 3.9.3",
+  "description": "zcm-admin basing on vue-element-admin 3.9.3",
   "author": "linlinjava <linlinjava@163.com>",
   "license": "MIT",
   "private": true,

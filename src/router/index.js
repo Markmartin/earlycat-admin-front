@@ -340,7 +340,7 @@ export const asyncRouterMap = [
         name: 'goodsPresell',
         meta: {
           perms: ['GET /admin/presell/list', 'POST /admin/presell/delete'],
-          title: '预售管理',
+          title: '限时销售',
           noCache: true
         }
       },
@@ -350,7 +350,7 @@ export const asyncRouterMap = [
         name: 'presellItems',
         meta: {
           perms: ['POST /admin/presell/list'],
-          title: '预售物品',
+          title: '限时物品',
           noCache: true
         },
         hidden: true
