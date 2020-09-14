@@ -3,7 +3,8 @@
 
     <!-- 查询和其他操作 -->
     <div class="filter-container">
-      <el-button v-permission="['POST /admin/presell/create']" class="filter-item" type="primary" icon="el-icon-edit" @click="handleCreate">添加限时销售物品</el-button>
+      <el-button v-if="this.$route.query.type==1" v-permission="['POST /admin/presell/create']" class="filter-item" type="primary" icon="el-icon-edit" @click="handleCreate">添加预售物品</el-button>
+      <el-button v-else v-permission="['POST /admin/presell/create']" class="filter-item" type="primary" icon="el-icon-edit" @click="handleCreate">添加限时特价物品</el-button>
     </div>
 
     <!-- 查询结果 -->
@@ -136,12 +137,7 @@
         if(this.$route.query.type == null){
           return
         }
-        if(this.$route.query.type == 0){
-          acstatus = 1;
-        }else if(this.$route.query.type == 1){
-          acstatus = 2;
-        }
-        getPressGoodsList(acstatus).then(response => {
+        getPressGoodsList(this.$route.query.type).then(response => {
           this.presellGoodsList = response.data.data.list
         })
       },
@@ -166,7 +162,6 @@
       createData() {
         this.$refs['dataForm'].validate(valid => {
           if (valid) {
-            debugger
             saveOrUpdatePresellItem(this.dataForm).then(response => {
               this.init();
                 this.dialogFormVisible = false
@@ -193,7 +188,6 @@
         this.dataForm = Object.assign({}, row)
         this.dialogStatus = 'update'
         this.dialogFormVisible = true
-        debugger
         this.$nextTick(() => {
           this.$refs['dataForm'].clearValidate()
         })

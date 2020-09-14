@@ -20,8 +20,9 @@
     <el-table v-loading="listLoading" :data="list" element-loading-text="正在查询中。。。" border fit highlight-current-row>
       <el-table-column align="center" label="状态" width="80" prop="type">
         <template slot-scope="scope">
-          <span v-if="scope.row.type == 0">预售</span>
-          <span v-if="scope.row.type == 1">限时特价</span>
+          <span v-if="scope.row.type == 0">其他</span>
+          <span v-if="scope.row.type == 1">预售</span>
+          <span v-if="scope.row.type == 2">限时特价</span>
         </template>
       </el-table-column>
       <el-table-column align="center" label="标题" prop="title"/>
@@ -180,12 +181,16 @@
         ],
         typeOption: [
           {
-            label: '预售',
+            label: '其他',
             value: 0
           },
           {
-            label: '限时特价',
+            label: '预售',
             value: 1
+          },
+          {
+            label: '限时特价',
+            value: 2
           }
         ],
         uploadPath,
