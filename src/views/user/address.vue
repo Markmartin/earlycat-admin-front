@@ -14,18 +14,27 @@
       <el-table-column align="center" width="100px" label="地址ID" prop="id" sortable/>
 
       <el-table-column align="center" min-width="100px" label="用户ID" prop="userId"/>
-
       <el-table-column align="center" min-width="100px" label="收货人名称" prop="name"/>
-
+      <el-table-column align="center" min-width="100px" label="性别" prop="gender">
+        <template slot-scope="scope">
+          <el-tag>{{ scope.row.gender == 0? '先生' : '女士' }}</el-tag>
+        </template>
+      </el-table-column>
       <el-table-column align="center" min-width="100px" label="手机号码" prop="tel"/>
+      <el-table-column align="center" min-width="100px" label="标签" prop="tag">
+        <template slot-scope="scope">
+          <el-tag>{{ getTag(scope.row.tag) }}</el-tag>
+        </template>
+      </el-table-column>
 
-      <!-- <el-table-column align="center" min-width="300px" label="区域地址">
+       <el-table-column align="center" min-width="300px" label="区域地址">
         <template slot-scope="scope">
           {{ scope.row.province + scope.row.city + scope.row.county }}
         </template>
-      </el-table-column> -->
+      </el-table-column>
 
       <el-table-column align="center" min-width="300px" label="详细地址" prop="addressDetail"/>
+      <el-table-column align="center" min-width="100px" label="门牌号" prop="houseDetail"/>
 
       <el-table-column align="center" min-width="80px" label="默认" prop="isDefault">
         <template slot-scope="scope">
@@ -60,7 +69,16 @@ export default {
         sort: 'add_time',
         order: 'desc'
       },
-      downloadLoading: false
+      downloadLoading: false,
+      genderOptions: [
+        { value: 0, label: '先生' },
+        { value: 1, label: '女士' }
+      ],
+      tagOptions: [
+        { value: 0, label: '家' },
+        { value: 1, label: '公司' },
+        { value: 2, label: '学校' }
+      ]
     }
   },
   created() {
@@ -83,11 +101,18 @@ export default {
       this.listQuery.page = 1
       this.getList()
     },
+    getTag(key) {
+      for (var i = 0; i < this.tagOptions.length; i++) {
+        if (this.tagOptions[i].value == key) {
+          return this.tagOptions[i].label
+        }
+      }
+    },
     handleDownload() {
       this.downloadLoading = true
       import('@/vendor/Export2Excel').then(excel => {
-        const tHeader = ['地址ID', '用户ID', '收获人', '手机号', '省', '市', '区', '地址', '是否默认']
-        const filterVal = ['id', 'userId', 'name', 'tel', 'province', 'city', 'county', 'addressDetail', 'isDefault']
+        const tHeader = ['地址ID', '用户ID', '收货人', '手机号', '省', '市', '区', '地址', '门牌号', '是否默认']
+        const filterVal = ['id', 'userId', 'name', 'tel', 'province', 'city', 'county', 'addressDetail', 'houseDetail', 'isDefault']
         excel.export_json_to_excel2(tHeader, this.list, filterVal, '用户地址信息')
         this.downloadLoading = false
       })
