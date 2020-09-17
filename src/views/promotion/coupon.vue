@@ -221,6 +221,10 @@ const defaultTypeOptions = [
   {
     label: '自提券',
     value: 3
+  },
+  {
+    label: '拉新赠券',
+    value: 4
   }
 ]
 
