@@ -31,6 +31,10 @@ service.interceptors.response.use(
   response => {
     const res = response.data
 
+    if (response.headers['content-type'] === 'application/vnd.ms-excel;charset=utf-8'){
+      return res
+    }
+
     if (res.errno === 501) {
       MessageBox.alert('系统未登录，请重新登录', '错误', {
         confirmButtonText: '确定',

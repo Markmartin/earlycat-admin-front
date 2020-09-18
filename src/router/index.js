@@ -79,6 +79,39 @@ export default new Router({
 
 export const asyncRouterMap = [
   {
+    path: '/stockJob',
+    component: Layout,
+    redirect: 'noredirect',
+    alwaysShow: true,
+    name: 'stockJobManage',
+    meta: {
+      title: '仓库管理',
+      icon: 'community'
+    },
+    children: [
+      {
+        path: 'out',
+        component: () => import('@/views/stockJob/out'),
+        name: 'out',
+        meta: {
+          perms: ['GET /admin/stockJob/list'],
+          title: '出库管理',
+          noCache: true
+        }
+      },
+      {
+        path: 'in',
+        component: () => import('@/views/stockJob/in'),
+        name: 'in',
+        meta: {
+          perms: ['GET /admin/stockJob/list'],
+          title: '入库管理',
+          noCache: true
+        }
+      },
+    ]
+  },
+  {
     path: '/community',
     component: Layout,
     redirect: 'noredirect',

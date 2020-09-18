@@ -35,6 +35,87 @@ export function parseTime(time, cFormat) {
   return time_str
 }
 
+/**
+ * @param {number} time
+ * @param {string} option
+ * @returns {string}
+ */
+export function formatDate(time, option) {
+  // if (('' + time).length === 10) {
+  //   time = parseInt(time) * 1000
+  // } else {
+  //   time = +time
+  // }
+  const d = new Date(time)
+  const now = Date.now()
+
+  const diff = (now - d) / 1000
+
+  // if (diff < 30) {
+  //   return '刚刚'
+  // } else if (diff < 3600) {
+  //   // less 1 hour
+  //   return Math.ceil(diff / 60) + '分钟前'
+  // } else if (diff < 3600 * 24) {
+  //   return Math.ceil(diff / 3600) + '小时前'
+  // } else if (diff < 3600 * 24 * 2) {
+  //   return '1天前'
+  // }
+  if (option) {
+    return parseTime(time, option)
+  } else {
+    const year = d.getFullYear()
+    const month = d.getMonth() + 1
+    const day = d.getDate()
+    return [year, month, day].map(formatNumber).join('-')
+  }
+}
+
+
+/**
+ * @param {number} time
+ * @param {string} option
+ * @returns {string}
+ */
+export function formatDateTime(time, option) {
+  // if (('' + time).length === 10) {
+  //   time = parseInt(time) * 1000
+  // } else {
+  //   time = +time
+  // }
+  const d = new Date(time)
+  const now = Date.now()
+
+  const diff = (now - d) / 1000
+
+  // if (diff < 30) {
+  //   return '刚刚'
+  // } else if (diff < 3600) {
+  //   // less 1 hour
+  //   return Math.ceil(diff / 60) + '分钟前'
+  // } else if (diff < 3600 * 24) {
+  //   return Math.ceil(diff / 3600) + '小时前'
+  // } else if (diff < 3600 * 24 * 2) {
+  //   return '1天前'
+  // }
+  if (option) {
+    return parseTime(time, option)
+  } else {
+    const year = d.getFullYear()
+    const month = d.getMonth() + 1
+    const day = d.getDate()
+    const hour = d.getHours()
+    const minute = d.getMinutes()
+    const second = d.getSeconds()
+    return [year, month, day].map(formatNumber).join('-') + ' ' + [hour, minute, second].map(formatNumber).join(':')
+  }
+}
+
+const formatNumber = n => {
+  n = n.toString()
+  return n[1] ? n : '0' + n
+}
+
 export function formatTime(time, option) {
   time = +time * 1000
   const d = new Date(time)
