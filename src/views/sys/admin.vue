@@ -19,12 +19,11 @@
 
     <!-- 查询结果 -->
     <el-table v-loading="listLoading" :data="list" element-loading-text="正在查询中。。。" border fit highlight-current-row>
-      <el-table-column align="center" label="用户ID" prop="id" sortable/>
-
+<!--      <el-table-column align="center" label="用户ID" prop="id" sortable/>-->
       <el-table-column align="center" label="用户账号" prop="username"/>
       <el-table-column align="center" label="用户姓名" prop="realname"/>
       <el-table-column align="center" label="手机号" prop="phone"/>
-      <el-table-column align="center" label="OPENID" prop="openId"/>
+<!--      <el-table-column align="center" label="OPENID" prop="openId"/>-->
 
       <el-table-column align="center" label="用户头像" prop="avatar">
         <template slot-scope="scope">
@@ -44,7 +43,7 @@
         </template>
       </el-table-column>
 
-      <el-table-column align="center" label="操作" class-name="small-padding fixed-width">
+      <el-table-column align="center" label="操作" class-name="small-padding fixed-width" width="150">
         <template slot-scope="scope">
           <el-button v-permission="['POST /admin/admin/update']" type="primary" size="mini" @click="handleUpdate(scope.row)">编辑</el-button>
           <el-button v-permission="['POST /admin/admin/delete']" type="danger" size="mini" @click="handleDelete(scope.row)">删除</el-button>
@@ -75,7 +74,7 @@
         <el-form-item label="手机号" prop="phone">
           <el-input v-model="dataForm.phone"/>
         </el-form-item>
-        <el-form-item v-if="dialogStatus=='create'" label="用户密码" prop="password">
+        <el-form-item  label="用户密码" prop="password">
           <el-input v-model="dataForm.password" type="password" auto-complete="off"/>
         </el-form-item>
         <el-form-item label="用户头像" prop="avatar">
@@ -190,8 +189,8 @@ export default {
         ],
         type: [
           { required: true, message: '账号类型不能为空', trigger: 'blur' }
-        ],
-        password: [{ required: true, min: 6, message: '密码长度至少6位', trigger: 'blur' }]
+        ]
+        // password: [{ required: true, min: 6, message: '密码长度至少6位', trigger: 'blur' }]
       },
       typeOptions: [{
         value: 1,
@@ -278,6 +277,10 @@ export default {
     createData() {
       this.$refs['dataForm'].validate(valid => {
         if (valid) {
+          if(this.dataForm.password == null){
+            this.$message.error('请输入用户密码！')
+            return false
+          }
           createAdmin(this.dataForm)
             .then(response => {
               this.list.unshift(response.data.data)
@@ -286,8 +289,7 @@ export default {
                 title: '成功',
                 message: '添加用户成功'
               })
-            })
-            .catch(response => {
+            }).catch(response => {
               this.$notify.error({
                 title: '失败',
                 message: response.data.errmsg
