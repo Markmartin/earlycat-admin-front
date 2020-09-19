@@ -1,8 +1,16 @@
 import request from '@/utils/request'
 
-export function getJobs(params) {
+export function outList(params) {
   return request({
-    url: '/stockJob/list',
+    url: '/stockJob/outList',
+    method: 'get',
+    params: params
+  })
+}
+
+export function inList(params) {
+  return request({
+    url: '/stockJob/inList',
     method: 'get',
     params: params
   })
@@ -16,18 +24,35 @@ export function gather(params) {
   })
 }
 
-export function updateJob(data) {
+export function updateOut(data) {
   return request({
-    url: '/stockJob/update',
+    url: '/stockJob/updateOut',
     method: 'post',
     data
   })
 }
 
-export function deleteJob(id) {
+export function updateIn(data) {
   return request({
-    url: `/stockJob/${id}`,
-    method: 'get',
+    url: '/stockJob/updateIn',
+    method: 'post',
+    data
+  })
+}
+
+export function deleteOut(data) {
+  return request({
+    url: `/stockJob/deleteOut`,
+    method: 'post',
+    data
+  })
+}
+
+export function deleteIn(data) {
+  return request({
+    url: `/stockJob/deleteIn`,
+    method: 'post',
+    data
   })
 }
 

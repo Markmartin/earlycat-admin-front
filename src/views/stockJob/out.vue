@@ -17,9 +17,9 @@
           ></el-option>
         </el-select>
       </el-form-item>
-      <el-button type="primary" @click="getJobs">查询</el-button>
-      <el-button type="primary" @click="handleExportOutSearch">导出查询结果</el-button>
-      <el-button type="primary" @click="handleExportOut">导出出库模版表</el-button>
+      <el-button type="primary" v-permission="['GET /admin/stockJob/outList']" @click="outList">查询</el-button>
+      <el-button type="primary" v-permission="['GET /admin/stockJob/exportOutSearch']" @click="handleExportOutSearch">导出查询结果</el-button>
+      <el-button type="primary" v-permission="['GET /admin/stockJob/exportOut']" @click="handleExportOut">导出出库模版表</el-button>
       <!-- <el-button type="primary" @click="handleImportIn">导出入库数据</el-button> -->
       <el-upload
         class="upload-demo"
@@ -61,8 +61,8 @@
       </el-table-column>
       <el-table-column align="center" label="操作" min-width="150">
         <template slot-scope="scope">
-          <el-button type="primary" size="small" @click="handleEdit(scope)">编辑</el-button>
-          <el-button type="danger" size="small" @click="handleDelete(scope)">删除</el-button>
+          <el-button type="primary" size="small" v-permission="['POST /admin/stockJob/updateOut']" @click="handleEdit(scope)">编辑</el-button>
+          <el-button type="danger" size="small" v-permission="['GET /admin/stockJob/deleteOut']" @click="handleDelete(scope)">删除</el-button>
         </template>
       </el-table-column>
     </el-table>
@@ -105,11 +105,9 @@ import Pagination from "@/components/Pagination";
 import { deepClone, formatDateTime } from "@/utils";
 import { getToken } from "@/utils/auth";
 import {
-  getJobs,
-  updateJob,
-  deleteJob,
-  exportIn,
-  importIn,
+  outList,
+  updateOut,
+  deleteOut,
   exportOut,
   importOut,
   exportOutSearch
@@ -139,9 +137,9 @@ export default {
         type: 2,
         pageNo: 1,
         pageSize: 10
-      },
+      }, 
       total: 0,
-      importInUrl: process.env.BASE_API + importIn(),
+      // importInUrl: process.env.BASE_API + importIn(),
       importOutUrl: process.env.BASE_API + importOut(),
       importHeaders: {
         'X-Wali-Token': getToken()
@@ -155,12 +153,12 @@ export default {
     }
   },
   created() {
-    this.getJobs();
+    this.outList();
     this.listByType();
   },
   methods: {
-    async getJobs() {
-      const res = await getJobs(this.params);
+    async outList() {
+      const res = await outList(this.params);
       this.jobList = res.data.data.jobs;
       this.total = res.data.data.total;
     },
@@ -172,7 +170,7 @@ export default {
     async getList(e) {
       this.params.pageNo = e.page;
       this.params.pageSize = e.limit;
-      this.getJobs();
+      this.outList();
     },
     handleExportOutSearch(){
       exportOutSearch(this.params).then(res => {
@@ -196,7 +194,6 @@ export default {
     },
     handleExportOut() {
       exportOut().then(res => {
-        console.log(res)
         const blob = new Blob([res], {
           type: "application/vnd.ms-excel"
         });
@@ -224,7 +221,7 @@ export default {
       } else {
         this.$message.error(res.errmsg);
       }
-      this.getJobs()
+      this.outList()
     },
     onError() {
       this.$message.error("导入失败");
@@ -241,8 +238,8 @@ export default {
         type: "提示"
       })
         .then(async () => {
-          await deleteJob(row.id).then(res => {
-            this.getJobs();
+          await deleteOut({id:row.id}).then(res => {
+            this.outList();
             this.$message({
               type: "success",
               message: "删除成功"
@@ -258,8 +255,8 @@ export default {
       const isEdit = this.dialogType === "edit";
 
       if (isEdit) {
-        await updateJob(this.job).then(res => {
-          this.getJobs();
+        await updateOut(this.job).then(res => {
+          this.outList();
         });
       } else {
         // await addRole(this.role).then(res => {});

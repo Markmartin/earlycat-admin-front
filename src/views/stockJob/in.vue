@@ -27,9 +27,9 @@
           ></el-option>
         </el-select>
       </el-form-item>
-      <el-button type="primary" @click="getJobs">查询</el-button>
-      <el-button type="primary" @click="handleExportInSearch">导出查询结果</el-button>
-      <el-button type="primary" @click="handleExportIn">导出入库模版表</el-button>
+      <el-button type="primary" v-permission="['GET /admin/stockJob/inList']" @click="inList">查询</el-button>
+      <el-button type="primary" v-permission="['GET /admin/stockJob/exportInSearch']" @click="handleExportInSearch">导出查询结果</el-button>
+      <el-button type="primary" v-permission="['GET /admin/stockJob/exportIn']" @click="handleExportIn">导出入库模版表</el-button>
       <!-- <el-button type="primary" @click="handleImportIn">导出入库数据</el-button> -->
       <el-upload
         class="upload-demo"
@@ -77,8 +77,8 @@
       </el-table-column>
       <el-table-column align="center" label="操作" min-width="150">
         <template slot-scope="scope">
-          <el-button type="primary" size="small" @click="handleEdit(scope)">编辑</el-button>
-          <el-button type="danger" size="small" @click="handleDelete(scope)">删除</el-button>
+          <el-button type="primary" size="small" v-permission="['POST /admin/stockJob/updateIn']" @click="handleEdit(scope)">编辑</el-button>
+          <el-button type="danger" size="small" v-permission="['POST /admin/stockJob/deleteIn']" @click="handleDelete(scope)">删除</el-button>
         </template>
       </el-table-column>
     </el-table>
@@ -121,9 +121,9 @@ import Pagination from "@/components/Pagination";
 import { deepClone, formatDateTime, formatDate } from "@/utils";
 import { getToken } from "@/utils/auth";
 import {
-  getJobs,
-  updateJob,
-  deleteJob,
+  inList,
+  updateIn,
+  deleteIn,
   exportIn,
   importIn,
   exportInSearch,
@@ -175,13 +175,13 @@ export default {
     },
   },
   created() {
-    this.getJobs();
+    this.inList();
     this.listCategory();
     this.allAdmin();
   },
   methods: {
-    async getJobs() {
-      const res = await getJobs(this.params);
+    async inList() {
+      const res = await inList(this.params);
       this.jobList = res.data.data.jobs;
       this.total = res.data.data.total;
     },
@@ -189,7 +189,7 @@ export default {
     async getList(e) {
       this.params.pageNo = e.page;
       this.params.pageSize = e.limit;
-      this.getJobs();
+      this.inList();
     },
 
     async listCategory() {
@@ -256,7 +256,7 @@ export default {
       } else {
         this.$message.error(res.errmsg);
       }
-      this.getJobs();
+      this.inList();
     },
     onError() {
       this.$message.error("导入失败");
@@ -272,8 +272,8 @@ export default {
         cancelButtonText: "取消",
       })
         .then(async () => {
-          await deleteJob(row.id).then((res) => {
-            this.getJobs();
+          await deleteIn({id:row.id}).then((res) => {
+            this.inList();
             this.$message({
               type: "success",
               message: "删除成功",
@@ -289,8 +289,8 @@ export default {
       const isEdit = this.dialogType === "edit";
 
       if (isEdit) {
-        await updateJob(this.job).then((res) => {
-          this.getJobs();
+        await updateIn(this.job).then((res) => {
+          this.inList();
         });
       } else {
         // await addRole(this.role).then(res => {});
