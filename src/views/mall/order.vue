@@ -110,6 +110,7 @@
             <el-table-column align="center" label="商品编号" prop="goodsSn" />
             <el-table-column align="center" label="货品规格" prop="specifications" />
             <el-table-column align="center" label="货品价格" prop="price" />
+            <el-table-column align="center" label="实付金额" prop="finalPrice" />
             <el-table-column align="center" label="货品数量" prop="number" />
             <el-table-column align="center" label="货品图片" prop="picUrl">
               <template slot-scope="scope">
