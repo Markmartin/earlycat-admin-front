@@ -149,9 +149,18 @@
           </el-radio-group>
         </el-form-item>
         <el-form-item v-show="dataForm.timeType === 0">
-          <el-input v-model="dataForm.days">
-            <template slot="append">天</template>
-          </el-input>
+          <!--<el-input v-model="dataForm.days">-->
+            <!--<template slot="append">天</template>-->
+          <!--</el-input>-->
+          <el-col :span="7" class="line">自领取之日第</el-col>
+          <el-col :span="4">
+            <el-input v-model="dataForm.daysBegin"/>
+          </el-col>
+          <el-col :span="4" class="line">日至</el-col>
+          <el-col :span="4">
+            <el-input v-model="dataForm.daysEnd"/>
+          </el-col>
+          <el-col :span="5" class="line">日内有效</el-col>
         </el-form-item>
         <el-form-item v-show="dataForm.timeType === 1">
           <el-col :span="11">
@@ -309,7 +318,8 @@ export default {
         goodsType: 0,
         goodsValue: [],
         timeType: 0,
-        days: 0,
+        daysBegin: 0,
+        daysEnd: 0,
         startTime: null,
         endTime: null
       },

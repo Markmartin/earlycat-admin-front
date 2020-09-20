@@ -211,7 +211,7 @@ export default {
     },
     getTimeScope() {
       if (this.coupon.timeType === 0) {
-        return '领取' + this.coupon.days + '天有效'
+        return '自领取第' + this.coupon.daysBegin + '天 至 第' + this.coupon.daysEnd+ '天内有效'
       } else if (this.coupon.timeType === 1) {
         return '自' + this.coupon.startTime + '至' + this.coupon.endTime + '有效'
       } else {
