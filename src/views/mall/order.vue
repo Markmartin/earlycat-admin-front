@@ -3,7 +3,7 @@
 
     <!-- 查询和其他操作 -->
     <div class="filter-container">
-      <el-input v-model="listQuery.userId" clearable class="filter-item" style="width: 200px;" placeholder="请输入用户ID"/>
+      <el-input v-model="listQuery.consignee" clearable class="filter-item" style="width: 200px;" placeholder="请输入收货人"/>
       <el-input v-model="listQuery.orderSn" clearable class="filter-item" style="width: 200px;" placeholder="请输入订单编号"/>
       <el-select v-model="listQuery.orderStatusArray" multiple style="width: 200px" class="filter-item" placeholder="请选择订单状态">
         <el-option v-for="(key, value) in statusMap" :key="key" :label="key" :value="value"/>
@@ -21,27 +21,27 @@
         start-placeholder="开始日期"
         end-placeholder="结束日期"
         @change="pickerDateChange"/>
-      <el-select
-        v-permission="['GET /admin/community/list']"
-        v-model="listQuery.communityId"
-        :remote-method="communityMethod"
-        :loading="communityLoading"
-        class="filter-item"
-        clearable
-        filterable
-        remote
-        reserve-keyword
-        placeholder="请输入小区名称">
-        <el-option
-          v-for="item in communityList"
-          :key="item.id"
-          :label="item.name"
-          :value="item.id"/>
-      </el-select>
+      <!--<el-select-->
+        <!--v-permission="['GET /admin/community/list']"-->
+        <!--v-model="listQuery.communityId"-->
+        <!--:remote-method="communityMethod"-->
+        <!--:loading="communityLoading"-->
+        <!--class="filter-item"-->
+        <!--clearable-->
+        <!--filterable-->
+        <!--remote-->
+        <!--reserve-keyword-->
+        <!--placeholder="请输入小区名称">-->
+        <!--<el-option-->
+          <!--v-for="item in communityList"-->
+          <!--:key="item.id"-->
+          <!--:label="item.name"-->
+          <!--:value="item.id"/>-->
+      <!--</el-select>-->
       <el-button v-permission="['GET /admin/order/list']" class="filter-item" type="primary" icon="el-icon-search" @click="handleFilter">查找</el-button>
       <el-button v-permission="['POST /admin/order/export']" :loading="downloadLoading" class="filter-item" type="primary" icon="el-icon-download" @click="handleDownload(false, 'downloadLoading')">导出配送单</el-button>
       <el-button v-permission="['POST /admin/order/export']" :loading="downloadLoading1" class="filter-item" type="primary" icon="el-icon-download" @click="handleDownload(true, 'downloadLoading1')">导出(含商品)</el-button>
-      <el-button v-permission="['POST /admin/order/print']" class="filter-item" type="primary" icon="el-icon-printer" @click="handlePrinter">打印</el-button>
+      <!--<el-button v-permission="['POST /admin/order/print']" class="filter-item" type="primary" icon="el-icon-printer" @click="handlePrinter">打印</el-button>-->
       <el-button v-permission="['POST /admin/order/batchship']" class="filter-item" type="primary" icon="el-icon-tickets" @click="handleBatchship">批量发货</el-button>
       <!-- <el-button v-permission="['POST /admin/order/print']" class="filter-item" type="primary" icon="el-icon-tickets" @click="exportPurchasing">测试导出采购单</el-button> -->
     </div>
@@ -52,7 +52,8 @@
 
       <el-table-column align="center" min-width="100" label="订单编号" prop="orderSn"/>
 
-      <el-table-column align="center" label="用户ID" width="100" prop="userId"/>
+      <!--<el-table-column align="center" label="用户ID" width="100" prop="userId"/>-->
+      <el-table-column align="center" label="收货人名称" width="100" prop="consignee"/>
 
       <el-table-column align="center" label="订单状态" prop="orderStatus">
         <template slot-scope="scope">
@@ -68,12 +69,13 @@
 
       <el-table-column align="center" label="物流渠道" prop="shipChannel"/>
 
-      <el-table-column align="center" label="社区名" prop="communityName"/>
+      <!--<el-table-column align="center" label="社区名" prop="communityName"/>-->
+      <el-table-column align="center" label="分拣号" prop="sortingNo"/>
 
       <el-table-column align="center" label="操作" width="400" class-name="small-padding fixed-width">
         <template slot-scope="scope">
           <el-button v-permission="['GET /admin/order/detail']" type="primary" size="mini" @click="handleDetail(scope.row)">详情</el-button>
-          <el-button v-permission="['POST /admin/order/print']" type="primary" size="mini" @click="handlePrinter(scope.row)">打印</el-button>
+          <!--<el-button v-permission="['POST /admin/order/print']" type="primary" size="mini" @click="handlePrinter(scope.row)">打印</el-button>-->
           <el-button v-permission="['POST /admin/order/ship']" v-if="scope.row.orderStatus==201" type="primary" size="mini" @click="handleShip(scope.row)">发货</el-button>
           <!-- <el-button v-permission="['POST /admin/order/arrive']" v-if="scope.row.orderStatus==201 || scope.row.orderStatus==301" type="primary" size="mini" @click="handleArrive(scope.row)">到达</el-button> -->
           <el-button v-permission="['POST /admin/order/refund']" v-if="scope.row.orderStatus==201 || scope.row.orderStatus==202 || scope.row.orderStatus==301 || scope.row.orderStatus==302" type="primary" size="mini" @click="handleRefund(scope.row)">退款</el-button>
@@ -264,7 +266,8 @@ export default {
         order: 'desc',
         queryStartTime: '',
         queryEndTime: '',
-        communityId: ''
+        communityId: '',
+        consignee: ''
       },
       statusMap,
       orderDialogVisible: false,
