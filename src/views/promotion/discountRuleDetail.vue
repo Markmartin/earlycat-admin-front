@@ -182,7 +182,7 @@
         if (this.$route.query.id == null) {
           return
         }
-        this.listQuery.activitySpecVo.id = this.$route.query.id
+        this.listQuery.activitySpecVo.acId = this.$route.query.id
         this.listLoading = true
         getZcmActivitySpecList(this.listQuery.activitySpecVo, this.listQuery.page, this.listQuery.limit).then(response => {
           this.list = response.data.data

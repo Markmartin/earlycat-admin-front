@@ -21,7 +21,7 @@
       <el-select v-model="listQuery.isOnSale" clearable style="width: 200px" class="filter-item" placeholder="请选择售货状态">
         <el-option v-for="type in isOnSaleOptions" :key="type.value" :label="type.label" :value="type.value"/>
       </el-select>
-      <el-select v-model="listQuery.acStatus" clearable style="width: 200px" class="filter-item" placeholder="请选择预售状态">
+      <el-select v-model="listQuery.acStatus" clearable style="width: 200px" class="filter-item" placeholder="请选择销售类型">
         <el-option v-for="type in isPressOption" :key="type.value" :label="type.label" :value="type.value"/>
       </el-select>
       <el-button v-permission="['GET /admin/goods/list']" class="filter-item" type="primary" icon="el-icon-search" @click="handleFilter">查找</el-button>
@@ -40,7 +40,13 @@
               <img v-for="pic in props.row.gallery" :key="pic" :src="pic" class="gallery">
             </el-form-item>
             <el-form-item label="商品介绍">
+              <span>{{ props.row.title }}</span>
+            </el-form-item>
+            <el-form-item label="标题">
               <span>{{ props.row.brief }}</span>
+            </el-form-item>
+            <el-form-item label="副标题">
+              <span>{{ props.row.subtitle }}</span>
             </el-form-item>
             <el-form-item label="商品单位">
               <span>{{ props.row.unit }}</span>
@@ -53,6 +59,12 @@
             </el-form-item>
             <el-form-item label="品牌商ID">
               <span>{{ props.row.brandId }}</span>
+            </el-form-item>
+            <el-form-item label="线上价格">
+              <span>{{ props.row.onlinePrice }}元</span>
+            </el-form-item>
+            <el-form-item label="线下价格">
+              <span>{{ props.row.offlinePrice }}元</span>
             </el-form-item>
           </el-form>
         </template>
@@ -83,15 +95,17 @@
         </template>
       </el-table-column>
 
-      <el-table-column align="center" label="专柜价格" prop="counterPrice"/>
+<!--      <el-table-column align="center" label="专柜价格" prop="counterPrice"/>-->
 
-      <el-table-column align="center" label="当前价格" prop="retailPrice"/>
+<!--      <el-table-column align="center" label="当前价格" prop="retailPrice"/>-->
 
-      <el-table-column align="center" label="限时销售类型" width="110px" prop="acStatus">
+      <el-table-column align="center" label="销售类型" width="110px" prop="acStatus">
         <template slot-scope="scope">
           <span v-if="scope.row.acStatus == 0">正常</span>
           <span v-if="scope.row.acStatus == 1">预售</span>
           <span v-if="scope.row.acStatus == 2">限时特价</span>
+          <span v-if="scope.row.acStatus == 98">新用户赠送</span>
+          <span v-if="scope.row.acStatus == 99">买即送</span>
         </template>
       </el-table-column>
 
@@ -119,10 +133,10 @@
         </template>
       </el-table-column>
 
-      <el-table-column align="center" label="操作" width="250" class-name="small-padding fixed-width">
+      <el-table-column align="center" label="操作" width="180" class-name="small-padding fixed-width">
         <template slot-scope="scope">
           <el-button v-permission="['POST /admin/goods/update']" type="primary" size="mini" @click="handleUpdate(scope.row)">编辑</el-button>
-          <el-button v-permission="['GET /admin/goods/list']" type="primary" size="mini" @click="handlePrinter(scope.row)">打印</el-button>
+<!--          <el-button v-permission="['GET /admin/goods/list']" type="primary" size="mini" @click="handlePrinter(scope.row)">打印</el-button>-->
           <el-button v-permission="['POST /admin/goods/delete']" type="danger" size="mini" @click="handleDelete(scope.row)">删除</el-button>
         </template>
       </el-table-column>
@@ -190,8 +204,13 @@ export default {
         {
           label: '限时特价',
           value: 2
-        }
-      ],
+        },  {
+          label: '新用户赠送物品',
+          value: 98
+        }, {
+          value: 99,
+          label: '赠送物品'
+        }],
       isNewOptions: [
         {
           label: '新品',

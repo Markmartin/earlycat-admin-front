@@ -30,7 +30,7 @@
             </el-form-item>
           </el-col>
           <el-col :span="6">
-            <el-form-item label="物品类型">
+            <el-form-item label="销售类型">
               <el-select v-model="goods.acStatus" placeholder="请选择">
                 <el-option
                   v-for="item in presellOptions"
@@ -52,6 +52,44 @@
               <el-select v-model="goods.brandId">
                 <el-option v-for="item in brandList" :key="item.value" :label="item.label" :value="item.value"/>
               </el-select>
+            </el-form-item>
+          </el-col>
+        </el-row>
+        <el-row>
+          <el-col :span="11">
+            <el-form-item label="线上名称" v-show="goods.saleType !=3 " prop="onlineName">
+              <el-input v-model="goods.onlineName"/>
+            </el-form-item>
+          </el-col>
+          <el-col :span="6">
+            <el-form-item label="线上售价" v-show="goods.saleType !=3" prop="onlinePrice">
+              <el-input v-model="goods.onlinePrice" placeholder="0.00">
+                <template slot="append">元</template>
+              </el-input>
+            </el-form-item>
+          </el-col>
+          <el-col :span="6">
+            <el-form-item label="线上规格" v-show="goods.saleType !=3" prop="onlineSpec">
+              <el-input v-model="goods.onlineSpec"/>
+            </el-form-item>
+          </el-col>
+        </el-row>
+        <el-row>
+          <el-col :span="11">
+            <el-form-item label="线下名称" v-show="goods.saleType !=1" prop="offlineName">
+              <el-input v-model="goods.offlineName"/>
+            </el-form-item>
+          </el-col>
+          <el-col :span="6">
+            <el-form-item label="线下价格" v-show="goods.saleType !=1" prop="offlinePrice">
+              <el-input v-model="goods.offlinePrice" placeholder="0.00">
+                <template slot="append">元</template>
+              </el-input>
+            </el-form-item>
+          </el-col>
+          <el-col :span="6">
+            <el-form-item label="线下规格" v-show="goods.saleType !=1" prop="offlineSpec">
+              <el-input v-model="goods.offlineSpec"/>
             </el-form-item>
           </el-col>
         </el-row>
@@ -81,96 +119,13 @@
         </el-row>
         <el-row>
           <el-col :span="8">
-            <el-form-item label="线上名称" prop="onlineName">
-              <el-input v-model="goods.onlineName"/>
-            </el-form-item>
-          </el-col>
-          <el-col :span="6">
-            <el-form-item label="线上售价" prop="onlinePrice">
-              <el-input v-model="goods.onlinePrice" placeholder="0.00">
-                <template slot="append">元</template>
-              </el-input>
-            </el-form-item>
-          </el-col>
-          <el-col :span="5">
-            <el-form-item label="线上销量" prop="onlineSales">
-              <el-input v-model="goods.onlineSales"/>
-            </el-form-item>
-          </el-col>
-          <el-col :span="5">
-            <el-form-item label="线上规格" prop="onlineSpec">
-              <el-input v-model="goods.onlineSpec"/>
-            </el-form-item>
-          </el-col>
-        </el-row>
-        <el-row>
-          <el-col :span="8">
-            <el-form-item label="线下名称" prop="offlineName">
-              <el-input v-model="goods.offlineName"/>
-            </el-form-item>
-          </el-col>
-          <el-col :span="6">
-            <el-form-item label="线下价格" prop="offlinePrice">
-              <el-input v-model="goods.offlinePrice" placeholder="0.00">
-                <template slot="append">元</template>
-              </el-input>
-            </el-form-item>
-          </el-col>
-          <el-col :span="5">
-            <el-form-item label="线下销量" prop="offlineSales">
-              <el-input v-model="goods.offlineSales"/>
-            </el-form-item>
-          </el-col>
-          <el-col :span="5">
-            <el-form-item label="线下规格" prop="offlineSpec">
-              <el-input v-model="goods.offlineSpec"/>
-            </el-form-item>
-          </el-col>
-        </el-row>
-        <el-row>
-          <!--          <el-col :span="6">-->
-          <!--            <el-form-item label="商品编号" prop="goodsSn">-->
-          <!--              <el-input v-model="goods.goodsSn"/>-->
-          <!--            </el-form-item>-->
-          <!--          </el-col>-->
-          <el-col :span="8">
             <el-form-item label="专柜价格" prop="counterPrice">
               <el-input v-model="goods.counterPrice" placeholder="0.00">
                 <template slot="append">元</template>
               </el-input>
             </el-form-item>
           </el-col>
-          <!--          <el-col :span="8">-->
-          <!--            <el-form-item label="当前价格" prop="retailPrice">-->
-          <!--              <el-input v-model="goods.retailPrice" placeholder="0.00">-->
-          <!--                <template slot="append">元</template>-->
-          <!--              </el-input>-->
-          <!--            </el-form-item>-->
-          <!--          </el-col>-->
           <el-col :span="8">
-            <el-form-item label="限购数量" prop="limit">
-              <el-input v-model="goods.limit"/>
-            </el-form-item>
-          </el-col>
-        </el-row>
-        <el-row>
-          <el-col :span="6">
-            <el-form-item label="是否新品" prop="isNew">
-              <el-radio-group v-model="goods.isNew">
-                <el-radio :label="true">新品</el-radio>
-                <el-radio :label="false">非新品</el-radio>
-              </el-radio-group>
-            </el-form-item>
-          </el-col>
-          <el-col :span="6">
-            <el-form-item label="是否推荐" prop="isHot">
-              <el-radio-group v-model="goods.isHot">
-                <el-radio :label="false">不推荐</el-radio>
-                <el-radio :label="true">推荐</el-radio>
-              </el-radio-group>
-            </el-form-item>
-          </el-col>
-          <el-col :span="6">
             <el-form-item label="限时特惠" prop="isChoice">
               <el-radio-group v-model="goods.isChoice">
                 <el-radio :label="false">普通</el-radio>
@@ -178,7 +133,32 @@
               </el-radio-group>
             </el-form-item>
           </el-col>
-          <el-col :span="6">
+          <el-col :span="8">
+            <el-form-item label="限购数量"
+                          v-show="goods.isChoice === true || goods.acStatus ===2 ||goods.acStatus ==98 || goods.acStatus == 99"
+                          prop="limit">
+              <el-input v-model="goods.limit"/>
+            </el-form-item>
+          </el-col>
+        </el-row>
+        <el-row>
+          <el-col :span="8">
+            <el-form-item label="是否新品" prop="isNew">
+              <el-radio-group v-model="goods.isNew">
+                <el-radio :label="true">新品</el-radio>
+                <el-radio :label="false">非新品</el-radio>
+              </el-radio-group>
+            </el-form-item>
+          </el-col>
+          <el-col :span="8">
+            <el-form-item label="是否推荐" prop="isHot">
+              <el-radio-group v-model="goods.isHot">
+                <el-radio :label="false">不推荐</el-radio>
+                <el-radio :label="true">推荐</el-radio>
+              </el-radio-group>
+            </el-form-item>
+          </el-col>
+          <el-col :span="8">
             <el-form-item label="是否在售" prop="isOnSale">
               <el-radio-group v-model="goods.isOnSale">
                 <el-radio :label="true">在售</el-radio>
@@ -204,7 +184,7 @@
           </el-col>
           <el-col :span="8">
             <el-form-item label="库存" prop="stock">
-              <el-input v-model="goods.stock"/>
+              <el-input-number v-model="goods.stock"/>
             </el-form-item>
           </el-col>
         </el-row>
@@ -218,12 +198,12 @@
             </el-form-item>
           </el-col>
           <el-col :span="8">
-            <el-form-item label="报货规格" prop="cargoSpec">
+            <el-form-item label="报货规格" v-show="goods.isCargo === true" prop="cargoSpec">
               <el-input v-model="goods.cargoSpec"/>
             </el-form-item>
           </el-col>
           <el-col :span="8">
-            <el-form-item label="报货说明" prop="cargoRemark">
+            <el-form-item label="报货说明" v-show="goods.isCargo === true" prop="cargoRemark">
               <el-input v-model="goods.cargoRemark"/>
             </el-form-item>
           </el-col>
@@ -577,25 +557,34 @@
 
     data() {
       return {
-        presellOptions: [{
-          value: 0,
-          label: '非预售'
-        }, {
-          value: 1,
-          label: '预售'
-        }],
+        presellOptions: [
+          {
+            label: '正常',
+            value: 0
+          },
+          {
+            label: '预售',
+            value: 1
+          },
+          {
+            label: '限时特价',
+            value: 2
+          }, {
+            label: '新用户赠送物品',
+            value: 98
+          }, {
+            value: 99,
+            label: '赠送物品'
+          }],
         onlineOptions: [{
           value: 1,
-          label: '小程序上线'
+          label: '线上'
         }, {
           value: 2,
-          label: '小程序&微菜场上线'
+          label: '线上&线下'
         }, {
           value: 3,
-          label: '微菜场上线'
-        }, {
-          value: 4,
-          label: '下线'
+          label: '线下'
         }],
         communityLoading: false,
         communityList: [],
@@ -608,7 +597,24 @@
         communities: [],
         galleryFileList: [],
         categoryIds: [],
-        goods: { picUrl: '', gallery: [], unit: '克' },
+        goods: {
+          counterPrice: 0,
+          brandId: 1,
+          acStatus: 0,
+          isChoice: false,
+          isNew: false,
+          isOnSale: false,
+          isHot: false,
+          isCargo: false,
+          onlinePrice: 0.00,
+          offlinePrice: 0.00,
+          inPrice: 0.00,
+          outPrice: 0.00,
+          stock: 1,
+          picUrl: '',
+          gallery: [],
+          unit: '克'
+        },
         specVisiable: false,
         specForm: { specification: '', value: '', picUrl: '' },
         multipleSpec: false,
@@ -634,13 +640,21 @@
         rebates: [],
         rules: {
           title: [{ required: true, message: '标题不能为空', trigger: 'blur' }],
+          acStatus: [{ required: true, message: '上架类型不能为空', trigger: 'blur' }],
           saleType: [{ required: true, message: '上架类型不能为空', trigger: 'blur' }],
           categoryId: [{ required: true, message: '物品种类不能为空', trigger: 'blur' }],
-          onlineName: [{ required: true, message: '线上名称不能为空', trigger: 'blur' }],
-          offlineName: [{ required: true, message: '线下名称不能为空', trigger: 'blur' }],
-          onlinePrice: [{ required: true, message: '线上价格不能为空', trigger: 'blur' }],
-          offlinePrice: [{ required: true, message: '线下价格不能为空', trigger: 'blur' }],
-          counterPrice: [{ required: true, message: '专柜价格不能为空', trigger: 'blur' }]
+          counterPrice: [{ required: true, message: '专柜价格不能为空', trigger: 'blur' }],
+          onlineName: [{ required: this.onlineShow, message: '线上名称不能为空', trigger: 'blur' }],
+          onlinePrice: [{ required: this.onlineShow, message: '线上价格不能为空', trigger: 'blur' }, {
+            type: 'number',
+            step: "0.01",
+            message: '价格必须为数字值'
+          }],
+          onlineSpec: [{ required: this.onlineShow, message: '线上规格不能为空', trigger: 'blur' }],
+          offlineName: [{ required: this.offlineShow, message: '线下名称不能为空', trigger: 'blur' }],
+          offlinePrice: [{ required: this.offlineShow, message: '线下价格不能为空', trigger: 'blur' }],
+          offlineSpec: [{ required: this.offlineShow, message: '线下规格不能为空', trigger: 'blur' }],
+          limit: [{ required: this.limitShow, message: '限购不能为空', trigger: 'blur' }]
         },
         editorInit: {
           language: 'zh_CN',
@@ -664,7 +678,17 @@
         return {
           'X-Wali-Token': getToken()
         }
+      },
+      onlineShow() {
+        return goods.saleType != 3
+      },
+      offlineShow() {
+        return this.goods.saleType != 1
+      },
+      limitShow() {
+        return this.goods.isChoice == true || goods.acStatus === 2 || goods.acStatus == 98 || goods.acStatus == 99
       }
+
     },
     created() {
       this.init()
