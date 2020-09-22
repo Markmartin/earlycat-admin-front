@@ -61,9 +61,9 @@
               <el-input v-model="goods.onlineName"/>
             </el-form-item>
           </el-col>
-          <el-col :span="6">
+          <el-col :span="7">
             <el-form-item label="线上售价" v-show="goods.saleType !=3" prop="onlinePrice">
-              <el-input v-model="goods.onlinePrice" placeholder="0.00">
+              <el-input v-model="goods.onlinePrice" placeholder="0.00" @input="(val) => {goods.onlinePrice = val.replace(/[^0-9.]/g, '').replace('.', '#*').replace(/\./g, '').replace('#*', '.');}">
                 <template slot="append">元</template>
               </el-input>
             </el-form-item>
@@ -80,9 +80,9 @@
               <el-input v-model="goods.offlineName"/>
             </el-form-item>
           </el-col>
-          <el-col :span="6">
+          <el-col :span="7">
             <el-form-item label="线下价格" v-show="goods.saleType !=1" prop="offlinePrice">
-              <el-input v-model="goods.offlinePrice" placeholder="0.00">
+              <el-input v-model="goods.offlinePrice" placeholder="0.00" @input="(val) => {goods.offlinePrice = val.replace(/[^0-9.]/g, '').replace('.', '#*').replace(/\./g, '').replace('#*', '.');}">
                 <template slot="append">元</template>
               </el-input>
             </el-form-item>
@@ -105,14 +105,16 @@
             </el-form-item>
           </el-col>
           <el-col :span="8">
-            <el-form-item label="工位" prop="station">
-              <el-input v-model="goods.station"/>
-            </el-form-item>
-          </el-col>
-          <el-col :span="8">
             <el-form-item label="商品单位">
               <el-select v-model="goods.unit" placeholder="请选择">
                 <el-option v-for="(item, index) in unitList" :key="index" :label="item" :value="item"/>
+              </el-select>
+            </el-form-item>
+          </el-col>
+          <el-col :span="8">
+            <el-form-item label="工位" prop="stationId">
+              <el-select v-model="goods.stationId" placeholder="请选择工位">
+                <el-option v-for="type in stationOption" :key="type.id" :label="type.name" :value="type.id"/>
               </el-select>
             </el-form-item>
           </el-col>
@@ -120,7 +122,7 @@
         <el-row>
           <el-col :span="8">
             <el-form-item label="专柜价格" prop="counterPrice">
-              <el-input v-model="goods.counterPrice" placeholder="0.00">
+              <el-input v-model="goods.counterPrice" placeholder="0.00" @input="(val) => {goods.counterPrice = val.replace(/[^0-9.]/g, '').replace('.', '#*').replace(/\./g, '').replace('#*', '.');}">
                 <template slot="append">元</template>
               </el-input>
             </el-form-item>
@@ -133,11 +135,11 @@
               </el-radio-group>
             </el-form-item>
           </el-col>
-          <el-col :span="8">
+          <el-col :span="6">
             <el-form-item label="限购数量"
                           v-show="goods.isChoice === true || goods.acStatus ===2 ||goods.acStatus ==98 || goods.acStatus == 99"
                           prop="limit">
-              <el-input v-model="goods.limit"/>
+              <el-input-number v-model="goods.limit"/>
             </el-form-item>
           </el-col>
         </el-row>
@@ -170,21 +172,21 @@
         <el-row>
           <el-col :span="8">
             <el-form-item label="入库价格" prop="inPrice">
-              <el-input v-model="goods.inPrice" placeholder="0.00">
+              <el-input v-model="goods.inPrice" placeholder="0.00" @input="(val) => {goods.inPrice = val.replace(/[^0-9.]/g, '').replace('.', '#*').replace(/\./g, '').replace('#*', '.');}">
                 <template slot="append">元</template>
               </el-input>
             </el-form-item>
           </el-col>
           <el-col :span="8">
             <el-form-item label="出库价格" prop="outPrice">
-              <el-input v-model="goods.outPrice" placeholder="0.00">
+              <el-input v-model="goods.outPrice" placeholder="0.00" @input="(val) => {goods.outPrice = val.replace(/[^0-9.]/g, '').replace('.', '#*').replace(/\./g, '').replace('#*', '.');}">
                 <template slot="append">元</template>
               </el-input>
             </el-form-item>
           </el-col>
           <el-col :span="8">
             <el-form-item label="库存" prop="stock">
-              <el-input-number v-model="goods.stock"/>
+              <el-input-number v-model="goods.stock" :min=1 />
             </el-form-item>
           </el-col>
         </el-row>
@@ -286,7 +288,6 @@
           <el-button :plain="true" type="primary" @click="handleSpecificationShow">添加</el-button>
         </el-col>
       </el-row>
-
       <el-table :data="specifications">
         <el-table-column property="specification" label="规格名"/>
         <el-table-column property="value" label="规格值">
@@ -492,7 +493,7 @@
 
     <div class="op-container">
       <el-button @click="handleCancel">取消</el-button>
-      <el-button v-permission="['POST /admin/goods/create']" type="primary" @click="handlePublish">上架</el-button>
+      <el-button v-permission="['POST /admin/goods/create']" type="primary" @click="submitCreateForm('goods')">上架</el-button>
     </div>
 
   </div>
@@ -544,7 +545,7 @@
 </style>
 
 <script>
-  import { publishGoods, listCatAndBrand } from '@/api/goods'
+  import { publishGoods, listCatAndBrand, getStationList } from '@/api/goods'
   import { createStorage, uploadPath } from '@/api/storage'
   import { listCommunity } from '@/api/community'
   import Editor from '@tinymce/tinymce-vue'
@@ -576,16 +577,18 @@
             value: 99,
             label: '赠送物品'
           }],
-        onlineOptions: [{
-          value: 1,
-          label: '线上'
-        }, {
-          value: 2,
-          label: '线上&线下'
-        }, {
-          value: 3,
-          label: '线下'
-        }],
+        onlineOptions: [
+          {
+            value: 1,
+            label: '线上'
+          }, {
+            value: 2,
+            label: '线上&线下'
+          }, {
+            value: 3,
+            label: '线下'
+          }],
+        stationOption: [],
         communityLoading: false,
         communityList: [],
         uploadPath,
@@ -598,18 +601,14 @@
         galleryFileList: [],
         categoryIds: [],
         goods: {
-          counterPrice: 0,
           brandId: 1,
           acStatus: 0,
+          saleType: 2,
           isChoice: false,
           isNew: false,
           isOnSale: false,
           isHot: false,
           isCargo: false,
-          onlinePrice: 0.00,
-          offlinePrice: 0.00,
-          inPrice: 0.00,
-          outPrice: 0.00,
           stock: 1,
           picUrl: '',
           gallery: [],
@@ -640,21 +639,10 @@
         rebates: [],
         rules: {
           title: [{ required: true, message: '标题不能为空', trigger: 'blur' }],
-          acStatus: [{ required: true, message: '上架类型不能为空', trigger: 'blur' }],
           saleType: [{ required: true, message: '上架类型不能为空', trigger: 'blur' }],
-          categoryId: [{ required: true, message: '物品种类不能为空', trigger: 'blur' }],
-          counterPrice: [{ required: true, message: '专柜价格不能为空', trigger: 'blur' }],
-          onlineName: [{ required: this.onlineShow, message: '线上名称不能为空', trigger: 'blur' }],
-          onlinePrice: [{ required: this.onlineShow, message: '线上价格不能为空', trigger: 'blur' }, {
-            type: 'number',
-            step: "0.01",
-            message: '价格必须为数字值'
-          }],
-          onlineSpec: [{ required: this.onlineShow, message: '线上规格不能为空', trigger: 'blur' }],
-          offlineName: [{ required: this.offlineShow, message: '线下名称不能为空', trigger: 'blur' }],
-          offlinePrice: [{ required: this.offlineShow, message: '线下价格不能为空', trigger: 'blur' }],
-          offlineSpec: [{ required: this.offlineShow, message: '线下规格不能为空', trigger: 'blur' }],
-          limit: [{ required: this.limitShow, message: '限购不能为空', trigger: 'blur' }]
+          acStatus: [{ required: true, message: '销售类型不能为空', trigger: 'blur' }],
+          categoryId: [{ required: true, message: '物品种类不能为空', trigger: 'change' }],
+          counterPrice: [{ required: true, message: '专柜价格不能为空', trigger: 'blur' }]
         },
         editorInit: {
           language: 'zh_CN',
@@ -678,27 +666,22 @@
         return {
           'X-Wali-Token': getToken()
         }
-      },
-      onlineShow() {
-        return goods.saleType != 3
-      },
-      offlineShow() {
-        return this.goods.saleType != 1
-      },
-      limitShow() {
-        return this.goods.isChoice == true || goods.acStatus === 2 || goods.acStatus == 98 || goods.acStatus == 99
       }
-
     },
     created() {
-      this.init()
+      this.init(),
+        this.getStationList()
     },
-
     methods: {
       init: function() {
         listCatAndBrand().then(response => {
           this.categoryList = response.data.data.categoryList
           this.brandList = response.data.data.brandList
+        })
+      },
+      getStationList: function() {
+        getStationList().then(response => {
+          this.stationOption = response.data.data
         })
       },
       communityMethod(query) {
@@ -725,57 +708,93 @@
         } else {
           this.communityList = []
         }
-      },
+      }
+      ,
       handleCategoryChange(value) {
         this.goods.categoryId = value[value.length - 1]
-      },
+      }
+      ,
       handleCancel: function() {
         this.$router.push({ path: '/goods/list' })
       },
-      handlePublish: function() {
-        let validateRes = false
-        this.$refs.goods.validate((valid) => {
-          validateRes = valid
-        })
-        if (!validateRes) {
-          return
-        }
-        if (this.goods.isChoice && (this.goods.limit === undefined || this.goods.limit === '')) {
-          this.$message.error('请填写限购数量')
-          return false
-        }
-        debugger
-        const finalGoods = {
-          communities: this.communities,
-          goods: this.goods,
-          specifications: this.specifications,
-          products: this.products,
-          rebates: this.rebates,
-          attributes: this.attributes
-        }
-        publishGoods(finalGoods).then(response => {
-          this.$notify.success({
-            title: '成功',
-            message: '创建成功'
-          })
-          this.$router.push({ path: '/goods/list' })
-        }).catch(response => {
-          MessageBox.alert('业务错误：' + response.data.errmsg, '警告', {
-            confirmButtonText: '确定',
-            type: 'error'
-          })
+
+      submitCreateForm(formName) {
+        this.$refs[formName].validate((valid) => {
+          if (valid) {
+            if (this.goods.isChoice || this.goods.acStatus === 2 || this.goods.acStatus == 98 || this.goods.acStatus == 99 && (this.goods.limit === undefined || this.goods.limit === '')) {
+              this.$message.error('限购物品的限购数量必填！！')
+              return false
+            }
+            //线下物品校验
+            if (this.goods.saleType != 3) {
+              if (this.goods.onlineName === undefined || this.goods.onlineName === '') {
+                this.$message.error('线上名称未填！！')
+                return false
+              }
+              if (this.goods.onlinePrice === undefined || this.goods.onlinePrice === '') {
+                this.$message.error('线上售价未填！！')
+                return false
+              }
+              if (this.goods.onlineSpec === undefined || this.goods.onlineSpec === '') {
+                this.$message.error('线上规格未填！！')
+                return false
+              }
+            }
+            //线上物品校验
+            if (this.goods.saleType != 1) {
+              if (this.goods.offlineName === undefined || this.goods.offlineName === '') {
+                this.$message.error('线下物品名称未填！！')
+                return false
+              }
+              if (this.goods.offlinePrice === undefined || this.goods.offlinePrice === '') {
+                this.$message.error('线下物品价格未填！！')
+                return false
+              }
+              if (this.goods.offlineSpec === undefined || this.goods.offlineSpec === '') {
+                this.$message.error('线下物品规格未填！！')
+                return false
+              }
+            }
+
+            const finalGoods = {
+              communities: this.communities,
+              goods: this.goods,
+              specifications: this.specifications,
+              products: this.products,
+              rebates: this.rebates,
+              attributes: this.attributes
+            }
+            publishGoods(finalGoods).then(response => {
+              this.$notify.success({
+                title: '成功',
+                message: '创建成功'
+              })
+              this.$router.push({ path: '/goods/list' })
+            }).catch(response => {
+              MessageBox.alert('业务错误：' + response.data.errmsg, '警告', {
+                confirmButtonText: '确定',
+                type: 'error'
+              })
+            })
+          } else {
+            console.log('error submit!!')
+            return false
+          }
         })
       },
+
       handleClose(tag) {
         this.keywords.splice(this.keywords.indexOf(tag), 1)
         this.goods.keywords = this.keywords.toString()
-      },
+      }
+      ,
       showInput() {
         this.newKeywordVisible = true
         this.$nextTick(_ => {
           this.$refs.newKeywordInput.$refs.input.focus()
         })
-      },
+      }
+      ,
       handleInputConfirm() {
         const newKeyword = this.newKeyword
         if (newKeyword) {
@@ -784,21 +803,25 @@
         }
         this.newKeywordVisible = false
         this.newKeyword = ''
-      },
+      }
+      ,
       uploadPicUrl: function(response) {
         this.goods.picUrl = response.data.url
-      },
+      }
+      ,
       uploadOverrun: function() {
         this.$message({
           type: 'error',
           message: '上传文件个数超出限制!最多上传5张图片!'
         })
-      },
+      }
+      ,
       handleGalleryUrl(response, file, fileList) {
         if (response.errno === 0) {
           this.goods.gallery.push(response.data.url)
         }
-      },
+      }
+      ,
       handleRemove: function(file, fileList) {
         for (var i = 0; i < this.goods.gallery.length; i++) {
           // 这里存在两种情况
@@ -816,7 +839,8 @@
             this.goods.gallery.splice(i, 1)
           }
         }
-      },
+      }
+      ,
       specChanged: function(label) {
         if (label === false) {
           this.specifications = [{ specification: '规格', value: '标准', picUrl: '' }]
@@ -834,14 +858,17 @@
           this.specifications = []
           this.products = []
         }
-      },
+      }
+      ,
       uploadSpecPicUrl: function(response) {
         this.specForm.picUrl = response.data.url
-      },
+      }
+      ,
       handleSpecificationShow() {
         this.specForm = { specification: '', value: '', picUrl: '' }
         this.specVisiable = true
-      },
+      }
+      ,
       handleSpecificationAdd() {
         var index = this.specifications.length - 1
         for (var i = 0; i < this.specifications.length; i++) {
@@ -865,12 +892,14 @@
         this.specVisiable = false
 
         this.specToProduct()
-      },
+      }
+      ,
       handleSpecificationDelete(row) {
         const index = this.specifications.indexOf(row)
         this.specifications.splice(index, 1)
         this.specToProduct()
-      },
+      }
+      ,
       specToProduct() {
         if (this.specifications.length === 0) {
           return
@@ -945,14 +974,17 @@
 
         this.products = products
         console.log(this.products)
-      },
+      }
+      ,
       handleProductShow(row) {
         this.productForm = Object.assign({}, row)
         this.productVisiable = true
-      },
+      }
+      ,
       uploadProductUrl: function(response) {
         this.productForm.url = response.data.url
-      },
+      }
+      ,
       handleProductEdit() {
         let idx = 0
         const productSn = []
@@ -980,27 +1012,33 @@
         //   }
         // }
         this.productVisiable = false
-      },
+      }
+      ,
       handleAttributeShow() {
         this.attributeForm = {}
         this.attributeVisiable = true
-      },
+      }
+      ,
       handleAttributeAdd() {
         this.attributes.unshift(this.attributeForm)
         this.attributeVisiable = false
-      },
+      }
+      ,
       handleAttributeDelete(row) {
         const index = this.attributes.indexOf(row)
         this.attributes.splice(index, 1)
-      },
+      }
+      ,
       handleRebateShow() {
         this.rebateForm = {}
         this.rebateVisiable = true
-      },
+      }
+      ,
       handleRebateAdd() {
         this.rebates.unshift(this.rebateForm)
         this.rebateVisiable = false
-      },
+      }
+      ,
       handleRebateDelete(row) {
         const index = this.rebates.indexOf(row)
         this.rebates.splice(index, 1)

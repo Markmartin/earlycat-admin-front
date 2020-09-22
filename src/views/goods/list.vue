@@ -40,10 +40,10 @@
               <img v-for="pic in props.row.gallery" :key="pic" :src="pic" class="gallery">
             </el-form-item>
             <el-form-item label="商品介绍">
-              <span>{{ props.row.title }}</span>
+              <span>{{ props.row.brief }}</span>
             </el-form-item>
             <el-form-item label="标题">
-              <span>{{ props.row.brief }}</span>
+              <span>{{ props.row.title }}</span>
             </el-form-item>
             <el-form-item label="副标题">
               <span>{{ props.row.subtitle }}</span>

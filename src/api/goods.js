@@ -117,3 +117,9 @@ export function saveOrUpdatePresellItem(data) {
   })
 }
 
+export function getStationList() {
+  return request({
+    url: '/goods/getStationList',
+    method: 'get',
+  })
+}
