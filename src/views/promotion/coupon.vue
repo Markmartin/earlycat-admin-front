@@ -234,6 +234,10 @@ const defaultTypeOptions = [
   {
     label: '拉新赠券',
     value: 4
+  },
+  {
+    label: '老用户专享',
+    value: 5
   }
 ]
 
