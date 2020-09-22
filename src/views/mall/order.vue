@@ -42,7 +42,7 @@
       <el-button v-permission="['POST /admin/order/export']" :loading="downloadLoading" class="filter-item" type="primary" icon="el-icon-download" @click="handleDownload(false, 'downloadLoading')">导出配送单</el-button>
       <el-button v-permission="['POST /admin/order/export']" :loading="downloadLoading1" class="filter-item" type="primary" icon="el-icon-download" @click="handleDownload(true, 'downloadLoading1')">导出(含商品)</el-button>
       <!--<el-button v-permission="['POST /admin/order/print']" class="filter-item" type="primary" icon="el-icon-printer" @click="handlePrinter">打印</el-button>-->
-      <el-button v-permission="['POST /admin/order/batchship']" class="filter-item" type="primary" icon="el-icon-tickets" @click="handleBatchship">批量发货</el-button>
+      <!--<el-button v-permission="['POST /admin/order/batchship']" class="filter-item" type="primary" icon="el-icon-tickets" @click="handleBatchship">批量发货</el-button>-->
       <!-- <el-button v-permission="['POST /admin/order/print']" class="filter-item" type="primary" icon="el-icon-tickets" @click="exportPurchasing">测试导出采购单</el-button> -->
     </div>
 
@@ -76,7 +76,7 @@
         <template slot-scope="scope">
           <el-button v-permission="['GET /admin/order/detail']" type="primary" size="mini" @click="handleDetail(scope.row)">详情</el-button>
           <!--<el-button v-permission="['POST /admin/order/print']" type="primary" size="mini" @click="handlePrinter(scope.row)">打印</el-button>-->
-          <el-button v-permission="['POST /admin/order/ship']" v-if="scope.row.orderStatus==201" type="primary" size="mini" @click="handleShip(scope.row)">发货</el-button>
+          <!--<el-button v-permission="['POST /admin/order/ship']" v-if="scope.row.orderStatus==201" type="primary" size="mini" @click="handleShip(scope.row)">发货</el-button>-->
           <!-- <el-button v-permission="['POST /admin/order/arrive']" v-if="scope.row.orderStatus==201 || scope.row.orderStatus==301" type="primary" size="mini" @click="handleArrive(scope.row)">到达</el-button> -->
           <el-button v-permission="['POST /admin/order/refund']" v-if="scope.row.orderStatus==201 || scope.row.orderStatus==202 || scope.row.orderStatus==301 || scope.row.orderStatus==302" type="primary" size="mini" @click="handleRefund(scope.row)">退款</el-button>
         </template>
