@@ -186,29 +186,29 @@
             </el-form-item>
           </el-col>
         </el-row>
-        <el-row>
-          <el-col :span="8">
-            <el-form-item label="入库价格" prop="inPrice">
-              <el-input v-model="goods.inPrice" placeholder="0.00"
-                        @input="(val) => {goods.inPrice = val.replace(/[^0-9.]/g, '').replace('.', '#*').replace(/\./g, '').replace('#*', '.');}">
-                <template slot="append">元</template>
-              </el-input>
-            </el-form-item>
-          </el-col>
-          <el-col :span="8">
-            <el-form-item label="出库价格" prop="outPrice">
-              <el-input v-model="goods.outPrice" placeholder="0.00"
-                        @input="(val) => {goods.outPrice = val.replace(/[^0-9.]/g, '').replace('.', '#*').replace(/\./g, '').replace('#*', '.');}">
-                <template slot="append">元</template>
-              </el-input>
-            </el-form-item>
-          </el-col>
-          <el-col :span="8">
-            <el-form-item label="库存" prop="stock">
-              <el-input-number v-model="goods.stock" :min=1 />
-            </el-form-item>
-          </el-col>
-        </el-row>
+        <!--<el-row>-->
+          <!--<el-col :span="8">-->
+            <!--<el-form-item label="入库价格" prop="inPrice">-->
+              <!--<el-input v-model="goods.inPrice" placeholder="0.00"-->
+                        <!--@input="(val) => {goods.inPrice = val.replace(/[^0-9.]/g, '').replace('.', '#*').replace(/\./g, '').replace('#*', '.');}">-->
+                <!--<template slot="append">元</template>-->
+              <!--</el-input>-->
+            <!--</el-form-item>-->
+          <!--</el-col>-->
+          <!--<el-col :span="8">-->
+            <!--<el-form-item label="出库价格" prop="outPrice">-->
+              <!--<el-input v-model="goods.outPrice" placeholder="0.00"-->
+                        <!--@input="(val) => {goods.outPrice = val.replace(/[^0-9.]/g, '').replace('.', '#*').replace(/\./g, '').replace('#*', '.');}">-->
+                <!--<template slot="append">元</template>-->
+              <!--</el-input>-->
+            <!--</el-form-item>-->
+          <!--</el-col>-->
+          <!--<el-col :span="8">-->
+            <!--<el-form-item label="库存" prop="stock">-->
+              <!--<el-input-number v-model="goods.stock" :min=1 />-->
+            <!--</el-form-item>-->
+          <!--</el-col>-->
+        <!--</el-row>-->
         <el-row>
           <el-col :span="8">
             <el-form-item label="是否报货" prop="isCargo">
@@ -362,8 +362,10 @@
         <el-table-column property="productSn" width="150" label="货品规格编号"/>
         <el-table-column property="unit" width="100" label="货品单位"/>
         <el-table-column property="value" width="100" label="单位数值"/>
-        <el-table-column property="price" width="100" label="货品售价"/>
-        <el-table-column property="number" width="100" label="货品数量"/>
+        <el-table-column property="price" width="100" label="货品售价(元)"/>
+        <el-table-column property="inPrice" width="100" label="入库价格(元)"/>
+        <el-table-column property="outPrice" width="100" label="出库售价(元)"/>
+        <el-table-column property="number" width="100" label="货品库存"/>
         <el-table-column property="url" width="100" label="货品图片">
           <template slot-scope="scope">
             <img v-if="scope.row.url" :src="scope.row.url" width="40">
@@ -403,7 +405,13 @@
           <el-form-item label="货品售价" prop="price">
             <el-input v-model="productForm.price"/>
           </el-form-item>
-          <el-form-item label="货品数量" prop="number">
+          <el-form-item label="入库价格" prop="price">
+            <el-input v-model="productForm.inPrice"/>
+          </el-form-item>
+          <el-form-item label="出库价格" prop="price">
+            <el-input v-model="productForm.outPrice"/>
+          </el-form-item>
+          <el-form-item label="货品库存" prop="number">
             <el-input v-model="productForm.number"/>
           </el-form-item>
           <el-form-item label="货品图片" prop="url">
