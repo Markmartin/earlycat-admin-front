@@ -67,3 +67,34 @@ export function rbatchshipOrder(data) {
     data
   })
 }
+
+export function expresslist(params) {
+  return request({
+    url: '/order/expresslist',
+    method: 'get',
+    params: params
+  })
+}
+
+export function sendExpress() {
+  return request({
+    url: '/order/sendexpress',
+    method: 'get'
+  })
+}
+
+export function express(params) {
+  return request({
+    url: '/order/express',
+    method: 'get',
+    params: params
+  })
+}
+
+export function uploadExpress(params) {
+  return request({
+    url: '/order/uploadExpress',
+    method: 'get',
+    params: params
+  })
+}

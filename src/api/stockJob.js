@@ -16,14 +16,6 @@ export function inList(params) {
   })
 }
 
-export function gather(params) {
-  return request({
-    url: '/stockJob/gather',
-    method: 'get',
-    params: params
-  })
-}
-
 export function updateOut(data) {
   return request({
     url: '/stockJob/updateOut',
@@ -95,13 +87,5 @@ export function exportOutSearch(params) {
     method: 'get',
     params: params,
     responseType: 'blob'
-  })
-}
-
-export function getSumPur(params) {
-  return request({
-    url: '/stockJob/getSumPur',
-    method: 'get',
-    params: params
   })
 }

@@ -47,3 +47,11 @@ export function poEdit(data) {
     data
   })
 }
+
+export function allList(params) {
+  return request({
+      url: '/po/allList',
+      method: 'get',
+      params: params
+  })
+}

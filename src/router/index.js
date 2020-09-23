@@ -79,6 +79,51 @@ export default new Router({
 
 export const asyncRouterMap = [
   {
+    path: '/po',
+    component: Layout,
+    redirect: 'noredirect',
+    alwaysShow: true,
+    name: 'poManage',
+    meta: {
+      title: '采购管理',
+      icon: 'goods'
+    },
+    children: [
+      {
+        path: 'index',
+        component: () => import('@/views/po/index'),
+        name: 'poIndex',
+        meta: {
+          perms: ['GET /admin/po/allList'],
+          title: '采购列表',
+          noCache: true
+        }
+      },
+      {
+        path: 'list',
+        component: () => import('@/views/po/list'),
+        name: 'poList',
+        meta: {
+          perms: ['GET /admin/po/list', 'POST /admin/po/delete'],
+          title: '采购列表',
+          noCache: true
+        },
+        hidden: true
+      },
+      {
+        path: 'details',
+        component: () => import('@/views/po/details'),
+        name: 'poDetails',
+        meta: {
+          perms: ['POST /admin/goods/details'],
+          title: '采购详情',
+          noCache: true
+        },
+        hidden: true
+      }
+    ]
+  },
+  {
     path: '/stockJob',
     component: Layout,
     redirect: 'noredirect',
@@ -86,7 +131,7 @@ export const asyncRouterMap = [
     name: 'stockJobManage',
     meta: {
       title: '仓库管理',
-      icon: 'community'
+      icon: 'mall'
     },
     children: [
       {
@@ -94,7 +139,7 @@ export const asyncRouterMap = [
         component: () => import('@/views/stockJob/out'),
         name: 'out',
         meta: {
-          perms: ['GET /admin/stockJob/list'],
+          perms: ['GET /admin/stockJob/outList'],
           title: '出库管理',
           noCache: true
         }
@@ -104,7 +149,7 @@ export const asyncRouterMap = [
         component: () => import('@/views/stockJob/in'),
         name: 'in',
         meta: {
-          perms: ['GET /admin/stockJob/list'],
+          perms: ['GET /admin/stockJob/inList'],
           title: '入库管理',
           noCache: true
         }
@@ -293,6 +338,16 @@ export const asyncRouterMap = [
         }
       },
       {
+        path: 'express',
+        component: () => import('@/views/mall/express'),
+        name: 'express',
+        meta: {
+          perms: ['GET /admin/order/expresslist'],
+          title: '运单管理',
+          noCache: true
+        }
+      },
+      {
         path: 'issue',
         component: () => import('@/views/mall/issue'),
         name: 'issue',
@@ -414,40 +469,7 @@ export const asyncRouterMap = [
       }
     ]
   },
-  {
-    path: '/po',
-    component: Layout,
-    redirect: 'noredirect',
-    alwaysShow: true,
-    name: 'poManage',
-    meta: {
-      title: '采购管理',
-      icon: 'goods'
-    },
-    children: [
-      {
-        path: 'list',
-        component: () => import('@/views/po/list'),
-        name: 'poList',
-        meta: {
-          perms: ['GET /admin/po/list', 'POST /admin/po/delete'],
-          title: '采购列表',
-          noCache: true
-        }
-      },
-      {
-        path: 'details',
-        component: () => import('@/views/po/details'),
-        name: 'poDetails',
-        meta: {
-          perms: ['POST /admin/goods/details'],
-          title: '采购详情',
-          noCache: true
-        },
-        hidden: true
-      }
-    ]
-  },
+  
   {
     path: '/promotion',
     component: Layout,
