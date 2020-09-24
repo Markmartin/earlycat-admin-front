@@ -59,12 +59,12 @@
         </el-row>
         <el-row>
           <el-col :span="12">
-            <el-form-item label="线上名称" v-show="goods.saleType !=3 " prop="onlineName">
+            <el-form-item label="线上名称" v-show="goods.saleType !=2 " prop="onlineName">
               <el-input v-model="goods.onlineName"/>
             </el-form-item>
           </el-col>
           <el-col :span="6">
-            <el-form-item label="线上售价" v-show="goods.saleType !=3" prop="onlinePrice">
+            <el-form-item label="线上售价" v-show="goods.saleType !=2" prop="onlinePrice">
               <el-input v-model="goods.onlinePrice" placeholder="0.00"
                         @input="(val) => {goods.onlinePrice = val.replace(/[^0-9.]/g, '').replace('.', '#*').replace(/\./g, '').replace('#*', '.');}"
                         v-bind:disabled="goods.acStatus ===98 || goods.acStatus === 99">
@@ -78,7 +78,7 @@
                       </el-form-item>
                     </el-col>-->
           <el-col :span="6">
-            <el-form-item label="商品单位" v-show="goods.saleType !=3">
+            <el-form-item label="商品单位" v-show="goods.saleType !=2">
               <el-select v-model="goods.unit" placeholder="请选择">
                 <el-option v-for="(item, index) in unitList" :key="index" :label="item" :value="item"/>
               </el-select>
@@ -765,8 +765,8 @@
               this.$message.error('限购物品的限购数量必填！！')
               return false
             }
-            //线下物品校验
-            if (this.goods.saleType != 3) {
+            //线上物品校验
+            if (this.goods.saleType != 2) {
               if (this.goods.onlineName === undefined || this.goods.onlineName === '') {
                 this.$message.error('线上名称未填！！')
                 return false
@@ -776,7 +776,7 @@
                 return false
               }
             }
-            //线上物品校验
+            //线下物品校验
             if (this.goods.saleType != 1) {
               if (this.goods.offlineName === undefined || this.goods.offlineName === '') {
                 this.$message.error('线下物品名称未填！！')

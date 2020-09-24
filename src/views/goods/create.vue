@@ -59,12 +59,12 @@
         </el-row>
         <el-row>
           <el-col :span="12">
-            <el-form-item label="线上名称" v-show="goods.saleType !=3 " prop="onlineName">
+            <el-form-item label="线上名称" v-show="goods.saleType !=2 " prop="onlineName">
               <el-input v-model="goods.onlineName"/>
             </el-form-item>
           </el-col>
           <el-col :span="6">
-            <el-form-item label="线上售价" v-show="goods.saleType !=3" prop="onlinePrice">
+            <el-form-item label="线上售价" v-show="goods.saleType !=2" prop="onlinePrice">
               <el-input v-model="goods.onlinePrice" placeholder="0.00"
                         @input="(val) => {goods.onlinePrice = val.replace(/[^0-9.]/g, '').replace('.', '#*').replace(/\./g, '').replace('#*', '.');}"
                         v-bind:disabled="goods.acStatus ===98 || goods.acStatus === 99">
@@ -72,13 +72,8 @@
               </el-input>
             </el-form-item>
           </el-col>
-          <!--          <el-col :span="6">
-                      <el-form-item label="线上规格" v-show="goods.saleType !=3" prop="onlineSpec">
-                        <el-input v-model="goods.onlineSpec"/>
-                      </el-form-item>
-                    </el-col>-->
           <el-col :span="6">
-            <el-form-item label="商品单位" v-show="goods.saleType !=3">
+            <el-form-item label="商品单位" v-show="goods.saleType !=2">
               <el-select v-model="goods.unit" placeholder="请选择">
                 <el-option v-for="(item, index) in unitList" :key="index" :label="item" :value="item"/>
               </el-select>
@@ -100,11 +95,6 @@
               </el-input>
             </el-form-item>
           </el-col>
-          <!--          <el-col :span="6">
-                      <el-form-item label="线下规格" v-show="goods.saleType !=1" prop="offlineSpec">
-                        <el-input v-model="goods.offlineSpec"/>
-                      </el-form-item>
-                    </el-col>-->
           <el-col :span="6">
             <el-form-item label="商品单位" v-show="goods.saleType !=1">
               <el-select v-model="goods.unit" placeholder="请选择">
@@ -114,16 +104,6 @@
           </el-col>
         </el-row>
         <el-row>
-          <!--<el-col :span="8">
-            <el-form-item label="关键字">
-              <el-tag v-for="tag in keywords" :key="tag" closable type="primary" @close="handleClose(tag)">
-                {{ tag }}
-              </el-tag>
-              <el-input v-if="newKeywordVisible" ref="newKeywordInput" v-model="newKeyword" class="input-new-keyword"
-                        @keyup.enter.native="handleInputConfirm" @blur="handleInputConfirm"/>
-              <el-button v-else class="button-new-keyword" type="primary" @click="showInput">+ 增加</el-button>
-            </el-form-item>
-          </el-col>-->
         </el-row>
         <el-row>
           <el-col :span="6">
@@ -186,29 +166,6 @@
             </el-form-item>
           </el-col>
         </el-row>
-        <!--<el-row>-->
-          <!--<el-col :span="8">-->
-            <!--<el-form-item label="入库价格" prop="inPrice">-->
-              <!--<el-input v-model="goods.inPrice" placeholder="0.00"-->
-                        <!--@input="(val) => {goods.inPrice = val.replace(/[^0-9.]/g, '').replace('.', '#*').replace(/\./g, '').replace('#*', '.');}">-->
-                <!--<template slot="append">元</template>-->
-              <!--</el-input>-->
-            <!--</el-form-item>-->
-          <!--</el-col>-->
-          <!--<el-col :span="8">-->
-            <!--<el-form-item label="出库价格" prop="outPrice">-->
-              <!--<el-input v-model="goods.outPrice" placeholder="0.00"-->
-                        <!--@input="(val) => {goods.outPrice = val.replace(/[^0-9.]/g, '').replace('.', '#*').replace(/\./g, '').replace('#*', '.');}">-->
-                <!--<template slot="append">元</template>-->
-              <!--</el-input>-->
-            <!--</el-form-item>-->
-          <!--</el-col>-->
-          <!--<el-col :span="8">-->
-            <!--<el-form-item label="库存" prop="stock">-->
-              <!--<el-input-number v-model="goods.stock" :min=1 />-->
-            <!--</el-form-item>-->
-          <!--</el-col>-->
-        <!--</el-row>-->
         <el-row>
           <el-col :span="8">
             <el-form-item label="是否报货" prop="isCargo">
@@ -747,8 +704,9 @@
               this.$message.error('限购物品的限购数量必填！！')
               return false
             }
-            //线下物品校验
-            if (this.goods.saleType != 3) {
+            //线上物品校验
+            if (this.goods.saleType != 2) {
+              debugger
               if (this.goods.onlineName === undefined || this.goods.onlineName === '') {
                 this.$message.error('线上名称未填！！')
                 return false
@@ -758,8 +716,9 @@
                 return false
               }
             }
-            //线上物品校验
+            //线下物品校验
             if (this.goods.saleType != 1) {
+              debugger
               if (this.goods.offlineName === undefined || this.goods.offlineName === '') {
                 this.$message.error('线下物品名称未填！！')
                 return false
