@@ -592,10 +592,10 @@
             label: '线上'
           }, {
             value: 2,
-            label: '线上&线下'
+            label: '线下'
           }, {
             value: 3,
-            label: '线下'
+            label: '线上&线下'
           }],
         stationOption: [],
         communityLoading: false,
