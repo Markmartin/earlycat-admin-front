@@ -72,7 +72,9 @@
 
 <!--      <el-table-column align="center" label="商品编号" prop="goodsSn"/>-->
 
-      <el-table-column align="center" min-width="100" label="名称" prop="name"/>
+      <el-table-column align="center" min-width="100" label="线上名称" prop="onlineName"/>
+
+      <el-table-column align="center" min-width="100" label="线下名称" prop="offlineName"/>
 
       <el-table-column align="center" property="iconUrl" label="图片">
         <template slot-scope="scope">
