@@ -28,8 +28,13 @@
     <!-- 添加或修改对话框 -->
     <el-dialog :title="textMap[dialogStatus]" :visible.sync="dialogFormVisible">
       <el-form ref="dataForm" :rules="rules" :model="dataForm" status-icon label-position="left" label-width="100px" style="width: 400px; margin-left:50px;">
-        <el-form-item label="活动状态" prop="goodsId">
-          <el-select v-model="dataForm.goodsId"  placeholder="请选择预售状态">
+        <el-form-item v-if="this.$route.query.type === 1" label="预售物品" prop="goodsId">
+          <el-select v-model="dataForm.goodsId" filterable  placeholder="请选择预售物品">
+            <el-option v-for="item in presellGoodsList" :key="item.id" :label="item.name" :value="item.id"/>
+          </el-select>
+        </el-form-item>
+        <el-form-item v-if="this.$route.query.type === 2" label="特价商品" prop="goodsId">
+          <el-select v-model="dataForm.goodsId" filterable  placeholder="请选择限时特价商品">
             <el-option v-for="item in presellGoodsList" :key="item.id" :label="item.name" :value="item.id"/>
           </el-select>
         </el-form-item>

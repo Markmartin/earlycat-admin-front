@@ -18,7 +18,7 @@
 
     <!-- 查询结果 -->
     <el-table v-loading="listLoading" :data="list" element-loading-text="正在查询中。。。" border fit highlight-current-row>
-      <el-table-column align="center" label="状态" width="80" prop="type">
+      <el-table-column align="center" label="销售类型" width="80" prop="type">
         <template slot-scope="scope">
           <span v-if="scope.row.type == 0">其他</span>
           <span v-if="scope.row.type == 1">预售</span>
@@ -42,8 +42,11 @@
           <el-button v-permission="['POST /admin/zcmpresell/update']" type="primary" size="mini"
                      @click="handleUpdate(scope.row)">编辑
           </el-button>
-          <el-button v-permission="['POST /admin/zcmpresell/update']" type="primary" size="small"
+          <el-button v-if="scope.row.type == 1" v-permission="['POST /admin/zcmpresell/update']" type="primary" size="small"
                      @click="handleItemGoods(scope.row)">编辑预售物品
+          </el-button>
+          <el-button v-else="scope.row.type == 2" v-permission="['POST /admin/zcmpresell/update']" type="primary" size="small"
+                     @click="handleItemGoods(scope.row)">编辑特价物品
           </el-button>
           <el-button v-permission="['POST /admin/zcmpresell/delete']" type="danger" size="mini"
                      @click="handleDelete(scope.row)">删除

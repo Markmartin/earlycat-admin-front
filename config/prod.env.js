@@ -1,5 +1,5 @@
 module.exports = {
   NODE_ENV: '"production"',
   ENV_CONFIG: '"prod"',
-  BASE_API: '"https://server.earlycat.cn/admin"'
+  BASE_API: '"http://server.earlycat.cn/admin"'
 }
