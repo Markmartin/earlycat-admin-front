@@ -100,7 +100,7 @@ export default {
     },
     async listCategory() {
       const res = await listCategory();
-      this.categorys = res.data.data;
+      this.categorys = res.data.data.list;
     },
     CreateOneFormPage() {
       print({
