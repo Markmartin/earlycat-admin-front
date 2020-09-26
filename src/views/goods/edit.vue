@@ -72,16 +72,9 @@
               </el-input>
             </el-form-item>
           </el-col>
-          <!--          <el-col :span="6">
-                      <el-form-item label="线上规格" v-show="goods.saleType !=3" prop="onlineSpec">
-                        <el-input v-model="goods.onlineSpec"/>
-                      </el-form-item>
-                    </el-col>-->
           <el-col :span="6">
-            <el-form-item label="商品单位" v-show="goods.saleType !=2">
-              <el-select v-model="goods.unit" placeholder="请选择">
-                <el-option v-for="(item, index) in unitList" :key="index" :label="item" :value="item"/>
-              </el-select>
+            <el-form-item label="商品单位" v-show="goods.saleType !=2 " prop="unit" >
+              <el-input v-model="goods.unit" @input="handleUnit" />
             </el-form-item>
           </el-col>
         </el-row>
@@ -100,16 +93,9 @@
               </el-input>
             </el-form-item>
           </el-col>
-          <!--          <el-col :span="6">
-                      <el-form-item label="线下规格" v-show="goods.saleType !=1" prop="offlineSpec">
-                        <el-input v-model="goods.offlineSpec"/>
-                      </el-form-item>
-                    </el-col>-->
           <el-col :span="6">
-            <el-form-item label="商品单位" v-show="goods.saleType !=1">
-              <el-select v-model="goods.unit" placeholder="请选择">
-                <el-option v-for="(item, index) in unitList" :key="index" :label="item" :value="item"/>
-              </el-select>
+            <el-form-item label="商品单位" v-show="goods.saleType !=1 " prop="unit">
+              <el-input v-model="goods.unit" @input="handleUnit"/>
             </el-form-item>
           </el-col>
         </el-row>
@@ -186,29 +172,6 @@
             </el-form-item>
           </el-col>
         </el-row>
-       <!-- <el-row>
-          <el-col :span="8">
-            <el-form-item label="入库价格" prop="inPrice">
-              <el-input v-model="goods.inPrice" placeholder="0.00"
-                        @input="(val) => {goods.inPrice = val.replace(/[^0-9.]/g, '').replace('.', '#*').replace(/\./g, '').replace('#*', '.');}">
-                <template slot="append">元</template>
-              </el-input>
-            </el-form-item>
-          </el-col>
-          <el-col :span="8">
-            <el-form-item label="出库价格" prop="outPrice">
-              <el-input v-model="goods.outPrice" placeholder="0.00"
-                        @input="(val) => {goods.outPrice = val.replace(/[^0-9.]/g, '').replace('.', '#*').replace(/\./g, '').replace('#*', '.');}">
-                <template slot="append">元</template>
-              </el-input>
-            </el-form-item>
-          </el-col>
-          <el-col :span="8">
-            <el-form-item label="库存" prop="stock">
-              <el-input-number v-model="goods.stock" :min=1 />
-            </el-form-item>
-          </el-col>
-        </el-row>-->
         <el-row>
           <el-col :span="8">
             <el-form-item label="是否报货" prop="isCargo">
@@ -395,9 +358,7 @@
             <el-input v-model="productForm.productSn"/>
           </el-form-item>
           <el-form-item label="货品单位" prop="unit">
-            <el-select v-model="productForm.unit" placeholder="请选择">
-              <el-option v-for="(item, index) in unitList" :key="index" :label="item" :value="item"/>
-            </el-select>
+            <el-input v-model="productForm.unit"/>
           </el-form-item>
           <el-form-item label="单位数值" prop="value">
             <el-input v-model="productForm.value"/>
@@ -412,7 +373,7 @@
             <el-input v-model="productForm.outPrice"/>
           </el-form-item>
           <el-form-item label="货品库存" prop="number">
-            <el-input v-model="productForm.number"/>
+            <el-input-number v-model="productForm.number" :min="0" />
           </el-form-item>
           <el-form-item label="货品图片" prop="url">
             <el-upload
@@ -552,10 +513,13 @@
   import Editor from '@tinymce/tinymce-vue'
   import { MessageBox } from 'element-ui'
   import { getToken } from '@/utils/auth'
+  import ElInputNumber from "../../../node_modules/element-ui/packages/input-number/src/input-number.vue";
 
   export default {
     name: 'GoodsEdit',
-    components: { Editor },
+    components: {
+      ElInputNumber,
+      Editor },
     data() {
       return {
         presellOptions: [
@@ -751,6 +715,13 @@
             this.goods.counterPrice = 0.00
         }
       },
+
+      handleUnit(value) {
+        for (var i = 0; i < this.products.length; i++) {
+          const v = this.products[i]
+          v.unit = value;
+        }
+      },
       handleCategoryChange(value) {
         this.goods.categoryId = value[value.length - 1]
       },
@@ -791,6 +762,14 @@
             if (this.goods.categoryId === undefined || this.goods.categoryId === '') {
               this.$message.error('请选择物品种类！！')
               return false
+            }
+
+            for (var i = 0; i < this.products.length; i++) {
+              const v = this.products[i];
+              if (v.number === undefined || v.number < 0) {
+                this.$message.error('货品库存异常！！');
+                return false
+              }
             }
 
             const finalGoods = {
@@ -1036,6 +1015,14 @@
         this.productForm.url = response.data.url
       },
       handleProductEdit() {
+        if(this.productForm.number === undefined || this.productForm.number < 0){
+          this.$message({
+            type: 'warning',
+            message: '货品库存异常！'
+          })
+          return false
+        }
+
         let idx = 0
         const productSn = []
         for (var i = 0; i < this.products.length; i++) {
