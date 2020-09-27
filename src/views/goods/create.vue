@@ -73,10 +73,8 @@
             </el-form-item>
           </el-col>
           <el-col :span="6">
-            <el-form-item label="商品单位" v-show="goods.saleType !=2">
-              <el-select v-model="goods.unit" placeholder="请选择">
-                <el-option v-for="(item, index) in unitList" :key="index" :label="item" :value="item"/>
-              </el-select>
+            <el-form-item label="商品单位" v-show="goods.saleType !=2 " prop="unit" >
+              <el-input v-model="goods.unit" @input="handleUnit" />
             </el-form-item>
           </el-col>
         </el-row>
@@ -96,10 +94,8 @@
             </el-form-item>
           </el-col>
           <el-col :span="6">
-            <el-form-item label="商品单位" v-show="goods.saleType !=1">
-              <el-select v-model="goods.unit" placeholder="请选择">
-                <el-option v-for="(item, index) in unitList" :key="index" :label="item" :value="item"/>
-              </el-select>
+            <el-form-item label="商品单位" v-show="goods.saleType !=1 " prop="unit" >
+              <el-input v-model="goods.unit" @input="handleUnit" />
             </el-form-item>
           </el-col>
         </el-row>
@@ -349,10 +345,13 @@
           <el-form-item label="货品规格编号" prop="productSn">
             <el-input v-model="productForm.productSn"/>
           </el-form-item>
+          <!--<el-form-item label="货品单位" prop="unit">-->
+            <!--<el-select v-model="productForm.unit" placeholder="请选择">-->
+              <!--<el-option v-for="(item, index) in unitList" :key="index" :label="item" :value="item"/>-->
+            <!--</el-select>-->
+          <!--</el-form-item>-->
           <el-form-item label="货品单位" prop="unit">
-            <el-select v-model="productForm.unit" placeholder="请选择">
-              <el-option v-for="(item, index) in unitList" :key="index" :label="item" :value="item"/>
-            </el-select>
+            <el-input v-model="productForm.unit"/>
           </el-form-item>
           <el-form-item label="单位数值" prop="value">
             <el-input v-model="productForm.value"/>
@@ -367,7 +366,7 @@
             <el-input v-model="productForm.outPrice"/>
           </el-form-item>
           <el-form-item label="货品库存" prop="number">
-            <el-input v-model="productForm.number"/>
+            <el-input-number v-model="productForm.number" :min="0" />
           </el-form-item>
           <el-form-item label="货品图片" prop="url">
             <el-upload
@@ -689,6 +688,13 @@
         }
       },
 
+      handleUnit(value) {
+        for (var i = 0; i < this.products.length; i++) {
+          const v = this.products[i]
+          v.unit = value;
+        }
+      },
+
       handleCategoryChange(value) {
         this.goods.categoryId = value[value.length - 1]
       },
@@ -705,7 +711,7 @@
             }
             //线上物品校验
             if (this.goods.saleType != 2) {
-              debugger
+
               if (this.goods.onlineName === undefined || this.goods.onlineName === '') {
                 this.$message.error('线上名称未填！！')
                 return false
@@ -717,7 +723,7 @@
             }
             //线下物品校验
             if (this.goods.saleType != 1) {
-              debugger
+
               if (this.goods.offlineName === undefined || this.goods.offlineName === '') {
                 this.$message.error('线下物品名称未填！！')
                 return false
@@ -731,6 +737,14 @@
             if (this.goods.categoryId === undefined || this.goods.categoryId === '') {
               this.$message.error('请选择物品种类！！')
               return false
+            }
+
+            for (var i = 0; i < this.products.length; i++) {
+              const v = this.products[i];
+              if (v.number === undefined || v.number < 0) {
+                this.$message.error('货品库存异常！！');
+                return false
+              }
             }
 
             const finalGoods = {
@@ -972,6 +986,13 @@
       }
       ,
       handleProductEdit() {
+        if(this.productForm.number === undefined || this.productForm.number < 0){
+          this.$message({
+            type: 'warning',
+            message: '货品库存异常！'
+          })
+          return false
+        }
         let idx = 0
         const productSn = []
         for (var i = 0; i < this.products.length; i++) {
