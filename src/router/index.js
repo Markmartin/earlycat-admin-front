@@ -154,6 +154,16 @@ export const asyncRouterMap = [
           noCache: true
         }
       },
+      {
+        path: 'station',
+        component: () => import('@/views/stockJob/station'),
+        name: 'station',
+        meta: {
+          perms: ['GET /admin/stockJob/stationOrder'],
+          title: '工位配货',
+          noCache: true
+        }
+      },
     ]
   },
   {

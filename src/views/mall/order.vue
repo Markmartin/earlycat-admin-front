@@ -50,12 +50,12 @@
     <el-table v-loading="listLoading" ref="multipleTable" :data="list" element-loading-text="正在查询中。。。" border fit highlight-current-row @select-all="handleSelectionAll" @select="handleSelection">
       <el-table-column :selectable="isDisabled" type="selection" width="55"/>
 
-      <el-table-column align="center" min-width="100" label="订单编号" prop="orderSn"/>
+      <el-table-column align="center" min-width="100" label="订单编号" prop="orderSn" width="140"/>
 
       <!--<el-table-column align="center" label="用户ID" width="100" prop="userId"/>-->
       <el-table-column align="center" label="收货人名称" width="100" prop="consignee"/>
 
-      <el-table-column align="center" label="订单状态" prop="orderStatus">
+      <el-table-column align="center" label="订单状态" prop="orderStatus" width="100">
         <template slot-scope="scope">
           <el-tag>{{ scope.row.orderStatus | orderStatusFilter }}</el-tag>
         </template>
@@ -63,9 +63,9 @@
 
       <el-table-column align="center" label="支付金额" prop="actualPrice"/>
 
-      <el-table-column align="center" label="支付时间" width="100" prop="payTime"/>
+      <el-table-column align="center" label="支付时间" width="160" prop="payTime"/>
 
-      <el-table-column align="center" label="物流单号" prop="shipSn"/>
+      <el-table-column align="center" label="物流单号" prop="shipSn" width="140"/>
 
       <el-table-column align="center" label="物流渠道" prop="shipChannel"/>
 
@@ -92,7 +92,7 @@
         <el-form-item label="订单编号">
           <span>{{ orderDetail.order.orderSn }}</span>
         </el-form-item>
-        <el-form-item label="订单状态">
+        <el-form-item label="订单状态" >
           <el-tag>{{ orderDetail.order.orderStatus | orderStatusFilter }}</el-tag>
         </el-form-item>
         <el-form-item label="订单用户">
