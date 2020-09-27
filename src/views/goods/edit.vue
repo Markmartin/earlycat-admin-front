@@ -138,9 +138,7 @@
             </el-form-item>
           </el-col>
           <el-col :span="6">
-            <el-form-item label="限购数量"
-                          v-show="goods.isChoice === true || goods.acStatus ===2 ||goods.acStatus ===98 || goods.acStatus ===99"
-                          prop="limit">
+            <el-form-item label="限购数量" prop="limit">
               <el-input-number v-model="goods.limit"
                                v-bind:disabled="goods.acStatus === 1 ||goods.acStatus ===98 || goods.acStatus === 99"/>
             </el-form-item>
@@ -591,6 +589,7 @@
           title: [{required: true, message: '标题不能为空', trigger: 'blur'}],
           saleType: [{required: true, message: '上架类型不能为空', trigger: 'blur'}],
           acStatus: [{required: true, message: '销售类型不能为空', trigger: 'blur'}],
+          limit: [{required: true, message: '限购数量不能为空', trigger: 'blur'}],
 //          categoryId: [{ required: true,type: 'number',  message: '物品种类不能为空', trigger: 'blur' }],
           counterPrice: [{required: true, message: '专柜价格不能为空', trigger: 'blur'}]
         },
@@ -920,7 +919,12 @@
       handleSpecificationUpdate() {
         this.specifications=[];
         this.specifications.push( this.specForm)
-        this.specVisiable = false
+        this.specVisiable = false;
+        for (var i = 0; i < this.products.length; i++) {
+          const v = this.products[i]
+          v.specifications =[];
+          v.specifications.push(this.specForm.value) ;
+        }
       },
 
       handleSpecificationUpdateShow(row) {
