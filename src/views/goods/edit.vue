@@ -919,7 +919,12 @@
       handleSpecificationUpdate() {
         this.specifications=[];
         this.specifications.push( this.specForm)
-        this.specVisiable = false
+        this.specVisiable = false;
+        for (var i = 0; i < this.products.length; i++) {
+          const v = this.products[i]
+          v.specifications =[];
+          v.specifications.push(this.specForm.value) ;
+        }
       },
 
       handleSpecificationUpdateShow(row) {
