@@ -89,3 +89,11 @@ export function exportOutSearch(params) {
     responseType: 'blob'
   })
 }
+
+export function stationOrder(params) {
+  return request({
+    url: '/stockJob/stationOrder',
+    method: 'get',
+    params: params
+  })
+}
