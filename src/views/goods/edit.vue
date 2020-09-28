@@ -73,8 +73,8 @@
             </el-form-item>
           </el-col>
           <el-col :span="6">
-            <el-form-item label="商品单位" v-show="goods.saleType !=2 " prop="unit" >
-              <el-input v-model="goods.unit" @input="handleUnit" />
+            <el-form-item label="商品单位" v-show="goods.saleType !=2 " prop="unit">
+              <el-input v-model="goods.unit" @input="handleUnit"/>
             </el-form-item>
           </el-col>
         </el-row>
@@ -130,17 +130,17 @@
           </el-col>
           <el-col :span="6">
             <el-form-item label="限时特惠" prop="isChoice">
-              <el-radio-group v-model="goods.isChoice"
-                              v-bind:disabled="goods.acStatus === 2 ||goods.acStatus ===98 || goods.acStatus === 99">
+              <el-radio-group size="mini" v-model="goods.isChoice"
+                              v-bind:disabled="goods.acStatus ===98 || goods.acStatus === 99">
                 <el-radio :label="false">普通</el-radio>
                 <el-radio :label="true">特惠</el-radio>
               </el-radio-group>
             </el-form-item>
           </el-col>
           <el-col :span="6">
-            <el-form-item label="限购数量" prop="limit">
-              <el-input-number v-model="goods.limit"
-                               v-bind:disabled="goods.acStatus === 1 ||goods.acStatus ===98 || goods.acStatus === 99"/>
+            <el-form-item label="限购数量" v-show="goods.isChoice === true" prop="limit">
+              <el-input-number size="small" :min="1" v-model="goods.limit"
+                               v-bind:disabled="goods.acStatus ===98 || goods.acStatus === 99"/>
             </el-form-item>
           </el-col>
         </el-row>
@@ -371,7 +371,7 @@
             <el-input v-model="productForm.outPrice"/>
           </el-form-item>
           <el-form-item label="货品库存" prop="number">
-            <el-input-number v-model="productForm.number" :min="0" />
+            <el-input-number v-model="productForm.number" :min="0"/>
           </el-form-item>
           <el-form-item label="货品图片" prop="url">
             <el-upload
@@ -393,69 +393,70 @@
       </el-dialog>
     </el-card>
 
-<!--    <el-card class="box-card">
-      <h3>商品参数</h3>
-      <el-button :plain="true" type="primary" @click="handleAttributeShow">添加</el-button>
-      <el-table :data="attributes">
-        <el-table-column property="attribute" label="商品参数名称"/>
-        <el-table-column property="value" label="商品参数值"/>
-        <el-table-column align="center" label="操作" width="100" class-name="small-padding fixed-width">
-          <template slot-scope="scope">
-            <el-button type="danger" size="mini" @click="handleAttributeDelete(scope.row)">删除</el-button>
-          </template>
-        </el-table-column>
-      </el-table>
+    <!--    <el-card class="box-card">
+          <h3>商品参数</h3>
+          <el-button :plain="true" type="primary" @click="handleAttributeShow">添加</el-button>
+          <el-table :data="attributes">
+            <el-table-column property="attribute" label="商品参数名称"/>
+            <el-table-column property="value" label="商品参数值"/>
+            <el-table-column align="center" label="操作" width="100" class-name="small-padding fixed-width">
+              <template slot-scope="scope">
+                <el-button type="danger" size="mini" @click="handleAttributeDelete(scope.row)">删除</el-button>
+              </template>
+            </el-table-column>
+          </el-table>
 
-      <el-dialog :visible.sync="attributeVisiable" title="设置商品参数">
-        <el-form ref="attributeForm" :model="attributeForm" status-icon label-position="left" label-width="100px"
-                 style="width: 400px; margin-left:50px;">
-          <el-form-item label="商品参数名称" prop="attribute">
-            <el-input v-model="attributeForm.attribute"/>
-          </el-form-item>
-          <el-form-item label="商品参数值" prop="value">
-            <el-input v-model="attributeForm.value"/>
-          </el-form-item>
-        </el-form>
-        <div slot="footer" class="dialog-footer">
-          <el-button @click="attributeVisiable = false">取消</el-button>
-          <el-button type="primary" @click="handleAttributeAdd">确定</el-button>
-        </div>
-      </el-dialog>
-    </el-card>
+          <el-dialog :visible.sync="attributeVisiable" title="设置商品参数">
+            <el-form ref="attributeForm" :model="attributeForm" status-icon label-position="left" label-width="100px"
+                     style="width: 400px; margin-left:50px;">
+              <el-form-item label="商品参数名称" prop="attribute">
+                <el-input v-model="attributeForm.attribute"/>
+              </el-form-item>
+              <el-form-item label="商品参数值" prop="value">
+                <el-input v-model="attributeForm.value"/>
+              </el-form-item>
+            </el-form>
+            <div slot="footer" class="dialog-footer">
+              <el-button @click="attributeVisiable = false">取消</el-button>
+              <el-button type="primary" @click="handleAttributeAdd">确定</el-button>
+            </div>
+          </el-dialog>
+        </el-card>
 
-    <el-card class="box-card">
-      <h3>商品返券</h3>
-      <el-button :plain="true" type="primary" @click="handleRebateShow">添加</el-button>
-      <el-table :data="rebates">
-        <el-table-column property="orders" label="订单数量"/>
-        <el-table-column property="value" label="返券额度"/>
-        <el-table-column align="center" label="操作" width="100" class-name="small-padding fixed-width">
-          <template slot-scope="scope">
-            <el-button type="danger" size="mini" @click="handleRebateDelete(scope.row)">删除</el-button>
-          </template>
-        </el-table-column>
-      </el-table>
+        <el-card class="box-card">
+          <h3>商品返券</h3>
+          <el-button :plain="true" type="primary" @click="handleRebateShow">添加</el-button>
+          <el-table :data="rebates">
+            <el-table-column property="orders" label="订单数量"/>
+            <el-table-column property="value" label="返券额度"/>
+            <el-table-column align="center" label="操作" width="100" class-name="small-padding fixed-width">
+              <template slot-scope="scope">
+                <el-button type="danger" size="mini" @click="handleRebateDelete(scope.row)">删除</el-button>
+              </template>
+            </el-table-column>
+          </el-table>
 
-      <el-dialog :visible.sync="rebateVisiable" title="设置商品返券">
-        <el-form ref="rebateForm" :model="rebateForm" status-icon label-position="left" label-width="100px"
-                 style="width: 400px; margin-left:50px;">
-          <el-form-item label="订单数量" prop="attribute">
-            <el-input v-model="rebateForm.orders"/>
-          </el-form-item>
-          <el-form-item label="返券额度" prop="value">
-            <el-input v-model="rebateForm.value"/>
-          </el-form-item>
-        </el-form>
-        <div slot="footer" class="dialog-footer">
-          <el-button @click="rebateVisiable = false">取消</el-button>
-          <el-button type="primary" @click="handleRebateAdd">确定</el-button>
-        </div>
-      </el-dialog>
-    </el-card>-->
+          <el-dialog :visible.sync="rebateVisiable" title="设置商品返券">
+            <el-form ref="rebateForm" :model="rebateForm" status-icon label-position="left" label-width="100px"
+                     style="width: 400px; margin-left:50px;">
+              <el-form-item label="订单数量" prop="attribute">
+                <el-input v-model="rebateForm.orders"/>
+              </el-form-item>
+              <el-form-item label="返券额度" prop="value">
+                <el-input v-model="rebateForm.value"/>
+              </el-form-item>
+            </el-form>
+            <div slot="footer" class="dialog-footer">
+              <el-button @click="rebateVisiable = false">取消</el-button>
+              <el-button type="primary" @click="handleRebateAdd">确定</el-button>
+            </div>
+          </el-dialog>
+        </el-card>-->
 
     <div class="op-container">
       <el-button @click="handleCancel">取消</el-button>
-      <el-button v-permission="['POST /admin/goods/update']" type="primary" @click="submitEditForm('goods')">更新商品</el-button>
+      <el-button v-permission="['POST /admin/goods/update']" type="primary" @click="submitEditForm('goods')">更新商品
+      </el-button>
     </div>
 
   </div>
@@ -511,13 +512,14 @@
   import Editor from '@tinymce/tinymce-vue'
   import { MessageBox } from 'element-ui'
   import { getToken } from '@/utils/auth'
-  import ElInputNumber from "../../../node_modules/element-ui/packages/input-number/src/input-number.vue";
+  import ElInputNumber from '../../../node_modules/element-ui/packages/input-number/src/input-number.vue'
 
   export default {
     name: 'GoodsEdit',
     components: {
       ElInputNumber,
-      Editor },
+      Editor
+    },
     data() {
       return {
         presellOptions: [
@@ -586,12 +588,12 @@
         rebateForm: { orders: '', value: '' },
         rebates: [],
         rules: {
-          title: [{required: true, message: '标题不能为空', trigger: 'blur'}],
-          saleType: [{required: true, message: '上架类型不能为空', trigger: 'blur'}],
-          acStatus: [{required: true, message: '销售类型不能为空', trigger: 'blur'}],
-          limit: [{required: true, message: '限购数量不能为空', trigger: 'blur'}],
+          title: [{ required: true, message: '标题不能为空', trigger: 'blur' }],
+          saleType: [{ required: true, message: '上架类型不能为空', trigger: 'blur' }],
+          acStatus: [{ required: true, message: '销售类型不能为空', trigger: 'blur' }],
+          // limit: [{required: true, message: '限购数量不能为空', trigger: 'blur'}],
 //          categoryId: [{ required: true,type: 'number',  message: '物品种类不能为空', trigger: 'blur' }],
-          counterPrice: [{required: true, message: '专柜价格不能为空', trigger: 'blur'}]
+          counterPrice: [{ required: true, message: '专柜价格不能为空', trigger: 'blur' }]
         },
         editorInit: {
           language: 'zh_CN',
@@ -702,9 +704,7 @@
         }
       },
       handleLimit(value) {
-        if (value === 1) {
-          this.goods.limit = 999
-        } else if (value === 2) {
+        if (value === 2) {
           this.goods.isChoice = true
         } else if (value === 99 || value === 98) {
           this.goods.isChoice = true
@@ -718,7 +718,7 @@
       handleUnit(value) {
         for (var i = 0; i < this.products.length; i++) {
           const v = this.products[i]
-          v.unit = value;
+          v.unit = value
         }
       },
       handleCategoryChange(value) {
@@ -731,7 +731,7 @@
       submitEditForm(formName) {
         this.$refs[formName].validate((valid) => {
           if (valid) {
-            if ((this.goods.isChoice || this.goods.acStatus === 2 || this.goods.acStatus == 98 || this.goods.acStatus == 99 )&& (this.goods.limit === undefined || this.goods.limit === '')) {
+            if ((this.goods.isChoice || this.goods.acStatus === 2 || this.goods.acStatus == 98 || this.goods.acStatus == 99) && (this.goods.limit === undefined || this.goods.limit === '')) {
               this.$message.error('限购物品的限购数量必填！！')
               return false
             }
@@ -764,9 +764,9 @@
             }
 
             for (var i = 0; i < this.products.length; i++) {
-              const v = this.products[i];
+              const v = this.products[i]
               if (v.number === undefined || v.number < 0) {
-                this.$message.error('货品库存异常！！');
+                this.$message.error('货品库存异常！！')
                 return false
               }
             }
@@ -818,12 +818,12 @@
           attributes: this.attributes
         }
         editGoods(finalGoods).then(response => {
-            this.$notify.success({
-              title: '成功',
-              message: '更新成功'
-            })
-            this.$router.push({ path: '/goods/list' })
-          }).catch(response => {
+          this.$notify.success({
+            title: '成功',
+            message: '更新成功'
+          })
+          this.$router.push({ path: '/goods/list' })
+        }).catch(response => {
           MessageBox.alert('业务错误：' + response.data.errmsg, '警告', {
             confirmButtonText: '确定',
             type: 'error'
@@ -917,13 +917,13 @@
       },
 
       handleSpecificationUpdate() {
-        this.specifications=[];
-        this.specifications.push( this.specForm)
-        this.specVisiable = false;
+        this.specifications = []
+        this.specifications.push(this.specForm)
+        this.specVisiable = false
         for (var i = 0; i < this.products.length; i++) {
           const v = this.products[i]
-          v.specifications =[];
-          v.specifications.push(this.specForm.value) ;
+          v.specifications = []
+          v.specifications.push(this.specForm.value)
         }
       },
 
@@ -1019,7 +1019,7 @@
         this.productForm.url = response.data.url
       },
       handleProductEdit() {
-        if(this.productForm.number === undefined || this.productForm.number < 0){
+        if (this.productForm.number === undefined || this.productForm.number < 0) {
           this.$message({
             type: 'warning',
             message: '货品库存异常！'

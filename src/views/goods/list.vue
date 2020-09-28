@@ -135,11 +135,13 @@
         </template>
       </el-table-column>
 
-      <el-table-column align="center" label="操作" width="180" class-name="small-padding fixed-width">
+      <el-table-column align="center" label="操作" width="220" class-name="small-padding fixed-width">
         <template slot-scope="scope">
-          <el-button v-permission="['POST /admin/goods/update']" type="primary" size="mini" @click="handleUpdate(scope.row)">编辑</el-button>
+         <!-- <el-button v-if=" scope.row.isOnSale == 0" v-permission="['POST /admin/goods/update']" type="primary" size="mini" @click="handChangeStatus(scope.row)"  plain>上架</el-button>
+          <el-button v-else="scope.row.isOnSale == 1" v-permission="['POST /admin/goods/update']" type="warning" size="mini" @click="handChangeStatus(scope.row)"  plain>下架</el-button>-->
+          <el-button v-permission="['POST /admin/goods/update']" type="primary" size="mini" @click="handleUpdate(scope.row)" >编辑</el-button>
 <!--          <el-button v-permission="['GET /admin/goods/list']" type="primary" size="mini" @click="handlePrinter(scope.row)">打印</el-button>-->
-          <el-button v-permission="['POST /admin/goods/delete']" type="danger" size="mini" @click="handleDelete(scope.row)">删除</el-button>
+          <el-button v-permission="['POST /admin/goods/delete']" type="danger" size="mini" @click="handleDelete(scope.row)" >删除</el-button>
         </template>
       </el-table-column>
     </el-table>
@@ -352,6 +354,31 @@ export default {
           })
         })
       }).catch(() => {})
+    },
+
+    handChangeStatus(row) {
+      this.activityVo.id = row.id
+      let msg = ''
+      if (row.isOnSale == 0) {
+        this.goods.isOnSale = 1
+        msg = '上架'
+      } else {
+        this.goods.status = 0
+        msg = '下架'
+      }
+      changSaleStatus(this.activityVo).then(() => {
+        this.dialogFormVisible = false
+        this.getList()
+        this.$notify.success({
+          title: '成功',
+          message: msg + '成功'
+        })
+      }).catch(response => {
+        this.$notify.error({
+          title: '失败',
+          message: response.data.errmsg
+        })
+      })
     },
     handleDownload() {
       this.downloadLoading = true

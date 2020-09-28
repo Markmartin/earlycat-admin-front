@@ -123,3 +123,11 @@ export function getStationList() {
     method: 'get',
   })
 }
+
+export function changSaleStatus(data) {
+  return request({
+    url: '/zcmpresell/saveOrUpdatePresell',
+    method: 'post',
+    data
+  })
+}

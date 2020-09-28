@@ -120,17 +120,15 @@
           </el-col>
           <el-col :span="6">
             <el-form-item label="限时特惠" prop="isChoice">
-              <el-radio-group v-model="goods.isChoice"
-                              v-bind:disabled="goods.acStatus === 2 ||goods.acStatus ===98 || goods.acStatus === 99">
+              <el-radio-group v-model="goods.isChoice" v-bind:disabled="goods.acStatus ===98 || goods.acStatus === 99">
                 <el-radio :label="false">普通</el-radio>
                 <el-radio :label="true">特惠</el-radio>
               </el-radio-group>
             </el-form-item>
           </el-col>
           <el-col :span="6">
-            <el-form-item label="限购数量" prop="limit">
-              <el-input-number v-model="goods.limit"
-                               v-bind:disabled="goods.acStatus === 1 ||goods.acStatus ===98 || goods.acStatus === 99"/>
+            <el-form-item label="限购数量" v-show="goods.isChoice === true" prop="limit"  >
+              <el-input-number size="small" :min="1" v-model="goods.limit" v-bind:disabled="goods.acStatus ===98 || goods.acStatus === 99"/>
             </el-form-item>
           </el-col>
         </el-row>
@@ -604,7 +602,7 @@
           title: [{required: true, message: '标题不能为空', trigger: 'blur'}],
           saleType: [{required: true, message: '上架类型不能为空', trigger: 'blur'}],
           acStatus: [{required: true, message: '销售类型不能为空', trigger: 'blur'}],
-          limit: [{required: true, message: '限购数量不能为空', trigger: 'blur'}],
+          // limit: [{required: true, message: '限购数量不能为空', trigger: 'blur'}],
 //          categoryId: [{ required: true,type: 'number',  message: '物品种类不能为空', trigger: 'blur' }],
           counterPrice: [{required: true, message: '专柜价格不能为空', trigger: 'blur'}]
         },
@@ -675,9 +673,7 @@
       },
 
       handleLimit(value) {
-        if (value === 1) {
-          this.goods.limit = 999
-        } else if (value === 2) {
+        if (value === 2) {
           this.goods.isChoice = true
         } else if (value === 99 || value === 98) {
           this.goods.isChoice = true
@@ -705,8 +701,13 @@
       submitCreateForm(formName) {
         this.$refs[formName].validate((valid) => {
           if (valid) {
-            if ((this.goods.isChoice || this.goods.acStatus === 2 || this.goods.acStatus == 98 || this.goods.acStatus == 99) && (this.goods.limit === undefined || this.goods.limit === '')) {
-              this.$message.error('限购物品的限购数量必填！！')
+
+            if((this.goods.acStatus === 2 ||this.goods.isChoice) && (this.goods.limit === undefined || this.goods.limit === '')){
+              this.$message.error('特惠物品的限购数量必填！！')
+              return false
+            }
+            if(this.goods.acStatus === 2 && (this.goods.limit === undefined || this.goods.limit === '')){
+              this.$message.error('特惠物品的限购数量必填！！')
               return false
             }
             //线上物品校验
