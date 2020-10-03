@@ -72,7 +72,7 @@
       <!--<el-table-column align="center" label="社区名" prop="communityName"/>-->
       <el-table-column align="center" label="分拣号" prop="sortingNo"/>
 
-      <el-table-column align="center" label="操作" width="400" class-name="small-padding fixed-width">
+      <el-table-column align="center" label="操作" width="190" class-name="small-padding fixed-width">
         <template slot-scope="scope">
           <el-button v-permission="['GET /admin/order/detail']" type="primary" size="mini" @click="handleDetail(scope.row)">详情</el-button>
           <!--<el-button v-permission="['POST /admin/order/print']" type="primary" size="mini" @click="handlePrinter(scope.row)">打印</el-button>-->
@@ -86,7 +86,7 @@
     <pagination v-show="total>0" :total="total" :page.sync="listQuery.page" :limit.sync="listQuery.limit" @pagination="getList" />
 
     <!-- 订单详情对话框 -->
-    <el-dialog :visible.sync="orderDialogVisible" title="订单详情" width="800">
+    <el-dialog customClass="customWidth" :visible.sync="orderDialogVisible" title="订单详情" width="1200">
 
       <el-form :data="orderDetail" label-position="left">
         <el-form-item label="订单编号">
@@ -108,7 +108,7 @@
         </el-form-item>
         <el-form-item label="商品信息">
           <el-table :data="orderDetail.orderGoods" border fit highlight-current-row>
-            <el-table-column align="center" label="商品名称" prop="goodsName" />
+            <el-table-column align="center" label="商品名称" width="150" prop="goodsName" />
             <el-table-column align="center" label="商品编号" prop="goodsSn" />
             <el-table-column align="center" label="货品规格" prop="specifications" />
             <el-table-column align="center" label="货品价格" prop="price" />
@@ -117,6 +117,25 @@
             <el-table-column align="center" label="货品图片" prop="picUrl">
               <template slot-scope="scope">
                 <img :src="scope.row.picUrl" width="40">
+              </template>
+            </el-table-column>
+            <el-table-column align="center" label="退款状态" prop="refundStatus" >
+            <template slot-scope="scope">
+              <el-tag effect="dark" v-if="scope.row.refundStatus == 0" type="info"> 未退款</el-tag>
+              <el-tag effect="dark" v-if="scope.row.refundStatus == 1" type="danger"> 退款中</el-tag>
+              <el-tag effect="dark" v-if="scope.row.refundStatus == 2" type="success"> 已退款</el-tag>
+            </template>
+            </el-table-column>
+            <el-table-column align="center" label="退款金额" prop="refundPrice" />
+            <el-table-column align="center" label="退款数量" prop="refundNumber" />
+            <el-table-column align="center" label="退款url" prop="refundUrl" />
+            <el-table-column align="center" label="退款备注" prop="refundTxt" />
+            <el-table-column align="center" label="操作" width="100" class-name="small-padding fixed-width">
+              <template slot-scope="scope">
+                <el-button v-permission="['POST /admin/order/refund']"
+                           v-if="scope.row.refundStatus == 1"
+                           type="primary" size="mini"
+                           @click="handleGoodsRefund(scope.row)">退款</el-button>
               </template>
             </el-table-column>
           </el-table>
@@ -184,7 +203,9 @@
 </template>
 
 <style>
-
+  .customWidth{
+    width:90%;
+  }
 </style>
 
 <script>
@@ -601,6 +622,23 @@ export default {
         }
       })
     },
+    /**
+     * 单品退款
+     * @param row
+     */
+    handleGoodsRefund(row) {
+      debugger
+      this.refundForm.orderId = row.orderId
+      this.refundForm.goodsId = row.goodsId
+      this.maxRefundMoney = JSON.parse(JSON.stringify(row.finalPrice))
+      this.refundForm.refundMoney = row.refundPrice
+
+      this.refundDialogVisible = true
+      this.$nextTick(() => {
+        this.$refs['refundForm'].clearValidate()
+      })
+    },
+
     handleDownload(flag, key) {
       const that = this
       this[key] = true
