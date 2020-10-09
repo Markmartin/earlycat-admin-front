@@ -2,7 +2,7 @@
   <div class="app-container">
     <!-- 查询和其他操作 -->
     <div class="filter-container">
-      <el-button type="primary" @click="show = true">新增</el-button>
+      <el-button type="primary" @click="show = true" v-permission="['GET /admin/autoStock/list']">新增</el-button>
     </div>
     <!-- 查询结果 -->
     <el-table

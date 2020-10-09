@@ -458,7 +458,7 @@ export const asyncRouterMap = [
         component: () => import('@/views/goods/autoStock'),
         name: 'autoStock',
         meta: {
-          perms: ['POST /admin/autoStock/list'],
+          perms: ['GET /admin/autoStock/list','POST /admin/autoStock/update','POST /admin/autoStock/add','DELETE /admin/autoStock/delete'],
           title: '定时库存',
           noCache: true
         },
