@@ -452,6 +452,17 @@ export const asyncRouterMap = [
           noCache: true
         },
         hidden: true
+      },
+      {
+        path: 'autoStock',
+        component: () => import('@/views/goods/autoStock'),
+        name: 'autoStock',
+        meta: {
+          perms: ['POST /admin/autoStock/list'],
+          title: '定时库存',
+          noCache: true
+        },
+        hidden: false
       }
     ]
   },
