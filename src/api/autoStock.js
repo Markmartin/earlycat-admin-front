@@ -23,10 +23,10 @@ export function add(data) {
     })
 }
 
-export function deleteStock(params) {
+export function deleteStock(data) {
     return request({
         url: '/autoStock/delete',
-        method: 'delete',
-        params: params
+        method: 'post',
+        data
     })
 }
