@@ -358,6 +358,16 @@ export const asyncRouterMap = [
         }
       },
       {
+        path: 'mainOrder',
+        component: () => import('@/views/mall/mainOrder'),
+        name: 'mainOrder',
+        meta: {
+          perms: ['GET /admin/order/listMainOrder'],
+          title: '干线订单',
+          noCache: true
+        }
+      },
+      {
         path: 'issue',
         component: () => import('@/views/mall/issue'),
         name: 'issue',

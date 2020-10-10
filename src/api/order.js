@@ -98,3 +98,11 @@ export function uploadExpress(params) {
     params: params
   })
 }
+
+export function listMainOrder(params) {
+  return request({
+    url: '/order/listMainOrder',
+    method: 'get',
+    params: params
+  })
+}
