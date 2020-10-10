@@ -9,7 +9,7 @@
           <el-option v-for="item in categorys" :key="item.id" :label="item.name" :value="item.id"></el-option>
         </el-select>
       </el-form-item>
-      <el-form-item label="日期">
+      <el-form-item label="发货日期">
         <el-date-picker
           v-model="params.checkDate"
           type="date"
@@ -71,7 +71,7 @@ export default {
       purList: [],
       params: {
         checkDate: formatDate(
-          new Date(new Date().setDate(new Date().getDate() - 1))
+          new Date()
         ),
       },
       showId: null,

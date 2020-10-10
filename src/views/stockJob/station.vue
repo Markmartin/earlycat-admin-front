@@ -16,7 +16,7 @@
           ></el-option>
         </el-select>
       </el-form-item>
-      <el-form-item label="日期">
+      <el-form-item label="发货日期">
         <el-date-picker
           v-model="params.date"
           type="date"
@@ -79,7 +79,7 @@ export default {
       list_bak:[],
       params: {
         date: formatDate(
-          new Date(new Date().setDate(new Date().getDate() - 1))
+          new Date()
         ),
       },
       stations: [],
