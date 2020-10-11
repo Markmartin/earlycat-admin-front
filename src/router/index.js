@@ -478,6 +478,39 @@ export const asyncRouterMap = [
   },
 
   {
+    path: '/afterSale',
+    component: Layout,
+    redirect: 'noredirect',
+    alwaysShow: true,
+    name: 'afterSaleManage',
+    meta: {
+      title: '售后管理',
+      icon: 'mall'
+    },
+    children: [
+      {
+        path: 'list',
+        component: () => import('@/views/afterSale/list'),
+        name: 'afterSaleList',
+        meta: {
+          perms: ['GET /admin/afterSale/list', 'POST /admin/afterSale/delete'],
+          title: '售后申请',
+          noCache: true
+        }
+      },
+      {
+        path: 'create',
+        component: () => import('@/views/afterSale/create'),
+        name: 'afterSaleCreate',
+        meta: {
+          perms: ['POST /admin/afterSale/create'],
+          title: '商品上架',
+          noCache: true
+        }
+      }
+    ]
+  },
+  {
     path: '/line',
     component: Layout,
     redirect: 'noredirect',
@@ -500,7 +533,7 @@ export const asyncRouterMap = [
       }
     ]
   },
-  
+
   {
     path: '/promotion',
     component: Layout,
