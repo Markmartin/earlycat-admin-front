@@ -497,16 +497,6 @@ export const asyncRouterMap = [
           title: '售后申请',
           noCache: true
         }
-      },
-      {
-        path: 'create',
-        component: () => import('@/views/afterSale/create'),
-        name: 'afterSaleCreate',
-        meta: {
-          perms: ['POST /admin/afterSale/create'],
-          title: '商品上架',
-          noCache: true
-        }
       }
     ]
   },
