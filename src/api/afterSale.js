@@ -1,13 +1,5 @@
 import request from '@/utils/request'
 
-export function listAd(query) {
-  return request({
-    url: '/ad/list',
-    method: 'get',
-    params: query
-  })
-}
-
 export function getList(data, page, limit) {
   return request({
     url: `/afterSale/getList`,
@@ -18,5 +10,14 @@ export function getList(data, page, limit) {
       'limit': limit
     },
     data
+  })
+}
+
+
+export function detailAfterSale(id) {
+  return request({
+    url: '/afterSale/detail',
+    method: 'get',
+    params: { id }
   })
 }
