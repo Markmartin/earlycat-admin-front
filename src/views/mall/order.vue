@@ -78,7 +78,7 @@
           <!--<el-button v-permission="['POST /admin/order/print']" type="primary" size="mini" @click="handlePrinter(scope.row)">打印</el-button>-->
           <!--<el-button v-permission="['POST /admin/order/ship']" v-if="scope.row.orderStatus==201" type="primary" size="mini" @click="handleShip(scope.row)">发货</el-button>-->
           <!-- <el-button v-permission="['POST /admin/order/arrive']" v-if="scope.row.orderStatus==201 || scope.row.orderStatus==301" type="primary" size="mini" @click="handleArrive(scope.row)">到达</el-button> -->
-          <el-button v-permission="['POST /admin/order/refund']" v-if="scope.row.orderStatus==201 || scope.row.orderStatus==202 || scope.row.orderStatus==301 || scope.row.orderStatus==302" type="primary" size="mini" @click="handleRefund(scope.row)">退款</el-button>
+          <!--<el-button v-permission="['POST /admin/order/refund']" v-if="scope.row.orderStatus==201 || scope.row.orderStatus==202 || scope.row.orderStatus==301 || scope.row.orderStatus==302" type="primary" size="mini" @click="handleRefund(scope.row)">退款</el-button>-->
         </template>
       </el-table-column>
     </el-table>

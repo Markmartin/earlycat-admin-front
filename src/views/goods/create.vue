@@ -79,7 +79,7 @@
           </el-col>
         </el-row>
         <el-row>
-          <el-col :span="12">
+          <el-col :span="8">
             <el-form-item label="线下名称" v-show="goods.saleType !=1" prop="offlineName">
               <el-input v-model="goods.offlineName"/>
             </el-form-item>
@@ -93,7 +93,12 @@
               </el-input>
             </el-form-item>
           </el-col>
-          <el-col :span="6">
+          <el-col :span="5">
+            <el-form-item label="线下规格" v-show="goods.saleType !=1 " prop="offlineSpec">
+              <el-input v-model="goods.offlineSpec"/>
+            </el-form-item>
+          </el-col>
+          <el-col :span="5">
             <el-form-item label="商品单位" v-show="goods.saleType !=1 " prop="unit" >
               <el-input v-model="goods.unit" @input="handleUnit" />
             </el-form-item>

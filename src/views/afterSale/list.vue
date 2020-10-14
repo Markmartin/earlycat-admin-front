@@ -3,12 +3,10 @@
 
     <!-- 查询和其他操作 -->
     <div class="filter-container">
-      <el-input v-model="listQuery.afterSaleVo.userName" clearable class="filter-item" style="width: 200px;"
-                placeholder="请输入申请人"/>
-      <el-input v-model="listQuery.afterSaleVo.phone" clearable class="filter-item" style="width: 200px;"
-                placeholder="请输入申请人账号"/>
-      <el-select v-model="listQuery.afterSaleVo.status" clearable class="filter-item" style="width: 200px;"
-                 placeholder="请选择申请状态">
+      <el-input v-model="listQuery.afterSaleVo.id" clearable class="filter-item" style="width: 145px;" placeholder="请输入申请编号"/>
+      <el-input v-model="listQuery.afterSaleVo.userName" clearable class="filter-item" style="width: 150px;" placeholder="请输入申请人"/>
+      <el-input v-model="listQuery.afterSaleVo.phone" clearable class="filter-item" style="width: 160px;" placeholder="请输入申请人账号"/>
+      <el-select v-model="listQuery.afterSaleVo.status" clearable class="filter-item" style="width: 150px;" placeholder="请选择申请状态">
         <el-option v-for="type in afterSaleStatus" :key="type.value" :label="type.label" :value="type.value"/>
       </el-select>
       <el-button v-permission="['GET /admin/goods/list']" class="filter-item" type="primary" icon="el-icon-search"
