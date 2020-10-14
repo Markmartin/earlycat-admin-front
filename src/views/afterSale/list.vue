@@ -31,6 +31,15 @@
             <el-form-item label="申请原因">
               <span>{{ props.row.detail }}</span>
             </el-form-item>
+            <el-form-item label="申请状态">
+              <span v-if="props.row.status == 1">申请中</span>
+              <span v-if="props.row.status == 2">已退款</span>
+              <span v-if="props.row.status == 3">已驳回</span>
+              <span v-if="props.row.status == 4">已取消</span>
+            </el-form-item>
+            <el-form-item label="客服操作备注">
+              <span>{{ props.row.remark }}</span>
+            </el-form-item>
           </el-form>
         </template>
       </el-table-column>
@@ -150,6 +159,15 @@
         </el-form-item>
         <el-form-item label="退款原因">
           <span>{{ afterSaleVo.detail }}</span>
+        </el-form-item>
+        <el-form-item label="申请状态">
+            <span v-if="afterSaleVo.status == 1">申请中</span>
+            <span v-if="afterSaleVo.status == 2">已退款</span>
+            <span v-if="afterSaleVo.status == 3">已驳回</span>
+            <span v-if="afterSaleVo.status == 4">已取消</span>
+        </el-form-item>
+        <el-form-item label="客服操作备注">
+          <span>{{ afterSaleVo.remark }}</span>
         </el-form-item>
         <el-form-item label="退款图片">
           <img v-for="url in afterSaleVo.url" :key="url" :src="url" width="280" class="url">
