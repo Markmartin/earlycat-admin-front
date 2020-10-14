@@ -5,8 +5,10 @@
     <div class="filter-container">
       <el-input v-model="listQuery.afterSaleVo.userName" clearable class="filter-item" style="width: 200px;"
                 placeholder="请输入申请人"/>
-      <el-input v-model="listQuery.afterSaleVo.phone" clearable class="filter-item" style="width: 200px;"
-                placeholder="请输入申请人账号"/>
+      <el-input v-model="listQuery.afterSaleVo.id" clearable class="filter-item" style="width: 200px;"
+                placeholder="请输入申请编号"/>
+      <el-input v-model="listQuery.afterSaleVo.orderSn" clearable class="filter-item" style="width: 200px;"
+                placeholder="请输入订单编号"/>
       <el-select v-model="listQuery.afterSaleVo.status" clearable class="filter-item" style="width: 200px;"
                  placeholder="请选择申请状态">
         <el-option v-for="type in afterSaleStatus" :key="type.value" :label="type.label" :value="type.value"/>
@@ -36,10 +38,10 @@
       </el-table-column>
       <el-table-column align="center" min-width="100" label="申请编号" prop="id"/>
       <el-table-column align="center" min-width="100" label="申请人" prop="userName"/>
-      <el-table-column align="center" min-width="110" label="申请人账号" prop="phone"/>
-      <el-table-column align="center" min-width="100" label="退款订单号" prop="orderId">
+      <!--<el-table-column align="center" min-width="110" label="申请人账号" prop="phone"/>-->
+      <el-table-column align="center" min-width="100" label="退款订单号" prop="orderSn">
         <template slot-scope="scope">
-          <el-button type="text" size="small" @click="showOrderDetail(scope.row)">{{scope.row.orderId}}</el-button>
+          <el-button type="text" size="small" @click="showOrderDetail(scope.row)">{{scope.row.orderSn}}</el-button>
         </template>
       </el-table-column>
       <el-table-column align="center" label="退款类型" min-width="100" prop="isAll">
