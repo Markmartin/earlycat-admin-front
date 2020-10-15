@@ -113,7 +113,12 @@
             <el-table-column align="center" label="货品规格" prop="specifications" />
             <el-table-column align="center" label="货品价格" prop="price" />
             <el-table-column align="center" label="实付金额" prop="finalPrice" />
-            <el-table-column align="center" label="货品数量" prop="number" />
+            <el-table-column align="center" label="购买数量" prop="number" >
+              <template slot-scope="scope">
+                {{ scope.row.number + scope.row.refundNumber }}
+              </template>
+            </el-table-column>
+            <el-table-column align="center" label="已退数量" prop="refundNumber"/>
             <el-table-column align="center" label="货品图片" prop="picUrl">
               <template slot-scope="scope">
                 <img :src="scope.row.picUrl" width="40">
@@ -129,6 +134,9 @@
             (优惠减免){{ orderDetail.order.couponPrice }}元 -
             (积分减免){{ orderDetail.order.integralPrice }}元
           </span>
+        </el-form-item>
+        <el-form-item label="退款信息">
+          <span>(退款金额){{ orderDetail.order.refundPrice == null ? 0: orderDetail.order.refundPrice}}元</span>
         </el-form-item>
         <el-form-item label="支付信息">
           <span>（支付渠道）微信支付</span>
