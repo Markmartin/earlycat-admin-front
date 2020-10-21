@@ -16,6 +16,7 @@
       <el-table-column align="center" label="线下价格"  min-width="100"  prop="goodsVo.offlinePrice"/>
       <el-table-column align="center" label="线下规格"  min-width="100"  prop="goodsVo.offlineSpec"/>
       <el-table-column align="center" label="库存"  min-width="100"  prop="goodsVo.stock"/>
+      <el-table-column align="center" label="排序"  min-width="100"  prop="sort"/>
       <el-table-column align="center" fixed ="right" label="操作" width="200" class-name="small-padding fixed-width">
         <template slot-scope="scope">
           <el-button v-permission="['POST /admin/zcmpresell/update']" type="primary" size="mini" @click="handleUpdate(scope.row)">替换</el-button>
@@ -37,6 +38,9 @@
           <el-select v-model="dataForm.goodsId" filterable  placeholder="请选择限时特价商品">
             <el-option v-for="item in presellGoodsList" :key="item.id" :label="item.name" :value="item.id"/>
           </el-select>
+        </el-form-item>
+        <el-form-item label="排序" prop="sort" >
+          <el-input v-model="dataForm.sort"/>
         </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
