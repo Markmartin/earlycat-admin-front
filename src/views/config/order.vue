@@ -7,18 +7,24 @@
         </el-input>
         <span class="info">用户未付款，则订单自动取消</span>
       </el-form-item>
-      <el-form-item label="订单发货后超期" prop="litemall_order_unconfirm">
-        <el-input v-model="dataForm.litemall_order_unconfirm" class="input-width">
-          <template slot="append"> 天</template>
-        </el-input>
-        <span class="info">未确认收货，则订单自动确认收货</span>
-      </el-form-item>
-      <el-form-item label="确认收货后超期" prop="litemall_order_comment">
-        <el-input v-model="dataForm.litemall_order_comment" class="input-width">
+      <el-form-item label="确认收货后超期" prop="litemall_order_refund_expire">
+        <el-input v-model="dataForm.litemall_order_refund_expire" class="input-width">
           <template slot="append">天</template>
         </el-input>
-        <span class="info">未评价商品，则取消评价资格</span>
+        <span class="info">用户收货超期，不能申请售后退款</span>
       </el-form-item>
+      <!--<el-form-item label="订单发货后超期" prop="litemall_order_unconfirm">-->
+        <!--<el-input v-model="dataForm.litemall_order_unconfirm" class="input-width">-->
+          <!--<template slot="append"> 天</template>-->
+        <!--</el-input>-->
+        <!--<span class="info">未确认收货，则订单自动确认收货</span>-->
+      <!--</el-form-item>-->
+      <!--<el-form-item label="确认收货后超期" prop="litemall_order_comment">-->
+        <!--<el-input v-model="dataForm.litemall_order_comment" class="input-width">-->
+          <!--<template slot="append">天</template>-->
+        <!--</el-input>-->
+        <!--<span class="info">未评价商品，则取消评价资格</span>-->
+      <!--</el-form-item>-->
       <el-form-item>
         <el-button @click="cancel">取消</el-button>
         <el-button v-permission="['POST /admin/config/order']" type="primary" @click="update">确定</el-button>

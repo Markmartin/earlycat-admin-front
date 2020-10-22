@@ -43,6 +43,8 @@
         </template>
       </el-table-column>
 
+      <el-table-column align="center" min-width="100" label="排序" prop="sortOrder"/>
+
       <el-table-column align="center" label="操作" width="200" class-name="small-padding fixed-width">
         <template slot-scope="scope">
           <el-button v-permission="['POST /admin/category/update']" type="primary" size="mini" @click="handleUpdate(scope.row)">编辑</el-button>

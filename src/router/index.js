@@ -100,6 +100,48 @@ export const asyncRouterMap = [
         }
       },
       {
+        path: 'supplier',
+        component: () => import('@/views/po/supplier'),
+        name: 'poSupplier',
+        meta: {
+          perms: ['GET /admin/supplier/list'],
+          title: '供应商管理',
+          noCache: true
+        }
+      },
+      {
+        path: 'supplierEdit',
+        component: () => import('@/views/po/supplierEdit'),
+        name: 'poSupplierEdit',
+        meta: {
+          perms: ['GET /admin/supplier/create'],
+          title: '供应商管理',
+          noCache: true
+        },
+        hidden: true
+      },
+      {
+        path: 'purchaser',
+        component: () => import('@/views/po/purchaser'),
+        name: 'poPurchaser',
+        meta: {
+          perms: ['GET /admin/purchaser/list'],
+          title: '采购员管理',
+          noCache: true
+        }
+      },
+      {
+        path: 'purchaserEdit',
+        component: () => import('@/views/po/purchaserEdit'),
+        name: 'poPurchaserEdit',
+        meta: {
+          perms: ['GET /admin/purchaser/create'],
+          title: '采购员管理',
+          noCache: true
+        },
+        hidden: true
+      },
+      {
         path: 'list',
         component: () => import('@/views/po/list'),
         name: 'poList',
