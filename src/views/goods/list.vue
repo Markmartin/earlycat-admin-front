@@ -101,7 +101,7 @@
 
 <!--      <el-table-column align="center" label="当前价格" prop="retailPrice"/>-->
 
-      <el-table-column align="center" label="销售类型" width="110px" prop="acStatus">
+      <el-table-column align="center" label="销售类型" min-width="100" prop="acStatus">
         <template slot-scope="scope">
           <span v-if="scope.row.acStatus == 0">正常</span>
           <span v-if="scope.row.acStatus == 1">预售</span>
@@ -135,6 +135,12 @@
         </template>
       </el-table-column>
 
+      <el-table-column align="center" min-width="50" label="排序" prop="sortOrder">
+        <template slot-scope="scope">
+          <el-button type="text" size="small" @click="UpdateSort(scope.row)">{{scope.row.sortOrder}}</el-button>
+        </template>
+      </el-table-column>
+
       <el-table-column align="center" label="操作" width="220" class-name="small-padding fixed-width">
         <template slot-scope="scope">
          <!-- <el-button v-if=" scope.row.isOnSale == 0" v-permission="['POST /admin/goods/update']" type="primary" size="mini" @click="handChangeStatus(scope.row)"  plain>上架</el-button>
@@ -162,6 +168,19 @@
       <div slot="footer" class="dialog-footer">
         <el-button @click="createDialogVisible = false">取消</el-button>
         <el-button v-permission="['GET /admin/goods/list']" type="primary" @click="handlePrinterSave">确定</el-button>
+      </div>
+    </el-dialog>
+
+
+    <el-dialog :visible.sync="sortDialogVisible" title="排序">
+      <el-form  ref="sortForm" :model="sortForm" status-icon label-position="left" label-width="100px" style="width: 500px; margin-left:50px;">
+        <el-form-item label="排序" prop="sortOrder">
+          <el-input-number v-model="sortForm.sortOrder" :min="0" />
+        </el-form-item>
+      </el-form>
+      <div slot="footer" class="dialog-footer">
+        <el-button @click="sortDialogVisible = false">取消</el-button>
+        <el-button type="primary" @click="confirmSort">确定</el-button>
       </div>
     </el-dialog>
   </div>
@@ -277,7 +296,11 @@ export default {
       },
       goodsDetail: '',
       detailDialogVisible: false,
-      downloadLoading: false
+      downloadLoading: false,
+      sortDialogVisible: false,
+      sortForm: {
+        sortOrder: undefined
+      },
     }
   },
   created() {
@@ -378,6 +401,17 @@ export default {
           title: '失败',
           message: response.data.errmsg
         })
+      })
+    },
+    UpdateSort(row) {
+      this.sortForm.sortOrder = row.sortOrder;
+      this.sortDialogVisible = true
+    },
+    confirmSort() {
+      this.$refs['sortForm'].validate((valid) => {
+        if (valid) {
+            alert("123")
+        }
       })
     },
     handleDownload() {
