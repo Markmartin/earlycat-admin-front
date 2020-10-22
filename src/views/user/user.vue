@@ -49,7 +49,7 @@
             width="160">
             <div style="text-align: center;">
               <el-button size="mini" type="primary" @click="setUserType(1,scope.row);scope.row.visible = false">推广</el-button>
-              <el-button size="mini" type="primary" @click="setUserType(2,scope.row);scope.row.visible = false">总代</el-button>
+              <!--<el-button size="mini" type="primary" @click="setUserType(2,scope.row);scope.row.visible = false">总代</el-button>-->
             </div>
             <el-button slot="reference" type="primary" size="mini">设为</el-button>
             <!-- <el-button slot="reference">删除</el-button> -->
@@ -64,17 +64,29 @@
     </el-table>
 
     <pagination v-show="total>0" :total="total" :page.sync="listQuery.page" :limit.sync="listQuery.limit" @pagination="getList" />
-    <el-dialog :visible.sync="dialogVisible" :before-close="handleClose" title="选择总代">
+    <el-dialog :visible.sync="dialogVisible" :before-close="handleClose" title="选择推广策略组">
       <el-form ref="dataForm" :rules="rules" :model="dataForm" status-icon label-position="right" label-width="150px" style="width: 100%; padding-left:50px;">
-        <el-form-item label="总代人员" prop="inviterId">
+        <!--<el-form-item label="总代人员" prop="inviterId">-->
+          <!--<el-select-->
+            <!--v-model="dataForm.inviterId"-->
+            <!--style="width:100%;"-->
+            <!--placeholder="请选择总代人员">-->
+            <!--<el-option-->
+              <!--v-for="item in inviterList"-->
+              <!--:key="item.id"-->
+              <!--:label="item.nickname"-->
+              <!--:value="item.id"/>-->
+          <!--</el-select>-->
+        <!--</el-form-item>-->
+        <el-form-item label="推广策略组" prop="strategyGroupId">
           <el-select
-            v-model="dataForm.inviterId"
+            v-model="dataForm.strategyGroupId"
             style="width:100%;"
-            placeholder="请选择总代人员">
+            placeholder="请选择推广策略组">
             <el-option
-              v-for="item in inviterList"
+              v-for="item in strategyGroupList"
               :key="item.id"
-              :label="item.nickname"
+              :label="item.name"
               :value="item.id"/>
           </el-select>
         </el-form-item>
@@ -89,6 +101,7 @@
 
 <script>
 import { fetchList, userDisable, userEnable, userSell } from '@/api/user'
+import { fetchStrategyGroupList } from '@/api/strategy'
 import Pagination from '@/components/Pagination' // Secondary package based on el-pagination
 
 export default {
@@ -98,13 +111,16 @@ export default {
     return {
       dataForm: {
         item: {},
-        inviterId: ''
+        inviterId: '',
+        strategyGroupId: '',
       },
       inviterList: [],
+      strategyGroupList: [],
       dialogVisible: false,
       rules: {
         inviterId: [
-          { required: true, message: '请选择总代人员', trigger: 'change' }
+          { required: false, message: '请选择总代人员', trigger: 'change' },
+          { required: true, message: '请选择推广策略组', trigger: 'change' }
         ]
       },
       list: null,
@@ -128,11 +144,12 @@ export default {
         {
           label: '推广用户',
           value: 1
-        },
-        {
-          label: '总代',
-          value: 2
         }
+        // ,
+        // {
+        //   label: '总代',
+        //   value: 2
+        // }
       ],
       statusDic: ['可用', '禁用', '注销']
     }
@@ -153,7 +170,8 @@ export default {
             cancelButtonText: '取消',
             type: 'warning'
           }).then(() => {
-            userSell({ id: this.dataForm.item.id, userType: 1, inviterId: this.dataForm.inviterId }).then(response => {
+            userSell({ id: this.dataForm.item.id, userType: 1, inviterId: this.dataForm.inviterId,
+              strategyGroupId: this.dataForm.strategyGroupId}).then(response => {
               this.$message({
                 type: 'success',
                 message: '设置成功!'
@@ -175,11 +193,17 @@ export default {
         this.dataForm.item = item
         this.dataForm.inviterId = ''
         this.inviterList = []
-        fetchList({ page: 1, limit: 100, userType: 2 }).then(response => {
-          this.inviterList = response.data.data.list
+        // fetchList({ page: 1, limit: 100, userType: 2 }).then(response => {
+        //   this.inviterList = response.data.data.list
+        //   this.dialogVisible = true
+        // }).catch(() => {
+        //   this.inviterList = []
+        // })
+        fetchStrategyGroupList({ page: 1, limit: 100 }).then(response => {
+          this.strategyGroupList = response.data.data.list
           this.dialogVisible = true
         }).catch(() => {
-          this.inviterList = []
+          this.strategyGroupList = []
         })
       } else {
         let hint = ''
