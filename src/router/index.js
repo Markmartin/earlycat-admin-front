@@ -588,6 +588,16 @@ export const asyncRouterMap = [
         }
       },
       {
+        path: 'strategy',
+        component: () => import('@/views/promotion/strategy'),
+        name: 'strategy',
+        meta: {
+          perms: ['GET /admin/strategy/list', 'POST /admin/strategy/create', 'POST /admin/strategy/update', 'POST /admin/strategy/delete'],
+          title: '策略组管理',
+          noCache: true
+        }
+      },
+      {
         path: 'coupon',
         component: () => import('@/views/promotion/coupon'),
         name: 'coupon',
