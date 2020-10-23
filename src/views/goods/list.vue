@@ -3,7 +3,7 @@
 
     <!-- 查询和其他操作 -->
     <div class="filter-container">
-      <el-input v-model="listQuery.goodsSn" clearable class="filter-item" style="width: 200px;" placeholder="请输入商品编号"/>
+
       <el-input v-model="listQuery.name" clearable class="filter-item" style="width: 200px;" placeholder="请输入商品名称"/>
       <el-cascader :options="categoryList" clearable class="filter-item" expand-trigger="hover" placeholder="请选择所属分类" @change="handleCategoryChange"/>
       <el-select v-model="listQuery.brandId" clearable class="filter-item" placeholder="请选择所属品牌商">
@@ -23,6 +23,9 @@
       </el-select>
       <el-select v-model="listQuery.acStatus" clearable style="width: 200px" class="filter-item" placeholder="请选择销售类型">
         <el-option v-for="type in isPressOption" :key="type.value" :label="type.label" :value="type.value"/>
+      </el-select>
+      <el-select v-model="listQuery.saleType" clearable style="width: 200px" class="filter-item" placeholder="请选择上架类型">
+        <el-option v-for="type in onlineOptions" :key="type.value" :label="type.label" :value="type.value"/>
       </el-select>
       <el-button v-permission="['GET /admin/goods/list']" class="filter-item" type="primary" icon="el-icon-search" @click="handleFilter">查找</el-button>
       <el-button v-permission="['POST /admin/goods/create']" class="filter-item" type="primary" icon="el-icon-edit" @click="handleCreate">添加</el-button>
@@ -101,7 +104,7 @@
 
 <!--      <el-table-column align="center" label="当前价格" prop="retailPrice"/>-->
 
-      <el-table-column align="center" label="销售类型" width="110px" prop="acStatus">
+      <el-table-column align="center" label="销售类型" min-width="100" prop="acStatus">
         <template slot-scope="scope">
           <span v-if="scope.row.acStatus == 0">正常</span>
           <span v-if="scope.row.acStatus == 1">预售</span>
@@ -135,6 +138,12 @@
         </template>
       </el-table-column>
 
+      <el-table-column align="center" min-width="50" label="排序" prop="sortOrder">
+        <template slot-scope="scope">
+          <el-button type="text" size="small" @click="UpdateSort(scope.row)">{{scope.row.sortOrder}}</el-button>
+        </template>
+      </el-table-column>
+
       <el-table-column align="center" label="操作" width="220" class-name="small-padding fixed-width">
         <template slot-scope="scope">
          <!-- <el-button v-if=" scope.row.isOnSale == 0" v-permission="['POST /admin/goods/update']" type="primary" size="mini" @click="handChangeStatus(scope.row)"  plain>上架</el-button>
@@ -164,6 +173,19 @@
         <el-button v-permission="['GET /admin/goods/list']" type="primary" @click="handlePrinterSave">确定</el-button>
       </div>
     </el-dialog>
+
+
+    <el-dialog :visible.sync="sortDialogVisible" title="排序">
+      <el-form  ref="sortForm" :model="sortForm" status-icon label-position="left" label-width="100px" style="width: 500px; margin-left:50px;">
+        <el-form-item label="排序" prop="sortOrder">
+          <el-input-number v-model="sortForm.sortOrder" :min="0" />
+        </el-form-item>
+      </el-form>
+      <div slot="footer" class="dialog-footer">
+        <el-button @click="sortDialogVisible = false">取消</el-button>
+        <el-button type="primary" @click="confirmSort">确定</el-button>
+      </div>
+    </el-dialog>
   </div>
 </template>
 
@@ -186,7 +208,7 @@
 </style>
 
 <script>
-import { listGoods, deleteGoods, listCatAndBrand } from '@/api/goods'
+import { listGoods, deleteGoods, listCatAndBrand ,updateBaseInfo} from '@/api/goods'
 import { getLodop } from '@/utils/lodopFuncs'
 import BackToTop from '@/components/BackToTop'
 import Pagination from '@/components/Pagination' // Secondary package based on el-pagination
@@ -196,6 +218,17 @@ export default {
   components: { BackToTop, Pagination },
   data() {
     return {
+      onlineOptions: [
+        {
+          value: 1,
+          label: '线上'
+        }, {
+          value: 2,
+          label: '线下'
+        }, {
+          value: 3,
+          label: '线上&线下'
+        }],
       isPressOption: [
         {
           label: '正常',
@@ -266,6 +299,7 @@ export default {
       listQuery: {
         isOnSale: '',
         acStatus: undefined,
+        saleType: undefined,
         categoryId: undefined,
         brandId: undefined,
         page: 1,
@@ -277,7 +311,11 @@ export default {
       },
       goodsDetail: '',
       detailDialogVisible: false,
-      downloadLoading: false
+      downloadLoading: false,
+      sortDialogVisible: false,
+      sortForm: {
+        sortOrder: undefined
+      },
     }
   },
   created() {
@@ -378,6 +416,33 @@ export default {
           title: '失败',
           message: response.data.errmsg
         })
+      })
+    },
+    UpdateSort(row) {
+      this.sortForm = Object.assign({}, row)
+      this.sortDialogVisible = true;
+       this.$nextTick(() => {
+         this.$refs['sortForm'].clearValidate()
+       })
+    },
+    confirmSort() {
+      this.$refs['sortForm'].validate((valid) => {
+        if (valid) {
+          updateBaseInfo(this.sortForm).then(() => {
+            this.sortDialogVisible = false
+            this.getList()
+            this.$notify.success({
+              title: '成功',
+              message: '更新成功'
+            })
+          }).catch(response => {
+            this.getList()
+            this.$notify.error({
+              title: '失败',
+              message: response.data.errmsg
+            })
+          })
+        }
       })
     },
     handleDownload() {
