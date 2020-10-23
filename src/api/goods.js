@@ -131,3 +131,11 @@ export function changSaleStatus(data) {
     data
   })
 }
+
+export function updateBaseInfo(data) {
+  return request({
+    url: '/goods/updateBaseInfo',
+    method: 'post',
+    data
+  })
+}

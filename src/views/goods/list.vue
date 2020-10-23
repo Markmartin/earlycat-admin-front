@@ -3,7 +3,7 @@
 
     <!-- 查询和其他操作 -->
     <div class="filter-container">
-      <el-input v-model="listQuery.goodsSn" clearable class="filter-item" style="width: 200px;" placeholder="请输入商品编号"/>
+
       <el-input v-model="listQuery.name" clearable class="filter-item" style="width: 200px;" placeholder="请输入商品名称"/>
       <el-cascader :options="categoryList" clearable class="filter-item" expand-trigger="hover" placeholder="请选择所属分类" @change="handleCategoryChange"/>
       <el-select v-model="listQuery.brandId" clearable class="filter-item" placeholder="请选择所属品牌商">
@@ -23,6 +23,9 @@
       </el-select>
       <el-select v-model="listQuery.acStatus" clearable style="width: 200px" class="filter-item" placeholder="请选择销售类型">
         <el-option v-for="type in isPressOption" :key="type.value" :label="type.label" :value="type.value"/>
+      </el-select>
+      <el-select v-model="listQuery.saleType" clearable style="width: 200px" class="filter-item" placeholder="请选择上架类型">
+        <el-option v-for="type in onlineOptions" :key="type.value" :label="type.label" :value="type.value"/>
       </el-select>
       <el-button v-permission="['GET /admin/goods/list']" class="filter-item" type="primary" icon="el-icon-search" @click="handleFilter">查找</el-button>
       <el-button v-permission="['POST /admin/goods/create']" class="filter-item" type="primary" icon="el-icon-edit" @click="handleCreate">添加</el-button>
@@ -205,7 +208,7 @@
 </style>
 
 <script>
-import { listGoods, deleteGoods, listCatAndBrand } from '@/api/goods'
+import { listGoods, deleteGoods, listCatAndBrand ,updateBaseInfo} from '@/api/goods'
 import { getLodop } from '@/utils/lodopFuncs'
 import BackToTop from '@/components/BackToTop'
 import Pagination from '@/components/Pagination' // Secondary package based on el-pagination
@@ -215,6 +218,17 @@ export default {
   components: { BackToTop, Pagination },
   data() {
     return {
+      onlineOptions: [
+        {
+          value: 1,
+          label: '线上'
+        }, {
+          value: 2,
+          label: '线下'
+        }, {
+          value: 3,
+          label: '线上&线下'
+        }],
       isPressOption: [
         {
           label: '正常',
@@ -285,6 +299,7 @@ export default {
       listQuery: {
         isOnSale: '',
         acStatus: undefined,
+        saleType: undefined,
         categoryId: undefined,
         brandId: undefined,
         page: 1,
@@ -404,13 +419,29 @@ export default {
       })
     },
     UpdateSort(row) {
-      this.sortForm.sortOrder = row.sortOrder;
-      this.sortDialogVisible = true
+      this.sortForm = Object.assign({}, row)
+      this.sortDialogVisible = true;
+       this.$nextTick(() => {
+         this.$refs['sortForm'].clearValidate()
+       })
     },
     confirmSort() {
       this.$refs['sortForm'].validate((valid) => {
         if (valid) {
-            alert("123")
+          updateBaseInfo(this.sortForm).then(() => {
+            this.sortDialogVisible = false
+            this.getList()
+            this.$notify.success({
+              title: '成功',
+              message: '更新成功'
+            })
+          }).catch(response => {
+            this.getList()
+            this.$notify.error({
+              title: '失败',
+              message: response.data.errmsg
+            })
+          })
         }
       })
     },

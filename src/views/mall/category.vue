@@ -37,7 +37,7 @@
 
       <el-table-column align="center" min-width="100" label="简介" prop="desc"/>
 
-      <el-table-column align="center" label="级别" prop="level">
+      <el-table-column align="center" min-width="100"  label="级别" prop="level">
         <template slot-scope="scope">
           <el-tag :type="scope.row.level === 'L1' ? 'primary' : 'info' ">{{ scope.row.level === 'L1' ? '一级类目' : '二级类目' }}</el-tag>
         </template>
@@ -61,6 +61,9 @@
         </el-form-item>
         <el-form-item label="关键字" prop="keywords">
           <el-input v-model="dataForm.keywords"/>
+        </el-form-item>
+        <el-form-item label="排序" prop="keywords">
+          <el-input v-model="dataForm.sortOrder"/>
         </el-form-item>
         <el-form-item label="级别" prop="level">
           <el-select v-model="dataForm.level" @change="onLevelChange">
