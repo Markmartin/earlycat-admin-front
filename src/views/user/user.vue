@@ -8,6 +8,9 @@
       <el-select v-model="listQuery.userType" clearable style="width: 200px" class="filter-item" placeholder="请选择用户类型">
         <el-option v-for="type in userTypeOptions" :key="type.value" :label="type.label" :value="type.value"/>
       </el-select>
+      <el-select v-model="listQuery.strategyGroupId" clearable style="width: 200px" class="filter-item" placeholder="请选择策略组">
+        <el-option v-for="group in strategyGroupList" :key="group.name" :label="group.name" :value="group.id"/>
+      </el-select>
       <el-button v-permission="['GET /admin/user/list']" class="filter-item" type="primary" icon="el-icon-search" @click="handleFilter">查找</el-button>
       <el-button v-permission="['GET /admin/user/list']" :loading="downloadLoading" class="filter-item" type="primary" icon="el-icon-download" @click="handleDownload">导出</el-button>
     </div>
@@ -39,6 +42,7 @@
           <el-tag>{{ statusDic[scope.row.status] }}</el-tag>
         </template>
       </el-table-column>
+      <el-table-column align="center" label="策略组" prop="strategyGroupName"/>
       <el-table-column align="center" label="注册时间" prop="addTime"/>
       <el-table-column align="center" width="200" label="操作" prop="status">
         <template slot-scope="scope">
@@ -131,6 +135,7 @@ export default {
         limit: 20,
         nickname: undefined,
         mobile: undefined,
+        strategyGroupId: undefined,
         sort: 'add_time',
         order: 'desc'
       },
@@ -156,6 +161,7 @@ export default {
   },
   created() {
     this.getList()
+    this.getStrategyGroupList()
   },
   methods: {
     handleClose() {
@@ -277,6 +283,13 @@ export default {
         this.list = []
         this.total = 0
         this.listLoading = false
+      })
+    },
+    getStrategyGroupList() {
+      fetchStrategyGroupList({ page: 1, limit: 100 }).then(response => {
+        this.strategyGroupList = response.data.data.list
+      }).catch(() => {
+        this.strategyGroupList = []
       })
     },
     handleFilter() {
