@@ -159,8 +159,8 @@
           :key="detail.key"
           :prop="'list.' + index + '.name'"
         >
-          <el-col :span="4"><el-input v-model="detail.name" placeholder="请输入策略名称"></el-input></el-col>
-          <el-col :span="4">
+          <el-col :span="6"><el-input v-model="detail.name" placeholder="请输入策略名称"></el-input></el-col>
+          <el-col :span="6">
             <el-select v-model="detail.type" placeholder="请输入奖励类型">
               <el-option
                 v-for="item in types"
@@ -170,7 +170,7 @@
               </el-option>
             </el-select>
           </el-col>
-          <el-col :span="4"><el-input v-model="detail.amount" placeholder="请输入奖励金额"></el-input></el-col>
+          <el-col :span="6"><el-input v-model="detail.amount" placeholder="请输入奖励金额"></el-input></el-col>
           <el-col :span="1" v-if="detail.type == 0">元</el-col>
           <el-col :span="1" v-if="detail.type == 1">%</el-col>
           <el-button @click.prevent="removeDomain(detail)">删除</el-button>
