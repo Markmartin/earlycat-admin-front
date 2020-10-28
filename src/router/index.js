@@ -592,7 +592,7 @@ export const asyncRouterMap = [
         component: () => import('@/views/promotion/strategy'),
         name: 'strategy',
         meta: {
-          perms: ['GET /admin/strategy/list', 'POST /admin/strategy/create', 'POST /admin/strategy/update', 'POST /admin/strategy/delete'],
+          perms: ['GET /admin/strategy/list'],
           title: '策略组管理',
           noCache: true
         }

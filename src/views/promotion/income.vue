@@ -23,7 +23,7 @@
         end-placeholder="结束日期"
         @change="pickerDateChange"/>
       <el-input v-model="listQuery.mobile" clearable class="filter-item" style="width: 200px;" placeholder="请输入手机号"/>
-      <el-input v-model="listQuery.userId" clearable class="filter-item" style="width: 200px;" placeholder="请输入用户ID"/>
+      <!--<el-input v-model="listQuery.userId" clearable class="filter-item" style="width: 200px;" placeholder="请输入用户ID"/>-->
       <el-button v-permission="['GET /admin/groupon/listRecord']" class="filter-item" type="primary" icon="el-icon-search" @click="handleFilter">查找</el-button>
     </div>
 
@@ -61,6 +61,7 @@
       <el-table-column align="center" label="操作">
         <template slot-scope="scope">
           <el-button v-permission="['POST /admin/income/entpay']" v-if="scope.row.type === 9 && scope.row.status === false" type="primary" size="mini" @click="handlePayment(scope.row)">企业付款</el-button>
+          <el-button v-permission="['POST /admin/income/orderDetail']" v-if="scope.row.type != 9" type="info" size="mini" @click="showDetail(scope.row)">订单提成详情</el-button>
         </template>
       </el-table-column>
     </el-table>
@@ -69,6 +70,37 @@
       <back-to-top :visibility-height="100"/>
     </el-tooltip>
 
+    <!--订单提成详情-->
+    <el-dialog :visible.sync="detailDialogVisible" customClass="customWidth" title="订单提成详情">
+      <el-form :data="orderDetail" label-position="left">
+        <el-form-item label="订单编号">
+          <span>{{ orderDetail.commission.orderSn }}</span>
+        </el-form-item>
+        <el-form-item label="下单时间">
+          <span>{{ orderDetail.commission.addTime }}</span>
+        </el-form-item>
+        <el-form-item label="订单状态">
+          <span>{{ orderDetail.commission.orderStatus }}</span>
+        </el-form-item>
+        <el-form-item label="订单实付金额">
+          <span>{{ orderDetail.orderInfo.actualPrice }}</span>
+        </el-form-item>
+        <el-form-item label="订单商品信息">
+          <el-table :data="orderDetail.goodsList" border fit highlight-current-row>
+            <el-table-column align="center" label="商品名称" prop="goodsName"/>
+            <el-table-column align="center" label="购买单价（元）" prop="price"/>
+            <el-table-column align="center" label="购买数量" prop="number"/>
+            <el-table-column align="center" label="商品图片" prop="picUrl">
+              <template slot-scope="scope">
+                <img :src="scope.row.picUrl" style="width:40px;height:40px;" >
+              </template>
+            </el-table-column>
+            <el-table-column align="center" label="商品规格" prop="specifications"/>
+          </el-table>
+        </el-form-item>
+      </el-form>
+    </el-dialog>
+
   </div>
 </template>
 
@@ -76,7 +108,7 @@
 </style>
 
 <script>
-import { listIncome, entpayIncome } from '@/api/income'
+import { listIncome, entpayIncome, apiOrderDetail } from '@/api/income'
 import BackToTop from '@/components/BackToTop'
 import Pagination from '@/components/Pagination' // Secondary package based on el-pagination
 
@@ -170,6 +202,11 @@ export default {
         order: 'desc'
       },
       goodsDetail: '',
+      orderDetail: {
+        orderInfo: '',
+        commission: '',
+        goodsList: []
+      },
       detailDialogVisible: false,
       downloadLoading: false
     }
@@ -227,7 +264,13 @@ export default {
     },
     handleSelectionChange(val) {
       this.multipleSelection = val
-    }
+    },
+    showDetail(row) {
+      apiOrderDetail(row.id).then(response => {
+        this.orderDetail = response.data.data
+      })
+      this.detailDialogVisible = true
+    },
   }
 }
 </script>

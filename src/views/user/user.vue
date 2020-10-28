@@ -52,13 +52,13 @@
       <el-table-column align="center" label="策略组" prop="strategyGroupName"/>
       <el-table-column align="center" label="申请推广状态" prop="applyPromoteStatus">
         <template slot-scope="scope">
-          <el-button v-if="scope.row.applyPromoteStatus === 1" type="success" size="mini" @click="setUserType(1,scope.row);scope.row.visible = false">同意</el-button>
-          <el-button v-if="scope.row.applyPromoteStatus === 1" type="danger" size="mini" @click="applyRefuse(scope.row)">拒绝</el-button>
+          <el-button v-permission="['POST /admin/user/sell']" v-if="scope.row.applyPromoteStatus === 1" type="success" size="mini" @click="setUserType(1,scope.row);scope.row.visible = false">同意</el-button>
+          <el-button v-permission="['POST /admin/user/applyRefuse']" v-if="scope.row.applyPromoteStatus === 1" type="danger" size="mini" @click="applyRefuse(scope.row)">拒绝</el-button>
           <el-tag v-if="scope.row.applyPromoteStatus === 2 || scope.row.applyPromoteStatus === 3">{{ applyPromoteStatusOptions[scope.row.applyPromoteStatus].label }}</el-tag>
         </template>
       </el-table-column>
       <el-table-column align="center" label="注册时间" prop="addTime"/>
-      <el-table-column align="center" width="200" label="操作" prop="status">
+      <el-table-column align="center" width="200" label="操作" prouserp="status">
         <template slot-scope="scope">
           <el-popover
             v-if="scope.row.userType === 0"
@@ -73,9 +73,9 @@
             <!-- <el-button slot="reference">删除</el-button> -->
           </el-popover>
           <!-- <el-button v-if="scope.row.userType === 0" type="primary" size="mini" @click="setUserType(1,scope.row)">设为推广</el-button> -->
-          <el-button v-else type="info" size="mini" @click="setUserType(0,scope.row)">取消推广</el-button>
-          <el-button v-if="scope.row.status === 1" type="success" size="mini" @click="btnEnable(scope.row)">启用</el-button>
-          <el-button v-if="scope.row.status === 0" type="danger" size="mini" @click="btnDisable(scope.row)">禁用</el-button>
+          <el-button v-permission="['POST /admin/user/sell']" v-else type="info" size="mini" @click="setUserType(0,scope.row)">取消推广</el-button>
+          <el-button v-permission="['POST /admin/user/enable']" v-if="scope.row.status === 1" type="success" size="mini" @click="btnEnable(scope.row)">启用</el-button>
+          <el-button v-permission="['POST /admin/user/disable']" v-if="scope.row.status === 0" type="danger" size="mini" @click="btnDisable(scope.row)">禁用</el-button>
         </template>
       </el-table-column>
 

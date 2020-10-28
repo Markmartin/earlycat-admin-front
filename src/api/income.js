@@ -24,3 +24,10 @@ export function entpayIncome(data) {
   })
 }
 
+export function apiOrderDetail(id) {
+  return request({
+    url: '/income/orderDetail',
+    method: 'get',
+    params: { id }
+  })
+}
