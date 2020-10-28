@@ -64,6 +64,14 @@ export function userDisable(data) {
   })
 }
 
+export function apiApplyRefuse(data) {
+  return request({
+    url: '/user/applyRefuse',
+    method: 'post',
+    data
+  })
+}
+
 export function userSell(data) {
   return request({
     url: '/user/sell',
