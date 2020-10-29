@@ -331,7 +331,8 @@
         <el-table-column property="price" width="100" label="货品售价(元)"/>
         <el-table-column property="inPrice" width="100" label="入库价格(元)"/>
         <el-table-column property="outPrice" width="100" label="出库售价(元)"/>
-        <el-table-column property="number" width="100" label="货品库存"/>
+        <el-table-column property="leftNum" width="100" label="剩余库存"/>
+        <el-table-column property="sellNum" width="100" label="卖出数量"/>
         <el-table-column property="url" width="100" label="货品图片">
           <template slot-scope="scope">
             <img v-if="scope.row.url" :src="scope.row.url" width="40">
@@ -375,7 +376,13 @@
           <el-form-item label="出库价格" prop="price">
             <el-input v-model="productForm.outPrice"/>
           </el-form-item>
-          <el-form-item label="货品库存" prop="number">
+          <el-form-item label="剩余库存" prop="leftNum">
+            <span>{{productForm.leftNum}}</span>
+          </el-form-item>
+          <el-form-item label="已售数量" prop="sellNum">
+            <span>{{productForm.sellNum}}</span>
+          </el-form-item>
+          <el-form-item label="设置库存" prop="number">
             <el-input-number v-model="productForm.number" :min="0"/>
           </el-form-item>
           <el-form-item label="货品图片" prop="url">
@@ -575,7 +582,7 @@
         specifications: [{ specification: '规格', value: '标准', picUrl: '' }],
         productVisiable: false,
         unitList: ['克', '个', '箱', '件', '盒', '份', '瓶', '袋', '桶'],
-        productForm: { id: 0, specifications: [], price: 0.00, number: 0, url: '', unit: '克', value: 0 },
+        productForm: { id: 0, specifications: [], price: 0.00, leftNum: 0, sellNum: 0, number: 0, url: '', unit: '克', value: 0 },
         products: [{
           id: 0,
           specifications: ['标准'],
