@@ -2,7 +2,7 @@ import request from '@/utils/request'
 
 export function fetchStrategyGroupList(query) {
   return request({
-    url: '/strategy/group/list',
+    url: '/strategy/list',
     method: 'get',
     params: query
   })
@@ -11,7 +11,7 @@ export function fetchStrategyGroupList(query) {
 
 export function apiCreate(data) {
   return request({
-    url: '/strategy/group/create',
+    url: '/strategy/create',
     method: 'post',
     data
   })
@@ -19,7 +19,7 @@ export function apiCreate(data) {
 
 export function apiUpdate(data) {
   return request({
-    url: '/strategy/group/update',
+    url: '/strategy/update',
     method: 'post',
     data
   })
@@ -27,7 +27,7 @@ export function apiUpdate(data) {
 
 export function apiDelete(data) {
   return request({
-    url: '/strategy/group/delete',
+    url: '/strategy/delete',
     method: 'post',
     data
   })
