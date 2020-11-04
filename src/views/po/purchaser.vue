@@ -40,7 +40,7 @@
       <el-table-column label="电话" align="center">
         <template slot-scope="scope">{{ scope.row.mobile }}</template>
       </el-table-column>
-      <el-table-column label="电话" align="center">
+      <el-table-column label="负责" align="center">
         <template slot-scope="scope">
           <el-tag v-for="item in scope.row.categoryIds" :key="item">{{categorys[item]}}</el-tag>
         </template>
