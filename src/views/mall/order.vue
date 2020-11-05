@@ -39,8 +39,8 @@
       <!--:value="item.id"/>-->
       <!--</el-select>-->
       <el-button v-permission="['GET /admin/order/list']" class="filter-item" type="primary" icon="el-icon-search" @click="handleFilter">查找</el-button>
-      <el-button v-permission="['POST /admin/order/export']" :loading="downloadLoading" class="filter-item" type="primary" icon="el-icon-download" @click="handleDownload(false, 'downloadLoading')">导出配送单</el-button>
-      <el-button v-permission="['POST /admin/order/export']" :loading="downloadLoading1" class="filter-item" type="primary" icon="el-icon-download" @click="handleDownload(true, 'downloadLoading1')">导出(含商品)</el-button>
+      <!--<el-button v-permission="['POST /admin/order/export']" :loading="downloadLoading" class="filter-item" type="primary" icon="el-icon-download" @click="handleDownload(false, 'downloadLoading')">导出配送单</el-button>-->
+      <!--<el-button v-permission="['POST /admin/order/export']" :loading="downloadLoading1" class="filter-item" type="primary" icon="el-icon-download" @click="handleDownload(true, 'downloadLoading1')">导出(含商品)</el-button>-->
       <!--<el-button v-permission="['POST /admin/order/print']" class="filter-item" type="primary" icon="el-icon-printer" @click="handlePrinter">打印</el-button>-->
       <!--<el-button v-permission="['POST /admin/order/batchship']" class="filter-item" type="primary" icon="el-icon-tickets" @click="handleBatchship">批量发货</el-button>-->
       <!-- <el-button v-permission="['POST /admin/order/print']" class="filter-item" type="primary" icon="el-icon-tickets" @click="exportPurchasing">测试导出采购单</el-button> -->
@@ -75,6 +75,7 @@
       <el-table-column align="center" label="操作" width="400" class-name="small-padding fixed-width">
         <template slot-scope="scope">
           <el-button v-permission="['GET /admin/order/detail']" type="primary" size="mini" @click="handleDetail(scope.row)">详情</el-button>
+          <el-button v-permission="['POST /admin/order/modifyAddress']" type="primary" size="small" @click="handleModifyAddress(scope.row)">修改收货地址</el-button>
           <!--<el-button v-permission="['POST /admin/order/print']" type="primary" size="mini" @click="handlePrinter(scope.row)">打印</el-button>-->
           <!--<el-button v-permission="['POST /admin/order/ship']" v-if="scope.row.orderStatus==201" type="primary" size="mini" @click="handleShip(scope.row)">发货</el-button>-->
           <!-- <el-button v-permission="['POST /admin/order/arrive']" v-if="scope.row.orderStatus==201 || scope.row.orderStatus==301" type="primary" size="mini" @click="handleArrive(scope.row)">到达</el-button> -->
@@ -188,6 +189,25 @@
         <el-button type="primary" @click="confirmRefund">确定</el-button>
       </div>
     </el-dialog>
+
+    <!-- 修改收货地址对话框 -->
+    <el-dialog :visible.sync="modifyAddressDialogVisible" title="修改收货地址">
+      <el-form ref="modifyAddressForm" :model="modifyAddressForm" status-icon label-position="left" label-width="100px" >
+        <el-form-item label="订单编号" prop="orderSn">
+          <span>{{modifyAddressForm.orderSn}}</span>
+        </el-form-item>
+        <el-form-item label="收货人" prop="consignee">
+          <span>{{modifyAddressForm.consignee}}</span>
+        </el-form-item>
+        <el-form-item label="收货地址" prop="newAddress">
+          <el-input v-model="modifyAddressForm.newAddress"/>
+        </el-form-item>
+      </el-form>
+      <div slot="footer" class="dialog-footer">
+        <el-button @click="modifyAddressDialogVisible = false">取消</el-button>
+        <el-button type="primary" @click="confirmModifyAddress">确定</el-button>
+      </div>
+    </el-dialog>
   </div>
 </template>
 
@@ -201,7 +221,7 @@
   import { getToken } from '@/utils/auth'
   import { getLodop } from '@/utils/lodopFuncs'
   import { listCommunity, expressList } from '@/api/community'
-  import { listOrder, shipOrder, arriveOrder, refundOrder, detailOrder, printOrder, rbatchshipOrder } from '@/api/order'
+  import { listOrder, shipOrder, arriveOrder, refundOrder, detailOrder, printOrder, rbatchshipOrder, modifyAddress } from '@/api/order'
   import Pagination from '@/components/Pagination' // Secondary package based on el-pagination
   import checkPermission from '@/utils/permission' // 权限判断函数
 
@@ -296,7 +316,13 @@
           orderId: undefined,
           refundMoney: undefined
         },
+        modifyAddressForm: {
+          orderSn: undefined,
+          consignee: undefined,
+          newAddress: undefined
+        },
         refundDialogVisible: false,
+        modifyAddressDialogVisible: false,
         downloadLoading: false,
         downloadLoading1: false
       }
@@ -523,6 +549,34 @@
           this.orderDetail = response.data.data
         })
         this.orderDialogVisible = true
+      },
+      handleModifyAddress(row) {
+        this.modifyAddressForm.orderSn = row.orderSn
+        this.modifyAddressForm.consignee = row.consignee
+        this.modifyAddressForm.newAddress = row.address
+        this.modifyAddressDialogVisible = true
+        this.$nextTick(() => {
+          this.$refs['modifyAddressForm'].clearValidate()
+        })
+      },
+      confirmModifyAddress() {
+        this.$refs['modifyAddressForm'].validate((valid) => {
+          if (valid) {
+            modifyAddress(this.modifyAddressForm).then(response => {
+              this.modifyAddressDialogVisible = false
+              this.$notify.success({
+                title: '成功',
+                message: '地址修改成功'
+              })
+              this.getList()
+            }).catch(response => {
+              this.$notify.error({
+                title: '失败',
+                message: response.data.errmsg
+              })
+            })
+          }
+        })
       },
       handleShip(row) {
         this.shipForm.orderId = row.id
