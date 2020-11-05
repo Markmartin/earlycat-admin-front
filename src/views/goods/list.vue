@@ -330,7 +330,11 @@ export default {
       this.listQuery.categoryId = value[value.length - 1]
     },
     getList() {
+      debugger
       this.listLoading = true
+      if (this.$route.query.listQuery != undefined ||this.$route.listQuery != null) {
+        this.listQuery = this.$route.query.listQuery;
+      }
       listGoods(this.listQuery).then(response => {
         this.list = response.data.data.list
         this.total = response.data.data.total
@@ -366,7 +370,7 @@ export default {
       }
     },
     handleUpdate(row) {
-      this.$router.push({ path: '/goods/edit', query: { id: row.id }})
+      this.$router.push({ path: '/goods/edit', query: { id: row.id ,listQuery:this.listQuery}})
     },
     showDetail(detail) {
       this.goodsDetail = detail
