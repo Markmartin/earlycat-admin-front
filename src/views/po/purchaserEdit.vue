@@ -82,7 +82,7 @@ export default {
     listCatL1().then((res) => {
       this.categorys = res.data.data.list;
     });
-    listAdmin().then((res) => {
+    listAdmin({page: 1,limit: 100}).then((res) => {
       this.admins = res.data.data.list;
     });
   },

@@ -564,6 +564,19 @@
             value: 3,
             label: '线上&线下'
           }],
+        listQuery: {
+          isOnSale: '',
+          acStatus: undefined,
+          saleType: undefined,
+          categoryId: undefined,
+          brandId: undefined,
+          page: 1,
+          limit: 20,
+          goodsSn: undefined,
+          name: undefined,
+          sort: 'add_time',
+          order: 'desc'
+        },
         stationOption: [],
         communityLoading: false,
         communityList: [],
@@ -647,6 +660,10 @@
         if (this.$route.query.id == null) {
           return
         }
+
+        debugger;
+
+        this.listQuery = this.$route.query.listQuery;
 
         const goodsId = this.$route.query.id
         detailGoods(goodsId).then(response => {
@@ -737,7 +754,8 @@
         this.goods.categoryId = value[value.length - 1]
       },
       handleCancel: function() {
-        this.$router.push({ path: '/goods/list' })
+        this.$router.push({ path: '/goods/list' ,query: {listQuery:this.listQuery}})
+        debugger
       },
 
       submitEditForm(formName) {
@@ -796,7 +814,7 @@
                 title: '成功',
                 message: '更新成功'
               })
-              this.$router.push({ path: '/goods/list' })
+              this.$router.push({ path: '/goods/list' ,query: {listQuery:this.listQuery}})
             }).catch(response => {
               MessageBox.alert('业务错误：' + response.data.errmsg, '警告', {
                 confirmButtonText: '确定',
