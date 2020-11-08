@@ -246,7 +246,6 @@
         this.dataForm = Object.assign({}, row)
         this.dialogStatus = 'update'
         this.dialogFormVisible = true
-        debugger
         this.$nextTick(() => {
           this.$refs['dataForm'].clearValidate()
         })

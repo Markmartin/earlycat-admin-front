@@ -27,6 +27,10 @@
       <el-select v-model="listQuery.saleType" clearable style="width: 200px" class="filter-item" placeholder="请选择上架类型">
         <el-option v-for="type in onlineOptions" :key="type.value" :label="type.label" :value="type.value"/>
       </el-select>
+      <el-select v-model="listQuery.condition" clearable style="width: 110px" class="filter-item" placeholder="库存条件">
+        <el-option v-for="type in numberCondition" :key="type.value" :label="type.label" :value="type.value"/>
+      </el-select>
+      <el-input v-model="listQuery.number" clearable class="filter-item" style="width: 110px;" placeholder="库存数量"/>
       <el-button v-permission="['GET /admin/goods/list']" class="filter-item" type="primary" icon="el-icon-search" @click="handleFilter">查找</el-button>
       <el-button v-permission="['POST /admin/goods/create']" class="filter-item" type="primary" icon="el-icon-edit" @click="handleCreate">添加</el-button>
       <el-button v-permission="['GET /admin/goods/list']" :loading="downloadLoading" class="filter-item" type="primary" icon="el-icon-download" @click="handleDownload">导出</el-button>
@@ -138,6 +142,12 @@
         </template>
       </el-table-column>
 
+      <el-table-column align="center" min-width="50" label="库存" prop="number">
+        <template slot-scope="scope">
+          <el-button type="text" size="small" @click="UpdateNumber(scope.row)">{{scope.row.number}}</el-button>
+        </template>
+      </el-table-column>
+
       <el-table-column align="center" min-width="50" label="排序" prop="sortOrder">
         <template slot-scope="scope">
           <el-button type="text" size="small" @click="UpdateSort(scope.row)">{{scope.row.sortOrder}}</el-button>
@@ -174,10 +184,21 @@
       </div>
     </el-dialog>
 
+    <el-dialog :visible.sync="numberDialogVisible" title="库存设置">
+      <el-form  ref="numberForm" :model="numberForm" status-icon label-position="left" label-width="100px" style="width: 500px; margin-left:50px;">
+        <el-form-item label="排序" prop="number">
+          <el-input-number v-model="numberForm.number" :min="0" />
+        </el-form-item>
+      </el-form>
+      <div slot="footer" class="dialog-footer">
+        <el-button @click="numberDialogVisible = false">取消</el-button>
+        <el-button type="primary" @click="confirmNumber">确定</el-button>
+      </div>
+    </el-dialog>
 
     <el-dialog :visible.sync="sortDialogVisible" title="排序">
       <el-form  ref="sortForm" :model="sortForm" status-icon label-position="left" label-width="100px" style="width: 500px; margin-left:50px;">
-        <el-form-item label="排序" prop="sortOrder">
+        <el-form-item label="库存数量" prop="sortOrder">
           <el-input-number v-model="sortForm.sortOrder" :min="0" />
         </el-form-item>
       </el-form>
@@ -208,7 +229,7 @@
 </style>
 
 <script>
-import { listGoods, deleteGoods, listCatAndBrand ,updateBaseInfo} from '@/api/goods'
+import { listGoods, deleteGoods, listCatAndBrand ,updateAdminSort, updateAdminStock} from '@/api/goods'
 import { getLodop } from '@/utils/lodopFuncs'
 import BackToTop from '@/components/BackToTop'
 import Pagination from '@/components/Pagination' // Secondary package based on el-pagination
@@ -218,6 +239,17 @@ export default {
   components: { BackToTop, Pagination },
   data() {
     return {
+      numberCondition: [
+        {
+          value: '>',
+          label: '大于'
+        }, {
+          value: '<',
+          label: '小于'
+        }, {
+          value: '=',
+          label: '等于'
+        }],
       onlineOptions: [
         {
           value: 1,
@@ -297,13 +329,15 @@ export default {
       total: 0,
       listLoading: true,
       listQuery: {
+        condition: undefined,
+        number: undefined,
         isOnSale: '',
         acStatus: undefined,
         saleType: undefined,
         categoryId: undefined,
         brandId: undefined,
         page: 1,
-        limit: 20,
+        limit: 10,
         goodsSn: undefined,
         name: undefined,
         sort: 'add_time',
@@ -313,9 +347,13 @@ export default {
       detailDialogVisible: false,
       downloadLoading: false,
       sortDialogVisible: false,
+      numberDialogVisible: false,
       sortForm: {
         sortOrder: undefined
       },
+      numberForm: {
+        number: undefined
+      }
     }
   },
   created() {
@@ -330,7 +368,6 @@ export default {
       this.listQuery.categoryId = value[value.length - 1]
     },
     getList() {
-      debugger
       this.listLoading = true
       if (this.$route.query.listQuery != undefined ||this.$route.listQuery != null) {
         this.listQuery = this.$route.query.listQuery;
@@ -346,6 +383,18 @@ export default {
       })
     },
     handleFilter() {
+      if(this.listQuery.condition != undefined || this.listQuery.condition != null){
+        if(this.listQuery.number == undefined || this.listQuery.condition == null){
+          this.$message.error('未输入需要查询的库存数量！！')
+          return false
+        }
+      }
+      if(this.listQuery.number != undefined || this.listQuery.number != null){
+        if(this.listQuery.condition == undefined || this.listQuery.condition == null){
+          this.$message.error('未输入需要查询的库存条件！！')
+          return false
+        }
+      }
       this.listQuery.page = 1
       this.getList()
     },
@@ -397,7 +446,6 @@ export default {
         })
       }).catch(() => {})
     },
-
     handChangeStatus(row) {
       this.activityVo.id = row.id
       let msg = ''
@@ -432,8 +480,36 @@ export default {
     confirmSort() {
       this.$refs['sortForm'].validate((valid) => {
         if (valid) {
-          updateBaseInfo(this.sortForm).then(() => {
+          debugger
+          updateAdminSort(this.sortForm.id, this.sortForm.sortOrder).then(() => {
             this.sortDialogVisible = false
+            this.getList()
+            this.$notify.success({
+              title: '成功',
+              message: '更新成功'
+            })
+          }).catch(response => {
+            this.getList()
+            this.$notify.error({
+              title: '失败',
+              message: response.data.errmsg
+            })
+          })
+        }
+      })
+    },
+    UpdateNumber(row) {
+      this.numberForm = Object.assign({}, row)
+      this.numberDialogVisible = true;
+      this.$nextTick(() => {
+        this.$refs['numberForm'].clearValidate()
+      })
+    },
+    confirmNumber() {
+      this.$refs['numberForm'].validate((valid) => {
+        if (valid) {
+          updateAdminStock(this.numberForm.id,this.numberForm.number).then(() => {
+            this.numberDialogVisible = false
             this.getList()
             this.$notify.success({
               title: '成功',

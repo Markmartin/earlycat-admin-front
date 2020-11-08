@@ -281,7 +281,6 @@
         })
       },
       handleDelete(row) {
-        debugger
         deleteZcmActivityById(row.id).then(response => {
           this.getList()
           this.$notify({
