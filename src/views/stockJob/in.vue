@@ -46,34 +46,34 @@
     <el-table :data="jobList" style="width: 100%;margin-top:20px;" border>
       <el-table-column align="center" label="序号" width="60" type="index"></el-table-column>
       <el-table-column align="center" label="code" width="80">
-        <template slot-scope="scope">{{ scope.row.job_code }}</template>
+        <template slot-scope="scope">{{ scope.row.jobCode }}</template>
       </el-table-column>
       <el-table-column align="center" label="品类" width="80">
-        <template slot-scope="scope">{{ scope.row.category_name }}</template>
+        <template slot-scope="scope">{{ scope.row.categoryName }}</template>
       </el-table-column>
       <el-table-column align="center" label="名称" width="240">
-        <template slot-scope="scope">{{ scope.row.goods_name }}</template>
+        <template slot-scope="scope">{{ scope.row.goodsName }}</template>
       </el-table-column>
       <el-table-column align="center" label="规格" width="120">
         <template slot-scope="scope">{{ scope.row.specification }}</template>
       </el-table-column>
       <el-table-column align="center" label="入库价" width="70">
-        <template slot-scope="scope">{{ scope.row.price_in }}</template>
+        <template slot-scope="scope">{{ scope.row.priceIn }}</template>
       </el-table-column>
       <el-table-column align="center" label="数量" width="60">
         <template slot-scope="scope">{{ scope.row.number }}</template>
       </el-table-column>
       <el-table-column align="center" label="金额" width="70">
-        <template slot-scope="scope">{{ scope.row.price_sum }}</template>
+        <template slot-scope="scope">{{ scope.row.priceSum }}</template>
       </el-table-column>
       <!-- <el-table-column align="center" label="对象" width="60">
         <template slot-scope="scope">{{ scope.row.targetId === 0?'仓库':scope.row.targetName }}</template>
       </el-table-column> -->
       <el-table-column align="center" label="时间" min-width="140">
-        <template slot-scope="scope">{{ scope.row.add_time | formatTime}}</template>
+        <template slot-scope="scope">{{ scope.row.addTime | formatTime}}</template>
       </el-table-column>
       <el-table-column align="center" label="操作人" >
-        <template slot-scope="scope">{{ adminObj[scope.row.admin_id] }}</template>
+        <template slot-scope="scope">{{ adminObj[scope.row.adminId] }}</template>
       </el-table-column>
       <el-table-column align="center" label="操作" min-width="150">
         <template slot-scope="scope">
@@ -92,13 +92,13 @@
     <el-dialog :visible.sync="dialogVisible" :title="dialogType==='edit'?'编辑':'新增'">
       <el-form :model="job" label-width="80px" label-position="left">
         <el-form-item label="名称">
-          <el-input v-model="job.goods_name" placeholder="名称" disabled />
+          <el-input v-model="job.goodsName" placeholder="名称" disabled />
         </el-form-item>
         <el-form-item label="规格">
           <el-input v-model="job.specification" placeholder="规格" />
         </el-form-item>
         <el-form-item label="入库价">
-          <el-input v-model="job.price_in" placeholder="入库价" />
+          <el-input v-model="job.priceIn" placeholder="入库价" />
         </el-form-item>
         <el-form-item label="数量">
           <el-input v-model="job.number" placeholder="数量" />
@@ -152,7 +152,7 @@ export default {
         type: 1,
         pageNo: 1,
         pageSize: 10,
-        checkDate: formatDate(new Date()),
+        checkDate: null,
       },
       total: 0,
       importInUrl: process.env.BASE_API + importIn(),
