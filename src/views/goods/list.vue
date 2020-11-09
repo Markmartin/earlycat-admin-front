@@ -383,20 +383,18 @@ export default {
       })
     },
     handleFilter() {
-      debugger
+
       if(this.listQuery.condition == ''){
-        this.listQuery.condition = undefined
+
       }
-      if(this.listQuery.number == ''){
-        this.listQuery.number = undefined
-      }
+
       if(this.listQuery.condition != undefined || this.listQuery.condition != null){
         if(this.listQuery.number == undefined || this.listQuery.number == null){
           this.$message.error('未输入需要查询的库存数量！！')
           return false
         }
       }
-      debugger
+
       if(this.listQuery.number != undefined || this.listQuery.number != null){
         if(this.listQuery.condition == undefined || this.listQuery.condition == null){
           this.$message.error('未输入需要查询的库存条件！！')
@@ -488,7 +486,7 @@ export default {
     confirmSort() {
       this.$refs['sortForm'].validate((valid) => {
         if (valid) {
-          debugger
+
           updateAdminSort(this.sortForm.id, this.sortForm.sortOrder).then(() => {
             this.sortDialogVisible = false
             this.getList()
