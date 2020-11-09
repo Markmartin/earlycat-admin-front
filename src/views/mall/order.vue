@@ -71,11 +71,12 @@
 
       <!--<el-table-column align="center" label="社区名" prop="communityName"/>-->
       <el-table-column align="center" label="分拣号" prop="sortingNo"/>
+      <el-table-column align="center" label="订单备注" prop="message"/>
 
       <el-table-column align="center" label="操作" width="400" class-name="small-padding fixed-width">
         <template slot-scope="scope">
           <el-button v-permission="['GET /admin/order/detail']" type="primary" size="mini" @click="handleDetail(scope.row)">详情</el-button>
-          <el-button v-permission="['POST /admin/order/modifyAddress']" type="primary" size="small" @click="handleModifyAddress(scope.row)">修改收货地址</el-button>
+          <el-button v-permission="['POST /admin/order/modifyAddress']" type="primary" size="small" @click="handleModifyAddress(scope.row)">修改地址及备注</el-button>
           <!--<el-button v-permission="['POST /admin/order/print']" type="primary" size="mini" @click="handlePrinter(scope.row)">打印</el-button>-->
           <!--<el-button v-permission="['POST /admin/order/ship']" v-if="scope.row.orderStatus==201" type="primary" size="mini" @click="handleShip(scope.row)">发货</el-button>-->
           <!-- <el-button v-permission="['POST /admin/order/arrive']" v-if="scope.row.orderStatus==201 || scope.row.orderStatus==301" type="primary" size="mini" @click="handleArrive(scope.row)">到达</el-button> -->
@@ -191,7 +192,7 @@
     </el-dialog>
 
     <!-- 修改收货地址对话框 -->
-    <el-dialog :visible.sync="modifyAddressDialogVisible" title="修改收货地址">
+    <el-dialog :visible.sync="modifyAddressDialogVisible" title="修改地址及备注">
       <el-form ref="modifyAddressForm" :model="modifyAddressForm" status-icon label-position="left" label-width="100px" >
         <el-form-item label="订单编号" prop="orderSn">
           <span>{{modifyAddressForm.orderSn}}</span>
@@ -201,6 +202,9 @@
         </el-form-item>
         <el-form-item label="收货地址" prop="newAddress">
           <el-input v-model="modifyAddressForm.newAddress"/>
+        </el-form-item>
+        <el-form-item label="备注" prop="newMessage">
+          <el-input v-model="modifyAddressForm.newMessage"/>
         </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
@@ -319,7 +323,8 @@
         modifyAddressForm: {
           orderSn: undefined,
           consignee: undefined,
-          newAddress: undefined
+          newAddress: undefined,
+          newMessage: undefined
         },
         refundDialogVisible: false,
         modifyAddressDialogVisible: false,
@@ -566,7 +571,7 @@
               this.modifyAddressDialogVisible = false
               this.$notify.success({
                 title: '成功',
-                message: '地址修改成功'
+                message: '订单修改成功'
               })
               this.getList()
             }).catch(response => {
