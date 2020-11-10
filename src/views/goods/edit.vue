@@ -45,10 +45,11 @@
           </el-col>
           <el-col :span="6">
             <el-form-item label="所属分类" prop="categoryId">
-              <el-cascader :options="categoryList" v-model="categoryIds" expand-trigger="hover"
+              <el-cascader :options="categoryList"  :props="props"  v-model="categoryIds" expand-trigger="hover" clearable
                            @change="handleCategoryChange"/>
             </el-form-item>
           </el-col>
+
           <el-col :span="6">
             <el-form-item label="所属品牌商">
               <el-select v-model="goods.brandId">
@@ -534,6 +535,7 @@
     },
     data() {
       return {
+        props: { multiple: true },
         presellOptions: [
           {
             label: '正常物品',
@@ -696,6 +698,7 @@
         })
 
         listCatAndBrand().then(response => {
+          debugger
           this.categoryList = response.data.data.categoryList
           this.brandList = response.data.data.brandList
         })
@@ -757,6 +760,7 @@
 
       submitEditForm(formName) {
         this.$refs[formName].validate((valid) => {
+          debugger
           if (valid) {
             if ((this.goods.isChoice || this.goods.acStatus === 2 || this.goods.acStatus == 98 || this.goods.acStatus == 99) && (this.goods.limit === undefined || this.goods.limit === '')) {
               this.$message.error('限购物品的限购数量必填！！')
@@ -806,6 +810,7 @@
               rebates: this.rebates,
               attributes: this.attributes
             }
+            debugger
             editGoods(finalGoods).then(response => {
               this.$notify.success({
                 title: '成功',
