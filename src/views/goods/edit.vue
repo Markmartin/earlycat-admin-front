@@ -45,7 +45,7 @@
           </el-col>
           <el-col :span="6">
             <el-form-item label="所属分类" prop="categoryId">
-              <el-cascader :options="categoryList" v-model="categoryIds" expand-trigger="hover"
+              <el-cascader :options="categoryList"  :props="props"  v-model="categoryIds" expand-trigger="hover" clearable
                            @change="handleCategoryChange"/>
             </el-form-item>
           </el-col>
@@ -534,6 +534,7 @@
     },
     data() {
       return {
+        props: { multiple: true },
         presellOptions: [
           {
             label: '正常物品',
@@ -589,6 +590,11 @@
         brandList: [],
         categoryIds: [],
         communities: [],
+        catVos: [{
+          value: undefined,
+          label: undefined,
+          children: []
+        }],
         goods: { gallery: [], unit: '克' },
         specVisiable: false,
         specForm: { specification: '', value: '', picUrl: '' },
@@ -681,6 +687,7 @@
           this.products = response.data.data.products
           this.rebates = response.data.data.rebates
           this.attributes = response.data.data.attributes
+          debugger
           this.categoryIds = response.data.data.categoryIds
 
           this.galleryFileList = []
@@ -749,7 +756,9 @@
         }
       },
       handleCategoryChange(value) {
-        this.goods.categoryId = value[value.length - 1]
+//        this.goods.categoryId = value[value.length - 1];
+//        this.catVos = value
+//        debugger
       },
       handleCancel: function() {
         this.$router.push({ path: '/goods/list' ,query: {listQuery:this.listQuery}})
@@ -757,6 +766,7 @@
 
       submitEditForm(formName) {
         this.$refs[formName].validate((valid) => {
+          debugger
           if (valid) {
             if ((this.goods.isChoice || this.goods.acStatus === 2 || this.goods.acStatus == 98 || this.goods.acStatus == 99) && (this.goods.limit === undefined || this.goods.limit === '')) {
               this.$message.error('限购物品的限购数量必填！！')
@@ -804,7 +814,8 @@
               specifications: this.specifications,
               products: this.products,
               rebates: this.rebates,
-              attributes: this.attributes
+              attributes: this.attributes,
+              goodsCategoryIds: this.categoryIds
             }
             editGoods(finalGoods).then(response => {
               this.$notify.success({
