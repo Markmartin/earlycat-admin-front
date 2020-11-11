@@ -598,6 +598,16 @@ export const asyncRouterMap = [
         }
       },
       {
+        path: 'agent',
+        component: () => import('@/views/promotion/agent'),
+        name: 'agent',
+        meta: {
+          perms: ['GET /admin/agent/list'],
+          title: '总代管理',
+          noCache: true
+        }
+      },
+      {
         path: 'coupon',
         component: () => import('@/views/promotion/coupon'),
         name: 'coupon',
