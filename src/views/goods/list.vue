@@ -330,7 +330,6 @@ export default {
       this.listQuery.categoryId = value[value.length - 1]
     },
     getList() {
-      debugger
       this.listLoading = true
       if (this.$route.query.listQuery != undefined ||this.$route.listQuery != null) {
         this.listQuery = this.$route.query.listQuery;
