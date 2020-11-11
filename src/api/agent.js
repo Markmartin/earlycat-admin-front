@@ -39,3 +39,12 @@ export function apiDelete(data) {
     data
   })
 }
+
+export function apiWithdraw(data) {
+  return request({
+    url: '/agent/withdraw',
+    method: 'post',
+    data
+  })
+}
+

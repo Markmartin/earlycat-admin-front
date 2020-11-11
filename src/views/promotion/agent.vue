@@ -111,6 +111,7 @@
             @click="handleDelete(scope.row)"
             >删除</el-button
           >
+          <el-button v-permission="['POST /admin/agent/withdraw']"  type="primary" size="mini" @click="handleWithdraw(scope.row)">提现</el-button>
         </template>
       </el-table-column>
     </el-table>
@@ -194,6 +195,32 @@
         <el-button v-else type="primary" @click="updateData">更新</el-button>
       </div>
     </el-dialog>
+
+
+    <!-- 提现对话框 -->
+    <el-dialog :visible.sync="withdrawDialogVisible" title="提现申请">
+      <el-form ref="withdrawForm" :model="withdrawForm" status-icon label-position="left" label-width="100px" style="width: 400px; margin-left:50px;">
+        <el-form-item label="提现金额" prop="withdrawMoney">
+          <el-input v-model="withdrawForm.withdrawMoney" type="number"/>
+        </el-form-item>
+
+        <el-form-item label="提现到银行卡" prop="agentBankId">
+          <el-select v-model="withdrawForm.agentBankId" placeholder="请选择银行卡">
+            <el-option
+              v-for="item in withdrawForm.agentBankList"
+              :key="item.id"
+              :label="item.encBankNo + '|' + item.bankName + '|' + item.encTrueName"
+              :value="item.id">
+            </el-option>
+          </el-select>
+        </el-form-item>
+      </el-form>
+      <div slot="footer" class="dialog-footer">
+        <el-button @click="withdrawDialogVisible = false">取消</el-button>
+        <el-button type="primary" @click="confirmWithdraw">确定</el-button>
+      </div>
+    </el-dialog>
+
   </div>
 </template>
 
@@ -212,7 +239,7 @@
 </style>
 
 <script>
-import { apiBankCodeList, apiList, apiCreate, apiUpdate, apiDelete} from "@/api/agent";
+import { apiBankCodeList, apiList, apiCreate, apiUpdate, apiDelete, apiWithdraw} from "@/api/agent";
 import Pagination from "@/components/Pagination"; // Secondary package based on el-pagination
 
 export default {
@@ -240,12 +267,20 @@ export default {
           bankCode: ''
         }]
       },
+      withdrawForm: {
+        agentId: undefined,
+        agentBankId: undefined,
+        withdrawMoney: undefined,
+        agentBankList: []
+      },
+      maxWithdrawMoney: 0,
       textMap: {
         update: "编辑",
         create: "创建"
       },
       dialogFormVisible: false,
       strategyDialogVisible: false,
+      withdrawDialogVisible: false,
       bankList: null,
       bankCodeList: []
     };
@@ -399,7 +434,44 @@ export default {
         bankCode: '',
         key: Date.now()
       });
-    }
+    },
+    handleWithdraw(row) {
+      this.withdrawForm.agentId = row.id
+      this.maxWithdrawMoney = JSON.parse(JSON.stringify(row.remainingIncome))
+      this.withdrawForm.withdrawMoney = row.remainingIncome
+      this.withdrawForm.agentBankList = row.list
+
+      this.withdrawDialogVisible = true
+      this.$nextTick(() => {
+        this.$refs['withdrawForm'].clearValidate()
+      })
+    },
+    confirmWithdraw() {
+      this.$refs['withdrawForm'].validate((valid) => {
+        if (valid) {
+          if (this.withdrawForm.withdrawMoney > this.maxWithdrawMoney) {
+            this.$notify.error({
+              title: '失败',
+              message: '不能大于可提现金额'
+            })
+            return false
+          }
+          apiWithdraw(this.withdrawForm).then(response => {
+            this.withdrawDialogVisible = false
+            this.$notify.success({
+              title: '成功',
+              message: '申请提现成功'
+            })
+            this.getList()
+          }).catch(response => {
+            this.$notify.error({
+              title: '失败',
+              message: response.data.errmsg
+            })
+          })
+        }
+      })
+    },
   }
 };
 </script>
