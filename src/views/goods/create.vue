@@ -325,7 +325,7 @@
             </el-form-item>
           </el-col>
         </el-row>
-        <el-row>
+        <!-- <el-row>
           <el-col :span="24">
             <el-form-item label="分享图片">
               <div class="share-dom" id="share-dom">
@@ -342,7 +342,7 @@
               </el-button>
             </el-form-item>
           </el-col>
-        </el-row>
+        </el-row> -->
         <el-form-item label="所属小区">
           <el-select
             v-model="communities"
