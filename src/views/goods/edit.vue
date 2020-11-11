@@ -591,6 +591,11 @@
         brandList: [],
         categoryIds: [],
         communities: [],
+        catVos: [{
+          value: undefined,
+          label: undefined,
+          children: []
+        }],
         goods: { gallery: [], unit: '克' },
         specVisiable: false,
         specForm: { specification: '', value: '', picUrl: '' },
@@ -683,6 +688,7 @@
           this.products = response.data.data.products
           this.rebates = response.data.data.rebates
           this.attributes = response.data.data.attributes
+          debugger
           this.categoryIds = response.data.data.categoryIds
 
           this.galleryFileList = []
@@ -752,7 +758,9 @@
         }
       },
       handleCategoryChange(value) {
-        this.goods.categoryId = value[value.length - 1]
+//        this.goods.categoryId = value[value.length - 1];
+//        this.catVos = value
+//        debugger
       },
       handleCancel: function() {
         this.$router.push({ path: '/goods/list' ,query: {listQuery:this.listQuery}})
@@ -808,7 +816,8 @@
               specifications: this.specifications,
               products: this.products,
               rebates: this.rebates,
-              attributes: this.attributes
+              attributes: this.attributes,
+              goodsCategoryIds: this.categoryIds
             }
             debugger
             editGoods(finalGoods).then(response => {
