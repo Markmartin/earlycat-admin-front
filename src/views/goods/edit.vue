@@ -661,8 +661,6 @@
           return
         }
 
-        debugger;
-
         this.listQuery = this.$route.query.listQuery;
 
         const goodsId = this.$route.query.id
@@ -755,7 +753,6 @@
       },
       handleCancel: function() {
         this.$router.push({ path: '/goods/list' ,query: {listQuery:this.listQuery}})
-        debugger
       },
 
       submitEditForm(formName) {
