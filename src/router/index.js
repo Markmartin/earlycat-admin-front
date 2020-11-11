@@ -608,6 +608,16 @@ export const asyncRouterMap = [
         }
       },
       {
+        path: 'agentWithdraw',
+        component: () => import('@/views/promotion/agentWithdraw'),
+        name: 'agentWithdraw',
+        meta: {
+          perms: ['GET /admin/agent/withdraw/list'],
+          title: '总代提现管理',
+          noCache: true
+        }
+      },
+      {
         path: 'coupon',
         component: () => import('@/views/promotion/coupon'),
         name: 'coupon',
