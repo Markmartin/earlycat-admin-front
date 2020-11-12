@@ -48,3 +48,12 @@ export function apiWithdraw(data) {
   })
 }
 
+
+export function agentOptions(query) {
+  return request({
+    url: '/agent/options',
+    method: 'get',
+    params: query
+  })
+}
+

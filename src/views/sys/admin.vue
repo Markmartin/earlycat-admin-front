@@ -65,6 +65,16 @@
               :value="item.value"/>
           </el-select>
         </el-form-item>
+        <el-form-item label="总代" prop="agentId">
+          <el-select v-model="dataForm.agentId" placeholder="请选择总代">
+            <el-option :key="0" label="非总代" value="0"/>
+          <el-option
+            v-for="item in agentList"
+            :key="item.id"
+            :label="item.name"
+            :value="item.id"/>
+          </el-select>
+        </el-form-item>
         <el-form-item label="用户账号" prop="username">
           <el-input v-model="dataForm.username"/>
         </el-form-item>
@@ -138,6 +148,7 @@
 <script>
 import { listAdmin, createAdmin, updateAdmin, deleteAdmin } from '@/api/admin'
 import { roleOptions } from '@/api/role'
+import { agentOptions } from '@/api/agent'
 import { uploadPath } from '@/api/storage'
 import { getToken } from '@/utils/auth'
 import Pagination from '@/components/Pagination' // Secondary package based on el-pagination
@@ -164,6 +175,7 @@ export default {
       dataForm: {
         id: undefined,
         type: undefined,
+        agentId: undefined,
         username: undefined,
         realname: undefined,
         phone: undefined,
@@ -189,7 +201,10 @@ export default {
         ],
         type: [
           { required: true, message: '账号类型不能为空', trigger: 'blur' }
-        ]
+        ],
+        agentId: [
+          { required: true, message: '总代选项不能为空', trigger: 'blur' }
+        ],
         // password: [{ required: true, min: 6, message: '密码长度至少6位', trigger: 'blur' }]
       },
       typeOptions: [{
@@ -199,7 +214,8 @@ export default {
         value: 2,
         label: '物业管理员'
       }],
-      downloadLoading: false
+      downloadLoading: false,
+      agentList: []
     }
   },
   computed: {
@@ -215,6 +231,11 @@ export default {
     roleOptions()
       .then(response => {
         this.roleOptions = response.data.data.list
+      })
+
+    agentOptions()
+      .then(response => {
+        this.agentList = response.data.data
       })
   },
   methods: {
