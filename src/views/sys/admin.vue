@@ -67,12 +67,11 @@
         </el-form-item>
         <el-form-item label="总代" prop="agentId">
           <el-select v-model="dataForm.agentId" placeholder="请选择总代">
-            <el-option :key="0" label="非总代" value="0"/>
-          <el-option
-            v-for="item in agentList"
-            :key="item.id"
-            :label="item.name"
-            :value="item.id"/>
+            <el-option
+              v-for="item in agentOptions"
+              :key="item.value"
+              :label="item.label"
+              :value="item.value"/>
           </el-select>
         </el-form-item>
         <el-form-item label="用户账号" prop="username">
@@ -162,6 +161,7 @@ export default {
       list: null,
       total: 0,
       roleOptions: null,
+      agentOptions: null,
       listLoading: true,
       listQuery: {
         page: 1,
@@ -175,7 +175,7 @@ export default {
       dataForm: {
         id: undefined,
         type: undefined,
-        agentId: undefined,
+        agentId: '',
         username: undefined,
         realname: undefined,
         phone: undefined,
@@ -214,8 +214,7 @@ export default {
         value: 2,
         label: '物业管理员'
       }],
-      downloadLoading: false,
-      agentList: []
+      downloadLoading: false
     }
   },
   computed: {
@@ -235,7 +234,7 @@ export default {
 
     agentOptions()
       .then(response => {
-        this.agentList = response.data.data
+        this.agentOptions = response.data.data.list
       })
   },
   methods: {
