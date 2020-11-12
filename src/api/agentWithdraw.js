@@ -8,5 +8,13 @@ export function apiList(query) {
   })
 }
 
+export function apiEntPayBank(data) {
+  return request({
+    url: '/agent/withdraw/entpay',
+    method: 'post',
+    data
+  })
+}
+
 
 

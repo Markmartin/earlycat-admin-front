@@ -80,7 +80,9 @@
         class-name="small-padding fixed-width"
       >
         <template slot-scope="scope">
-          <el-button v-permission="['POST /admin/agent/withdraw']"  type="primary" size="small" @click="handleWithdraw(scope.row)">付款到银行卡</el-button>
+          <el-button v-permission="['POST /admin/agent/withdraw']"
+                     v-if="scope.row.status == 0"
+                     type="primary" size="small" @click="handleWithdraw(scope.row)">付款到银行卡</el-button>
         </template>
       </el-table-column>
     </el-table>
@@ -111,7 +113,7 @@
 </style>
 
 <script>
-import { apiList } from "@/api/agentWithdraw";
+import { apiList , apiEntPayBank} from "@/api/agentWithdraw";
 import Pagination from "@/components/Pagination"; // Secondary package based on el-pagination
 
 export default {
@@ -173,7 +175,29 @@ export default {
     handleFilter() {
       this.listQuery.page = 1;
       this.getList();
-    }
+    },
+    handleWithdraw(row) {
+      this.$confirm('确认企业付款到银行卡', '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(() => {
+        apiEntPayBank({ id: row.id })
+          .then(response => {
+            this.$notify.success({
+              title: '成功',
+              message: '打款成功'
+            })
+            this.getList()
+          })
+          .catch(response => {
+            this.$notify.error({
+              title: '失败',
+              message: response.data.errmsg
+            })
+          })
+      }).catch(() => {})
+    },
   }
 };
 </script>
