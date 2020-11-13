@@ -596,6 +596,16 @@ export const asyncRouterMap = [
           noCache: true
         }
       },
+      {
+        path: 'orderCommission',
+        component: () => import('@/views/agent/orderCommission'),
+        name: 'orderCommission',
+        meta: {
+          perms: ['GET /admin/orderCommission/list'],
+          title: '佣金明细',
+          noCache: true
+        }
+      },
     ]
   },
   {
