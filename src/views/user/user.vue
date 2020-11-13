@@ -66,7 +66,7 @@
             placement="top"
             width="160">
             <div style="text-align: center;">
-              <el-button size="mini" type="primary" @click="setUserType(1,scope.row);scope.row.visible = false">推广</el-button>
+              <el-button size="mini" type="primary" @click="setUserType(1,scope.row);scope.row.visible = false">普通推广</el-button>
               <!--<el-button size="mini" type="primary" @click="setUserType(2,scope.row);scope.row.visible = false">总代</el-button>-->
             </div>
             <el-button slot="reference" type="primary" size="mini">设为</el-button>
@@ -119,7 +119,7 @@
 
 <script>
 import { fetchList, userDisable, userEnable, userSell, apiApplyRefuse } from '@/api/user'
-import { fetchStrategyGroupList } from '@/api/strategy'
+import { apiListAll } from '@/api/strategy'
 import Pagination from '@/components/Pagination' // Secondary package based on el-pagination
 
 export default {
@@ -163,14 +163,14 @@ export default {
           value: 0
         },
         {
-          label: '推广用户',
+          label: '普通推广',
           value: 1
         }
-        // ,
-        // {
-        //   label: '总代',
-        //   value: 2
-        // }
+        ,
+        {
+          label: '总代推广',
+          value: 2
+        }
       ],
       applyPromoteStatusOptions: [
         {
@@ -243,7 +243,7 @@ export default {
         // }).catch(() => {
         //   this.inviterList = []
         // })
-        fetchStrategyGroupList({ page: 1, limit: 100 }).then(response => {
+        apiListAll({ page: 1, limit: 100 }).then(response => {
           this.strategyGroupList = response.data.data.list
           this.dialogVisible = true
         }).catch(() => {
@@ -342,7 +342,7 @@ export default {
       })
     },
     getStrategyGroupList() {
-      fetchStrategyGroupList({ page: 1, limit: 100 }).then(response => {
+      apiListAll().then(response => {
         this.strategyGroupList = response.data.data.list
       }).catch(() => {
         this.strategyGroupList = []

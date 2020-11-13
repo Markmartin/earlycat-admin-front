@@ -60,6 +60,14 @@ export function modifyAddress (data) {
   })
 }
 
+export function addRemark (data) {
+  return request({
+    url: '/order/addRemark',
+    method: 'post',
+    data
+  })
+}
+
 export function replyComment(data) {
   return request({
     url: '/order/reply',
