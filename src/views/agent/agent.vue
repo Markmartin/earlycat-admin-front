@@ -169,12 +169,11 @@
           fit
           highlight-current-row
         >
-          <el-table-column align="center" label="货品图片" prop="picUrl">
+          <el-table-column align="center" label="昵称" prop="nickname">
             <template slot-scope="scope">
-              <img :src="scope.row.avatar" width="40">
+              <img :src="scope.row.avatar" width="20"> {{scope.row.nickname}}
             </template>
           </el-table-column>
-          <el-table-column align="center" label="昵称" prop="nickname"/>
           <el-table-column align="center" label="手机号码" prop="mobile"/>
           <el-table-column align="center" label="性别" prop="gender">
             <template slot-scope="scope">
@@ -182,6 +181,14 @@
             </template>
           </el-table-column>
           <el-table-column align="center" label="注册时间" prop="addTime"/>
+
+          <el-table-column align="center" label="操作" min-width="50"  class-name="small-padding fixed-width" >
+            <template slot-scope="scope">
+              <el-button
+                type="danger" size="mini" @click="handleDeletePromoter(scope.row)">删除
+              </el-button>
+            </template>
+          </el-table-column>
 
         </el-table>
       </el-form>
@@ -333,7 +340,7 @@
 </style>
 
 <script>
-  import {apiBankCodeList, apiList, apiCreate, apiUpdate, apiDelete, apiWithdraw, apiAddPromoter} from "@/api/agent";
+  import {apiBankCodeList, apiList, apiCreate, apiUpdate, apiDelete, apiWithdraw, apiAddPromoter, apiDeletePromoter} from "@/api/agent";
   import { apiListAll } from '@/api/strategy';
   import Pagination from "@/components/Pagination"; // Secondary package based on el-pagination
 
@@ -472,6 +479,32 @@
                 });
                 const index = this.list.indexOf(row);
                 this.list.splice(index, 1);
+              })
+              .catch(response => {
+                this.$notify.error({
+                  title: "失败",
+                  message: response.data.errmsg
+                });
+              });
+          })
+          .catch(() => {
+          });
+      },
+      handleDeletePromoter(row) {
+        this.$confirm("确定要删除吗?", "提示", {
+          confirmButtonText: "确定",
+          cancelButtonText: "取消",
+          type: "warning"
+        })
+          .then(() => {
+            apiDeletePromoter(row)
+              .then(response => {
+                this.$notify.success({
+                  title: "成功",
+                  message: "删除成功"
+                });
+                const index = this.userList.indexOf(row);
+                this.userList.splice(index, 1);
               })
               .catch(response => {
                 this.$notify.error({

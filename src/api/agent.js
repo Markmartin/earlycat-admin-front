@@ -65,3 +65,11 @@ export function apiAddPromoter(data) {
     data
   })
 }
+
+export function apiDeletePromoter(data) {
+  return request({
+    url: '/agent/deletePromoter',
+    method: 'post',
+    data
+  })
+}
