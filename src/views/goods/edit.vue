@@ -45,10 +45,11 @@
           </el-col>
           <el-col :span="6">
             <el-form-item label="所属分类" prop="categoryId">
-              <el-cascader :options="categoryList" v-model="categoryIds" expand-trigger="hover"
+              <el-cascader :options="categoryList"  :props="props"  v-model="categoryIds" expand-trigger="hover" clearable
                            @change="handleCategoryChange"/>
             </el-form-item>
           </el-col>
+
           <el-col :span="6">
             <el-form-item label="所属品牌商">
               <el-select v-model="goods.brandId">
@@ -534,6 +535,7 @@
     },
     data() {
       return {
+        props: { multiple: true },
         presellOptions: [
           {
             label: '正常物品',
@@ -564,6 +566,19 @@
             value: 3,
             label: '线上&线下'
           }],
+        listQuery: {
+          isOnSale: '',
+          acStatus: undefined,
+          saleType: undefined,
+          categoryId: undefined,
+          brandId: undefined,
+          page: 1,
+          limit: 20,
+          goodsSn: undefined,
+          name: undefined,
+          sort: 'add_time',
+          order: 'desc'
+        },
         stationOption: [],
         communityLoading: false,
         communityList: [],
@@ -576,6 +591,11 @@
         brandList: [],
         categoryIds: [],
         communities: [],
+        catVos: [{
+          value: undefined,
+          label: undefined,
+          children: []
+        }],
         goods: { gallery: [], unit: '克' },
         specVisiable: false,
         specForm: { specification: '', value: '', picUrl: '' },
@@ -648,6 +668,8 @@
           return
         }
 
+        this.listQuery = this.$route.query.listQuery;
+
         const goodsId = this.$route.query.id
         detailGoods(goodsId).then(response => {
           let list = []
@@ -666,6 +688,7 @@
           this.products = response.data.data.products
           this.rebates = response.data.data.rebates
           this.attributes = response.data.data.attributes
+          debugger
           this.categoryIds = response.data.data.categoryIds
 
           this.galleryFileList = []
@@ -681,6 +704,7 @@
         })
 
         listCatAndBrand().then(response => {
+          debugger
           this.categoryList = response.data.data.categoryList
           this.brandList = response.data.data.brandList
         })
@@ -734,14 +758,17 @@
         }
       },
       handleCategoryChange(value) {
-        this.goods.categoryId = value[value.length - 1]
+//        this.goods.categoryId = value[value.length - 1];
+//        this.catVos = value
+//        debugger
       },
       handleCancel: function() {
-        this.$router.push({ path: '/goods/list' })
+        this.$router.push({ path: '/goods/list' ,query: {listQuery:this.listQuery}})
       },
 
       submitEditForm(formName) {
         this.$refs[formName].validate((valid) => {
+          debugger
           if (valid) {
             if ((this.goods.isChoice || this.goods.acStatus === 2 || this.goods.acStatus == 98 || this.goods.acStatus == 99) && (this.goods.limit === undefined || this.goods.limit === '')) {
               this.$message.error('限购物品的限购数量必填！！')
@@ -789,14 +816,16 @@
               specifications: this.specifications,
               products: this.products,
               rebates: this.rebates,
-              attributes: this.attributes
+              attributes: this.attributes,
+              goodsCategoryIds: this.categoryIds
             }
+            debugger
             editGoods(finalGoods).then(response => {
               this.$notify.success({
                 title: '成功',
                 message: '更新成功'
               })
-              this.$router.push({ path: '/goods/list' })
+              this.$router.push({ path: '/goods/list' ,query: {listQuery:this.listQuery}})
             }).catch(response => {
               MessageBox.alert('业务错误：' + response.data.errmsg, '警告', {
                 confirmButtonText: '确定',

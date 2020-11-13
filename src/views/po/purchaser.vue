@@ -118,6 +118,7 @@ export default {
     async listPurchaser() {
       const res = await listPurchaser(this.params);
       this.list = res.data.data.list;
+      this.total = res.data.data.total;
     },
     handleDelete(row) {
       deletePurchaser({id: row.id}).then((res) => {

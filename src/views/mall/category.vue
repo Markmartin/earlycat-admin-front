@@ -35,7 +35,12 @@
         </template>
       </el-table-column>
 
-      <el-table-column align="center" min-width="100" label="简介" prop="desc"/>
+      <!--<el-table-column align="center" min-width="100" label="简介" prop="desc"/>-->
+      <el-table-column align="center" label="是否专区" prop="isArea">
+        <template slot-scope="scope">
+          <el-tag :type="scope.row.isArea ? 'success' : 'error' ">{{ scope.row.isArea ? '专区' : '非专区' }}</el-tag>
+        </template>
+      </el-table-column>
 
       <el-table-column align="center" min-width="100"  label="级别" prop="level">
         <template slot-scope="scope">
@@ -70,6 +75,12 @@
             <el-option label="一级类目" value="L1"/>
             <el-option label="二级类目" value="L2"/>
           </el-select>
+        </el-form-item>
+        <el-form-item label="是否专区" prop="isArea">
+          <el-radio-group v-model="dataForm.isArea">
+            <el-radio :label="true">专区</el-radio>
+            <el-radio :label="false">非专区</el-radio>
+          </el-radio-group>
         </el-form-item>
         <el-form-item label="展示类型" prop="saleType">
           <el-select v-model="dataForm.saleType"  placeholder="请选择展示类型">
@@ -183,7 +194,8 @@ export default {
         pid: 0,
         desc: '',
         iconUrl: '',
-        picUrl: ''
+        picUrl: '',
+        isArea: false
       },
       dialogFormVisible: false,
       dialogStatus: '',
@@ -234,7 +246,8 @@ export default {
         pid: 0,
         desc: '',
         iconUrl: '',
-        picUrl: ''
+        picUrl: '',
+        isArea: false
       }
     },
     onLevelChange: function(value) {

@@ -2743,6 +2743,11 @@ dom-serializer@0:
     domelementtype "^2.0.1"
     entities "^2.0.0"
 
+dom-to-image-scale@^1.0.0:
+  version "1.0.0"
+  resolved "https://registry.yarnpkg.com/dom-to-image-scale/-/dom-to-image-scale-1.0.0.tgz#23477abb845f7df57ac9b9b75b5d3c2af452d2b5"
+  integrity sha512-i1ungSRlqczvBmIqS38s+TVFkmU4Pcb25uI9gtbvbwwvGldzAQh4KxuAsczqvMAL1kbsRPgEnI/wNYMMpWN8UA==
+
 domain-browser@^1.1.1:
   version "1.2.0"
   resolved "https://registry.yarnpkg.com/domain-browser/-/domain-browser-1.2.0.tgz#3d31f50191a6749dd1375a7f522e823d42e54eda"
@@ -2853,10 +2858,10 @@ elegant-spinner@^1.0.1:
   resolved "https://registry.yarnpkg.com/elegant-spinner/-/elegant-spinner-1.0.1.tgz#db043521c95d7e303fd8f345bedc3349cfb0729e"
   integrity sha1-2wQ1IcldfjA/2PNFvtwzSc+wcp4=
 
-element-ui@2.7.2:
-  version "2.7.2"
-  resolved "https://registry.yarnpkg.com/element-ui/-/element-ui-2.7.2.tgz#8bc5bef5c3c53a2170422516b4324e70069c23d1"
-  integrity sha512-Exh9QTkm9gwMMPzg1TyaTlBKyr3k4K9XcC5vl0A/mneDvJX//RsURGuOWsCNDVQMdhh5h9e+W5icosh+pKfbCg==
+element-ui@^2.14.0:
+  version "2.14.0"
+  resolved "https://registry.yarnpkg.com/element-ui/-/element-ui-2.14.0.tgz#dcff2718fb485542ea5b5a1f5c0daf1113477b24"
+  integrity sha512-dda4xw40HT7Xcx/7aV5METvGjwMumdd5D1B7vjhDkmqvJP/9IEqgL5VsYA4YXz+RUVqyxMByRwf1WedrICJTTQ==
   dependencies:
     async-validator "~1.8.1"
     babel-helper-vue-jsx-merge-props "^2.0.0"

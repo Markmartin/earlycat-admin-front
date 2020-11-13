@@ -128,6 +128,7 @@ export default {
     async listSupplier() {
       const res = await listSupplier(this.params);
       this.list = res.data.data.list;
+      this.total = res.data.data.total;
     },
     handleDelete(row) {
       deleteSupplier({id: row.id}).then((res) => {
