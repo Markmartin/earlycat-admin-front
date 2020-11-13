@@ -18,7 +18,7 @@
         >查找</el-button
       >
     </div>
-
+    <p>* 付款到账实效为1-3日，最快次日到账</p>
     <!-- 查询结果 -->
     <el-table
       v-loading="listLoading"
