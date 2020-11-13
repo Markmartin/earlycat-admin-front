@@ -8,6 +8,14 @@ export function fetchStrategyGroupList(query) {
   })
 }
 
+export function apiListAll(query) {
+  return request({
+    url: '/strategy/listAll',
+    method: 'get',
+    params: query
+  })
+}
+
 
 export function apiCreate(data) {
   return request({

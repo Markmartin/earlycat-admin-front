@@ -280,6 +280,33 @@
       <el-form ref="addPromoterForm" :model="addPromoterForm" status-icon label-position="left" label-width="100px"
                style="width: 400px; margin-left:50px;">
 
+        <el-form-item
+          v-for="(detail, index) in addPromoterForm.promoterList"
+          :label="'推广员' + index"
+          :key="detail.key"
+          :prop="'list.' + index + '.name'"
+        >
+          <el-col :span="10">
+            <el-select v-model="detail.strategyGroupId" placeholder="策略组">
+              <el-option
+                v-for="item in strategyGroupList"
+                :key="item.id"
+                :label="item.name"
+                :value="item.id">
+              </el-option>
+            </el-select>
+          </el-col>
+          <el-col :span="10">
+            <el-input v-model="detail.mobile" placeholder="请输入手机号"/>
+          </el-col>
+          <el-button @click.prevent="removeAddPromoterDomain(detail)">删除</el-button>
+        </el-form-item>
+
+
+        <el-form-item>
+          <el-button @click="addPromoterDomain">新增</el-button>
+        </el-form-item>
+
       </el-form>
       <div slot="footer" class="dialog-footer">
         <el-button @click="addPromoterDialogVisible = false">取消</el-button>
@@ -306,7 +333,8 @@
 </style>
 
 <script>
-  import {apiBankCodeList, apiList, apiCreate, apiUpdate, apiDelete, apiWithdraw} from "@/api/agent";
+  import {apiBankCodeList, apiList, apiCreate, apiUpdate, apiDelete, apiWithdraw, apiAddPromoter} from "@/api/agent";
+  import { apiListAll } from '@/api/strategy';
   import Pagination from "@/components/Pagination"; // Secondary package based on el-pagination
 
   export default {
@@ -342,7 +370,10 @@
         },
         addPromoterForm: {
           agentId: undefined,
-          promoterList: []
+          promoterList: [{
+            strategyGroupId: undefined,
+            mobile: undefined,
+          }]
         },
         maxWithdrawMoney: 0,
         textMap: {
@@ -357,12 +388,14 @@
         addPromoterDialogVisible: false,
         bankList: null,
         userList: null,
-        bankCodeList: []
+        bankCodeList: [],
+        strategyGroupList: [],
       };
     },
     created() {
       this.getList();
       this.getBankCodeList();
+      this.getStrategyGroupList();
     },
 
     methods: {
@@ -396,6 +429,13 @@
           .catch(() => {
             this.bankCodeList = [];
           });
+      },
+      getStrategyGroupList() {
+        apiListAll().then(response => {
+          this.strategyGroupList = response.data.data.list
+        }).catch(() => {
+          this.strategyGroupList = []
+        })
       },
       handleFilter() {
         this.listQuery.page = 1;
@@ -452,6 +492,13 @@
             bankCode: ''
           }]
         };
+        this.addPromoterForm = {
+          agentId: '',
+          promoterList: [{
+            strategyGroupId: '',
+            mobile: '',
+          }]
+        }
       },
       createData() {
         this.$refs["dataForm"].validate(valid => {
@@ -516,6 +563,19 @@
           key: Date.now()
         });
       },
+      removeAddPromoterDomain(item) {
+        var index = this.addPromoterForm.promoterList.indexOf(item)
+        if (index !== -1) {
+          this.addPromoterForm.promoterList.splice(index, 1)
+        }
+      },
+      addPromoterDomain() {
+        this.addPromoterForm.promoterList.push({
+          strategyGroupId: '',
+          mobile: '',
+          key: Date.now()
+        });
+      },
       handleWithdraw(row) {
         this.withdrawForm.agentId = row.id
         this.maxWithdrawMoney = JSON.parse(JSON.stringify(row.remainingIncome))
@@ -553,7 +613,24 @@
           }
         })
       },
+
+      confirmAddPromoter() {
+          apiAddPromoter(this.addPromoterForm).then(response => {
+            this.getList()
+            this.addPromoterDialogVisible = false
+            this.$notify.success({
+              title: '成功',
+              message: '添加推广员成功'
+            })
+          }).catch(response => {
+            this.$notify.error({
+              title: '失败',
+              message: response.data.errmsg
+            })
+          })
+      },
       handleAddPromoter(row) {
+        this.resetForm();
         this.addPromoterForm.agentId = row.id
         this.addPromoterDialogVisible = true
         this.$nextTick(() => {

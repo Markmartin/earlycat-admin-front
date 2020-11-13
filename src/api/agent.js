@@ -57,3 +57,11 @@ export function agentOptions(query) {
   })
 }
 
+
+export function apiAddPromoter(data) {
+  return request({
+    url: '/agent/addPromoter',
+    method: 'post',
+    data
+  })
+}
