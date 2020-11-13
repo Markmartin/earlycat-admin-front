@@ -565,7 +565,39 @@ export const asyncRouterMap = [
       }
     ]
   },
-
+  {
+    path: '/agent',
+    component: Layout,
+    redirect: 'noredirect',
+    alwaysShow: true,
+    name: 'agentManage',
+    meta: {
+      title: '总代管理',
+      icon: 'promotion'
+    },
+    children: [
+      {
+        path: 'agent',
+        component: () => import('@/views/agent/agent'),
+        name: 'agent',
+        meta: {
+          perms: ['GET /admin/agent/list'],
+          title: '总代管理',
+          noCache: true
+        }
+      },
+      {
+        path: 'agentWithdraw',
+        component: () => import('@/views/agent/agentWithdraw'),
+        name: 'agentWithdraw',
+        meta: {
+          perms: ['GET /admin/agent/withdraw/list'],
+          title: '总代提现管理',
+          noCache: true
+        }
+      },
+    ]
+  },
   {
     path: '/promotion',
     component: Layout,
@@ -594,26 +626,6 @@ export const asyncRouterMap = [
         meta: {
           perms: ['GET /admin/strategy/list'],
           title: '策略组管理',
-          noCache: true
-        }
-      },
-      {
-        path: 'agent',
-        component: () => import('@/views/promotion/agent'),
-        name: 'agent',
-        meta: {
-          perms: ['GET /admin/agent/list'],
-          title: '总代管理',
-          noCache: true
-        }
-      },
-      {
-        path: 'agentWithdraw',
-        component: () => import('@/views/promotion/agentWithdraw'),
-        name: 'agentWithdraw',
-        meta: {
-          perms: ['GET /admin/agent/withdraw/list'],
-          title: '总代提现管理',
           noCache: true
         }
       },
