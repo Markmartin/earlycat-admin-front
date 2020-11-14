@@ -285,7 +285,7 @@
     <!-- 添加推广员对话框 -->
     <el-dialog :visible.sync="addPromoterDialogVisible" title="添加推广员">
       <el-form ref="addPromoterForm" :model="addPromoterForm" status-icon label-position="left" label-width="100px"
-               style="width: 400px; margin-left:50px;">
+               class="demo-dynamic">
 
         <el-form-item
           v-for="(detail, index) in addPromoterForm.promoterList"
