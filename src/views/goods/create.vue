@@ -50,12 +50,8 @@
           </el-col>
           <el-col :span="6">
             <el-form-item label="所属分类" prop="categoryId">
-              <el-cascader
-                :options="categoryList"
-                v-model="categoryIds"
-                expand-trigger="hover"
-                @change="handleCategoryChange"
-              />
+              <el-cascader :options="categoryList"  :props="props"  v-model="categoryIds" expand-trigger="hover" clearable
+                           @change="handleCategoryChange"/>
             </el-form-item>
           </el-col>
           <el-col :span="6">
@@ -654,6 +650,7 @@ export default {
 
   data() {
     return {
+      props: { multiple: true },
       shareImage: require("./aiways.jpg"),
       shareImageData: null,
       presellOptions: [
