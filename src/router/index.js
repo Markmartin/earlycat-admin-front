@@ -541,6 +541,16 @@ export const asyncRouterMap = [
     },
     children: [
       {
+        path: 'order',
+        component: () => import('@/views/mall/order'),
+        name: 'order',
+        meta: {
+          perms: ['GET /admin/order/list', 'GET /admin/order/detail', 'POST /admin/order/ordership', 'POST /admin/order/orderrefund', 'POST /admin/order/orderreply'],
+          title: '订单管理',
+          noCache: true
+        }
+      },
+      {
         path: 'list',
         component: () => import('@/views/afterSale/list'),
         name: 'afterSaleList',
