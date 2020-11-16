@@ -31,3 +31,11 @@ export function apiOrderDetail(id) {
     params: { id }
   })
 }
+
+export function listIncomeCount(query) {
+  return request({
+    url: '/income/count/list',
+    method: 'get',
+    params: query
+  })
+}

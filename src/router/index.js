@@ -606,16 +606,16 @@ export const asyncRouterMap = [
           noCache: true
         }
       },
-      {
-        path: 'orderCommission',
-        component: () => import('@/views/agent/orderCommission'),
-        name: 'orderCommission',
-        meta: {
-          perms: ['GET /admin/orderCommission/list'],
-          title: '佣金明细',
-          noCache: true
-        }
-      },
+      // {
+      //   path: 'orderCommission',
+      //   component: () => import('@/views/agent/orderCommission'),
+      //   name: 'orderCommission',
+      //   meta: {
+      //     perms: ['GET /admin/orderCommission/list'],
+      //     title: '佣金明细',
+      //     noCache: true
+      //   }
+      // },
     ]
   },
   {
@@ -706,7 +706,17 @@ export const asyncRouterMap = [
         name: 'income',
         meta: {
           perms: ['GET /admin/income/list'],
-          title: '收益管理',
+          title: '收益明细',
+          noCache: true
+        }
+      },
+      {
+        path: 'incomeCount',
+        component: () => import('@/views/promotion/incomeCount'),
+        name: 'incomeCount',
+        meta: {
+          perms: ['GET /admin/income/count/list'],
+          title: '收益统计',
           noCache: true
         }
       },
@@ -715,7 +725,7 @@ export const asyncRouterMap = [
         component: () => import('@/views/promotion/discountRule'),
         name: 'discountRule',
         meta: {
-          perms: ['GET /admin/income/list'],
+          perms: ['GET /admin/presell/list'],
           title: '优惠规则',
           noCache: true
         }
@@ -725,7 +735,7 @@ export const asyncRouterMap = [
         component: () => import('@/views/promotion/discountRuleDetail'),
         name: 'discountRuleDetail',
         meta: {
-          perms: ['POST /admin/income/list'],
+          perms: ['POST /admin/presell/detail'],
           title: '优惠规则详情',
           noCache: true
         },
