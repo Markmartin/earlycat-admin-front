@@ -868,7 +868,7 @@ export default {
     },
 
     handleCategoryChange(value) {
-      this.goods.categoryId = value[value.length - 1];
+      // this.goods.categoryId = value[value.length - 1];
     },
     handleCancel: function() {
       this.$router.push({ path: "/goods/list" });
@@ -948,7 +948,8 @@ export default {
             specifications: this.specifications,
             products: this.products,
             rebates: this.rebates,
-            attributes: this.attributes
+            attributes: this.attributes,
+            goodsCategoryIds: this.categoryIds
           };
           publishGoods(finalGoods)
             .then(response => {

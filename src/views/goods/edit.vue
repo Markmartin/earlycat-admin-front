@@ -45,6 +45,13 @@
           </el-col>
           <el-col :span="6">
             <el-form-item label="所属分类" prop="categoryId">
+              <el-cascader  v-model="categoryIds" expand-trigger="hover" clearable
+                           @change="handleCategoryChange"/>
+            </el-form-item>
+          </el-col>
+
+          <el-col :span="6">
+            <el-form-item label="所属分类" prop="categoryId">
               <el-cascader :options="categoryList"  :props="props"  v-model="categoryIds" expand-trigger="hover" clearable
                            @change="handleCategoryChange"/>
             </el-form-item>
@@ -588,6 +595,7 @@
         keywords: [],
         galleryFileList: [],
         categoryList: [],
+        goodsCategoryIds:[],
         brandList: [],
         categoryIds: [],
         communities: [],
@@ -688,8 +696,9 @@
           this.products = response.data.data.products
           this.rebates = response.data.data.rebates
           this.attributes = response.data.data.attributes
-          debugger
           this.categoryIds = response.data.data.categoryIds
+          this.goodsCategoryIds = response.data.data.goodsCategoryIds
+          debugger
 
           this.galleryFileList = []
           for (var i = 0; i < this.goods.gallery.length; i++) {
@@ -704,7 +713,6 @@
         })
 
         listCatAndBrand().then(response => {
-          debugger
           this.categoryList = response.data.data.categoryList
           this.brandList = response.data.data.brandList
         })
@@ -758,9 +766,8 @@
         }
       },
       handleCategoryChange(value) {
-//        this.goods.categoryId = value[value.length - 1];
+       this.goods.categoryId = value[value.length - 1];
 //        this.catVos = value
-//        debugger
       },
       handleCancel: function() {
         this.$router.push({ path: '/goods/list' ,query: {listQuery:this.listQuery}})
@@ -768,7 +775,6 @@
 
       submitEditForm(formName) {
         this.$refs[formName].validate((valid) => {
-          debugger
           if (valid) {
             if ((this.goods.isChoice || this.goods.acStatus === 2 || this.goods.acStatus == 98 || this.goods.acStatus == 99) && (this.goods.limit === undefined || this.goods.limit === '')) {
               this.$message.error('限购物品的限购数量必填！！')
@@ -819,7 +825,6 @@
               attributes: this.attributes,
               goodsCategoryIds: this.categoryIds
             }
-            debugger
             editGoods(finalGoods).then(response => {
               this.$notify.success({
                 title: '成功',
