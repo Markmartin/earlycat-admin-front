@@ -18,52 +18,47 @@
           </el-col>
         </el-row>
         <el-row>
-          <el-col :span="6">
+          <el-col :span="8">
             <el-form-item label="上架类型" prop="saleType">
               <el-select v-model="goods.saleType" placeholder="请选择">
                 <el-option
                   v-for="item in onlineOptions"
                   :key="item.value"
                   :label="item.label"
-                  :value="item.value"
-                >
+                  :value="item.value">
                 </el-option>
               </el-select>
             </el-form-item>
           </el-col>
-          <el-col :span="6">
+          <el-col :span="8">
             <el-form-item label="物品类型">
-              <el-select
-                v-model="goods.acStatus"
-                placeholder="请选择物品类型"
-                @change="handleLimit"
-              >
+              <el-select v-model="goods.acStatus" placeholder="请选择物品类型" @change="handleLimit">
                 <el-option
                   v-for="item in presellOptions"
                   :key="item.value"
                   :label="item.label"
-                  :value="item.value"
-                >
+                  :value="item.value">
                 </el-option>
               </el-select>
             </el-form-item>
           </el-col>
-          <el-col :span="6">
-            <el-form-item label="所属分类" prop="categoryId">
-              <el-cascader :options="categoryList"  :props="props"  v-model="categoryIds" expand-trigger="hover" clearable
-                           @change="handleCategoryChange"/>
-            </el-form-item>
-          </el-col>
-          <el-col :span="6">
+          <el-col :span="8">
             <el-form-item label="所属品牌商">
               <el-select v-model="goods.brandId">
-                <el-option
-                  v-for="item in brandList"
-                  :key="item.value"
-                  :label="item.label"
-                  :value="item.value"
-                />
+                <el-option v-for="item in brandList" :key="item.value" :label="item.label" :value="item.value"/>
               </el-select>
+            </el-form-item>
+          </el-col>
+        </el-row>
+        <el-row>
+          <el-col :span="12">
+            <el-form-item label="线上分类" prop="goodsCategoryId"  v-show="goods.saleType !=2 ">
+              <el-cascader :options=" categoryList"  :props="props"  v-model="goodsCategoryIds" expand-trigger="hover" clearable  @change="handleGoodsCategoryChange" />
+            </el-form-item>
+          </el-col>
+          <el-col :span="12">
+            <el-form-item label="线下分类" prop="categoryId"  v-show="goods.saleType !=1 ">
+              <el-cascader :options="categoryList" v-model="categoryIds" expand-trigger="hover" clearable  @change="handleCategoryChange"/>
             </el-form-item>
           </el-col>
         </el-row>
@@ -697,10 +692,12 @@ export default {
       newKeyword: "",
       keywords: [],
       categoryList: [],
+      goodsCategoryIdList:[],
       brandList: [],
       communities: [],
       galleryFileList: [],
       categoryIds: [],
+      goodsCategoryIds: [],
       goods: {
         brandId: 1,
         acStatus: 0,
@@ -812,6 +809,7 @@ export default {
     init: function() {
       listCatAndBrand().then(response => {
         this.categoryList = response.data.data.categoryList;
+        this.goodsCategoryIdList = response.data.data.categoryList
         this.brandList = response.data.data.brandList;
       });
     },
@@ -868,10 +866,14 @@ export default {
     },
 
     handleCategoryChange(value) {
-      // this.goods.categoryId = value[value.length - 1];
+       this.goods.categoryId = value[value.length - 1];
     },
     handleCancel: function() {
       this.$router.push({ path: "/goods/list" });
+    },
+
+    handleGoodsCategoryChange(value) {
+      this.goodsCategoryIds = value;
     },
 
     submitCreateForm(formName) {
@@ -907,6 +909,10 @@ export default {
               this.$message.error("线上售价未填！！");
               return false;
             }
+            if (this.goodsCategoryIds === undefined || this.goodsCategoryIds === '' || this.goodsCategoryIds.length === 0) {
+              this.$message.error('线上种类未选！！')
+              return false
+            }
           }
           //线下物品校验
           if (this.goods.saleType != 1) {
@@ -924,14 +930,11 @@ export default {
               this.$message.error("线下物品价格未填！！");
               return false;
             }
-          }
-
-          if (
-            this.goods.categoryId === undefined ||
-            this.goods.categoryId === ""
-          ) {
-            this.$message.error("请选择物品种类！！");
-            return false;
+            if(this.goods.saleType == 2){
+              //一维数组转二维数组
+              this.goodsCategoryIds=[];
+              this.goodsCategoryIds.push(this.categoryIds);
+            }
           }
 
           for (var i = 0; i < this.products.length; i++) {
@@ -949,7 +952,7 @@ export default {
             products: this.products,
             rebates: this.rebates,
             attributes: this.attributes,
-            goodsCategoryIds: this.categoryIds
+            goodsCategoryIds: this.goodsCategoryIds
           };
           publishGoods(finalGoods)
             .then(response => {
