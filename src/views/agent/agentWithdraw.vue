@@ -80,7 +80,7 @@
         class-name="small-padding fixed-width"
       >
         <template slot-scope="scope">
-          <el-button v-permission="['POST /admin/agent/withdraw']"
+          <el-button v-permission="['POST /admin/agent/withdraw/entpay']"
                      v-if="scope.row.status == 0"
                      type="primary" size="small" @click="handleWithdraw(scope.row)">付款到银行卡</el-button>
         </template>
