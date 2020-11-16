@@ -30,9 +30,14 @@
           {{ scope.row.nickname }}
         </template>
       </el-table-column>
+      <el-table-column align="center" label="所属总代">
+        <template slot-scope="scope">
+          {{ scope.row.agentName }}
+        </template>
+      </el-table-column>
       <el-table-column align="center" label="累计推广">
         <template slot-scope="scope">
-          {{ scope.row.count }}
+          <span class="link-type" @click="handleDetail(scope.row)"> {{ scope.row.count }}</span>
         </template>
       </el-table-column>
       <el-table-column align="center" label="累计收益">
@@ -149,6 +154,9 @@ export default {
     handleFilter() {
       this.listQuery.page = 1
       this.getList()
+    },
+    handleDetail(row) {
+      // this.$router.push({ path: '/promotion/income', query: { userId: row.userId } })
     },
     pickerDateChange() {
       if (this.pickerDate == null) {
