@@ -706,7 +706,17 @@ export const asyncRouterMap = [
         name: 'income',
         meta: {
           perms: ['GET /admin/income/list'],
-          title: '收益管理',
+          title: '收益明细',
+          noCache: true
+        }
+      },
+      {
+        path: 'incomeCount',
+        component: () => import('@/views/promotion/incomeCount'),
+        name: 'incomeCount',
+        meta: {
+          perms: ['GET /admin/income/count/list'],
+          title: '收益统计',
           noCache: true
         }
       },
