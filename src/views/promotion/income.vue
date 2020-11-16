@@ -42,7 +42,7 @@
       </el-table-column>
       <el-table-column align="center" label="累计收益">
         <template slot-scope="scope">
-          +{{ scope.row.user.totalIncome }}
+          {{ scope.row.user.totalIncome }}
         </template>
       </el-table-column>
       <!-- <el-table-column align="center" label="来源">
@@ -62,11 +62,11 @@
           <span v-if="scope.row.status == false && scope.row.type == 9">未结算</span>
         </template>
       </el-table-column>
-      <el-table-column align="center" label="添加时间" prop="addTime"/>
+      <el-table-column align="center" label="结算时间" prop="addTime"/>
       <el-table-column align="center" label="操作">
         <template slot-scope="scope">
           <el-button v-permission="['POST /admin/income/entpay']" v-if="scope.row.type === 9 && scope.row.status === false" type="primary" size="mini" @click="handlePayment(scope.row)">企业付款</el-button>
-          <el-button v-permission="['POST /admin/income/orderDetail']" v-if="scope.row.type != 9" type="info" size="mini" @click="showDetail(scope.row)">订单提成详情</el-button>
+          <el-button v-permission="['GET /admin/income/orderDetail']" v-if="scope.row.type != 9" type="info" size="mini" @click="showDetail(scope.row)">订单提成详情</el-button>
         </template>
       </el-table-column>
     </el-table>
