@@ -19,7 +19,7 @@
           </el-col>
         </el-row>
         <el-row>
-          <el-col :span="6">
+          <el-col :span="8">
             <el-form-item label="上架类型" prop="saleType">
               <el-select v-model="goods.saleType" placeholder="请选择">
                 <el-option
@@ -31,7 +31,7 @@
               </el-select>
             </el-form-item>
           </el-col>
-          <el-col :span="6">
+          <el-col :span="8">
             <el-form-item label="物品类型">
               <el-select v-model="goods.acStatus" placeholder="请选择物品类型" @change="handleLimit">
                 <el-option
@@ -43,25 +43,23 @@
               </el-select>
             </el-form-item>
           </el-col>
-          <el-col :span="6">
-            <el-form-item label="所属分类" prop="categoryId">
-              <el-cascader  v-model="categoryIds" expand-trigger="hover" clearable
-                           @change="handleCategoryChange"/>
-            </el-form-item>
-          </el-col>
-
-          <el-col :span="6">
-            <el-form-item label="所属分类" prop="categoryId">
-              <el-cascader :options="categoryList"  :props="props"  v-model="categoryIds" expand-trigger="hover" clearable
-                           @change="handleCategoryChange"/>
-            </el-form-item>
-          </el-col>
-
-          <el-col :span="6">
+          <el-col :span="8">
             <el-form-item label="所属品牌商">
               <el-select v-model="goods.brandId">
                 <el-option v-for="item in brandList" :key="item.value" :label="item.label" :value="item.value"/>
               </el-select>
+            </el-form-item>
+          </el-col>
+        </el-row>
+        <el-row>
+          <el-col :span="12">
+            <el-form-item label="线上分类" prop="goodsCategoryId"  v-show="goods.saleType !=2 ">
+              <el-cascader :options=" categoryList"  :props="props"  v-model="goodsCategoryIds" expand-trigger="hover" clearable  @change="handleGoodsCategoryChange" />
+            </el-form-item>
+          </el-col>
+          <el-col :span="12">
+            <el-form-item label="线下分类" prop="categoryId"  v-show="goods.saleType !=1 ">
+              <el-cascader :options="categoryList" v-model="categoryIds" expand-trigger="hover" clearable  @change="handleCategoryChange"/>
             </el-form-item>
           </el-col>
         </el-row>
@@ -595,15 +593,11 @@
         keywords: [],
         galleryFileList: [],
         categoryList: [],
-        goodsCategoryIds:[],
+        goodsCategoryIdList:[],
         brandList: [],
         categoryIds: [],
+        goodsCategoryIds: [],
         communities: [],
-        catVos: [{
-          value: undefined,
-          label: undefined,
-          children: []
-        }],
         goods: { gallery: [], unit: '克' },
         specVisiable: false,
         specForm: { specification: '', value: '', picUrl: '' },
@@ -698,8 +692,6 @@
           this.attributes = response.data.data.attributes
           this.categoryIds = response.data.data.categoryIds
           this.goodsCategoryIds = response.data.data.goodsCategoryIds
-          debugger
-
           this.galleryFileList = []
           for (var i = 0; i < this.goods.gallery.length; i++) {
             this.galleryFileList.push({
@@ -714,6 +706,7 @@
 
         listCatAndBrand().then(response => {
           this.categoryList = response.data.data.categoryList
+          this.goodsCategoryIdList = response.data.data.categoryList
           this.brandList = response.data.data.brandList
         })
       },
@@ -765,10 +758,15 @@
           v.unit = value
         }
       },
+
       handleCategoryChange(value) {
        this.goods.categoryId = value[value.length - 1];
-//        this.catVos = value
       },
+
+      handleGoodsCategoryChange(value) {
+        this.goodsCategoryIds = value;
+      },
+
       handleCancel: function() {
         this.$router.push({ path: '/goods/list' ,query: {listQuery:this.listQuery}})
       },
@@ -790,6 +788,10 @@
                 this.$message.error('线上售价未填！！')
                 return false
               }
+              if (this.goodsCategoryIds === undefined || this.goodsCategoryIds === '' || this.goodsCategoryIds.length === 0) {
+                this.$message.error('线上种类未选！！')
+                return false
+              }
             }
             //线下物品校验
             if (this.goods.saleType != 1) {
@@ -801,11 +803,20 @@
                 this.$message.error('线下物品价格未填！！')
                 return false
               }
-            }
-
-            if (this.goods.categoryId === undefined || this.goods.categoryId === '') {
-              this.$message.error('请选择物品种类！！')
-              return false
+              if (this.goods.categoryId === undefined || this.goods.categoryId === '') {
+                this.$message.error('线下种类未选！！')
+                return false
+              }
+              if (this.goods.categoryId === undefined || this.goods.categoryId === '') {
+                this.$message.error('请选择物品种类！！')
+                return false
+              }
+              if(this.goods.saleType == 2){
+                //一维数组转二维数组
+                this.goodsCategoryIds=[];
+                this.goodsCategoryIds.push(this.categoryIds);
+              }
+              debugger
             }
 
             for (var i = 0; i < this.products.length; i++) {
@@ -823,8 +834,9 @@
               products: this.products,
               rebates: this.rebates,
               attributes: this.attributes,
-              goodsCategoryIds: this.categoryIds
+              goodsCategoryIds: this.goodsCategoryIds
             }
+            debugger
             editGoods(finalGoods).then(response => {
               this.$notify.success({
                 title: '成功',
@@ -861,7 +873,8 @@
           specifications: this.specifications,
           products: this.products,
           rebates: this.rebates,
-          attributes: this.attributes
+          attributes: this.attributes,
+          goodsCategoryIds: this.goodsCategoryIds
         }
         editGoods(finalGoods).then(response => {
           this.$notify.success({
