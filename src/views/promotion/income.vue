@@ -24,7 +24,7 @@
         @change="pickerDateChange"/>
       <el-input v-model="listQuery.mobile" clearable class="filter-item" style="width: 200px;" placeholder="请输入手机号"/>
       <!--<el-input v-model="listQuery.userId" clearable class="filter-item" style="width: 200px;" placeholder="请输入用户ID"/>-->
-      <el-button v-permission="['GET /admin/groupon/listRecord']" class="filter-item" type="primary" icon="el-icon-search" @click="handleFilter">查找</el-button>
+      <el-button v-permission="['GET /admin/income/list']" class="filter-item" type="primary" icon="el-icon-search" @click="handleFilter">查找</el-button>
     </div>
 
     <!-- 查询结果 -->
@@ -38,6 +38,11 @@
       <el-table-column align="center" label="金额">
         <template slot-scope="scope">
           +{{ scope.row.amount }}
+        </template>
+      </el-table-column>
+      <el-table-column align="center" label="累计收益">
+        <template slot-scope="scope">
+          +{{ scope.row.user.totalIncome }}
         </template>
       </el-table-column>
       <!-- <el-table-column align="center" label="来源">
