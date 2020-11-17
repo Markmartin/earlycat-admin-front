@@ -217,8 +217,8 @@
       };
     },
     created() {
-      this.init();
       this.getList();
+      this.init();
     },
 
     methods: {
@@ -229,6 +229,8 @@
         this.listQuery.userId = this.$route.query.userId;
         this.listQuery.queryStartTime = this.$route.query.queryStartTime;
         this.listQuery.queryEndTime = this.$route.query.queryEndTime;
+        this.getList();
+        this.resetForm();
       },
       getList() {
         this.listLoading = true;
@@ -237,7 +239,6 @@
             this.list = response.data.data.list;
             this.total = response.data.data.total;
             this.listLoading = false;
-            this.resetForm()
           })
           .catch(() => {
             this.list = [];
