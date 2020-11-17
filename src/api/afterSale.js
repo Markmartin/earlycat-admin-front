@@ -51,3 +51,12 @@ export function orderDetail(id) {
     params: { id }
   })
 }
+
+
+export function detailOrder(id) {
+  return request({
+    url: '/order/detail',
+    method: 'get',
+    params: { id }
+  })
+}
