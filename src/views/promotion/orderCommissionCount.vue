@@ -20,7 +20,7 @@
         start-placeholder="开始日期"
         end-placeholder="结束日期"
         @change="pickerDateChange"/>
-      <el-button v-permission="['GET /admin/income/count/list']" class="filter-item" type="primary" icon="el-icon-search" @click="handleFilter">查找</el-button>
+      <el-button v-permission="['GET /admin/orderCommission/count/list']" class="filter-item" type="primary" icon="el-icon-search" @click="handleFilter">查找</el-button>
     </div>
 
     <!-- 查询结果 -->
@@ -61,7 +61,7 @@
 </style>
 
 <script>
-import { listIncomeCount } from '@/api/income'
+import { listOrderCommissionCount } from '@/api/orderCommission'
 import BackToTop from '@/components/BackToTop'
 import Pagination from '@/components/Pagination' // Secondary package based on el-pagination
 
@@ -77,7 +77,7 @@ const typeOptions = [
 ]
 
 export default {
-  name: 'IncomeCount',
+  name: 'orderCommissionCount',
   components: { BackToTop, Pagination },
   filters: {
     formatType(type) {
@@ -144,7 +144,7 @@ export default {
   methods: {
     getList() {
       this.listLoading = true
-      listIncomeCount(this.listQuery).then(response => {
+      listOrderCommissionCount(this.listQuery).then(response => {
         this.list = response.data.data.list
         this.total = response.data.data.total
         this.listLoading = false
@@ -159,7 +159,7 @@ export default {
       this.getList()
     },
     handleDetail(row) {
-      this.$router.push({ path: '/promotion/income', query: { userId: row.userId,
+      this.$router.push({ path: '/promotion/orderCommission', query: { userId: row.userId,
         queryStartTime: row.queryStartTime, queryEndTime: row.queryEndTime} })
     },
     pickerDateChange() {

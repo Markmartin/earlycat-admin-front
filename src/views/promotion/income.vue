@@ -23,7 +23,6 @@
         end-placeholder="结束日期"
         @change="pickerDateChange"/>
       <el-input v-model="listQuery.mobile" clearable class="filter-item" style="width: 200px;" placeholder="请输入手机号"/>
-      <!--<el-input v-model="listQuery.userId" clearable class="filter-item" style="width: 200px;" placeholder="请输入用户ID"/>-->
       <el-button v-permission="['GET /admin/income/list']" class="filter-item" type="primary" icon="el-icon-search" @click="handleFilter">查找</el-button>
     </div>
 
@@ -212,18 +211,9 @@ export default {
     }
   },
   created() {
-    this.init()
     this.getList()
   },
   methods: {
-    init() {
-      if (this.$route.query.userId === '') {
-        return
-      }
-      this.listQuery.userId = this.$route.query.userId;
-      this.listQuery.queryStartTime = this.$route.query.queryStartTime;
-      this.listQuery.queryEndTime = this.$route.query.queryEndTime;
-    },
     handlePayment(row) {
       this.$confirm('确认企业付款到用户零钱包', '提示', {
         confirmButtonText: '确定',

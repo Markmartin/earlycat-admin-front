@@ -15,7 +15,13 @@ export function apiOrderDetail(id) {
     params: { id }
   })
 }
-
+export function listOrderCommissionCount(query) {
+  return request({
+    url: '/orderCommission/count/list',
+    method: 'get',
+    params: query
+  })
+}
 
 
 

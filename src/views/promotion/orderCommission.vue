@@ -5,6 +5,20 @@
       <el-select v-model="listQuery.status" clearable style="width: 200px" class="filter-item" placeholder="佣金状态">
         <el-option v-for="type in statusOps" :key="type.value" :label="type.label" :value="type.value"/>
       </el-select>
+      <el-date-picker
+        :picker-options="pickerOptions"
+        :default-time="['00:00:00', '23:59:59']"
+        v-model="pickerDate"
+        type="datetimerange"
+        align="right"
+        value-format="yyyy-MM-dd HH:mm:ss"
+        style="margin-bottom:10px;vertical-align: middle;"
+        unlink-panels
+        range-separator="至"
+        start-placeholder="开始日期"
+        end-placeholder="结束日期"
+        @change="pickerDateChange"/>
+      <el-input v-model="listQuery.mobile" clearable class="filter-item" style="width: 200px;" placeholder="请输入手机号"/>
       <el-button
         v-permission="['GET /admin/orderCommission/list']"
         class="filter-item"
@@ -30,12 +44,16 @@
           <img :src="scope.row.promoterUrl" width="20"> {{scope.row.promoterName}}
         </template>
       </el-table-column>
-      <!--<el-table-column align="center" label="所属总代" min-width="120px" prop="agentName"/>-->
-      <el-table-column align="center" label="佣金提成金额" min-width="120px" prop="amount"/>
+      <el-table-column align="center" label="所属总代" min-width="120px" prop="agentName"/>
+      <el-table-column align="center" label="佣金提成金额" min-width="120px" prop="amount">
+        <template slot-scope="scope">
+          +{{scope.row.amount}}
+        </template>
+      </el-table-column>
       <el-table-column align="center" label="订单编号" min-width="120px" prop="orderSn"/>
       <el-table-column align="center" label="订单用户" min-width="120px" prop="orderUserNickname"/>
       <el-table-column align="center" label="订单状态" min-width="120px" prop="orderStatus"/>
-      <el-table-column align="center" label="佣金状态" min-width="120px" prop="status">
+      <el-table-column align="center" label="结算状态" min-width="120px" prop="status">
         <template slot-scope="scope">
           <el-tag>{{ statusOps[scope.row.status].label }}</el-tag>
         </template>
@@ -121,13 +139,41 @@
     components: {Pagination},
     data() {
       return {
+        pickerOptions: {
+          shortcuts: [{
+            text: '最近一周',
+            onClick(picker) {
+              const end = new Date()
+              const start = new Date()
+              start.setTime(start.getTime() - 3600 * 1000 * 24 * 7)
+              picker.$emit('pick', [start, end])
+            }
+          }, {
+            text: '最近一个月',
+            onClick(picker) {
+              const end = new Date()
+              const start = new Date()
+              start.setTime(start.getTime() - 3600 * 1000 * 24 * 30)
+              picker.$emit('pick', [start, end])
+            }
+          }, {
+            text: '最近三个月',
+            onClick(picker) {
+              const end = new Date()
+              const start = new Date()
+              start.setTime(start.getTime() - 3600 * 1000 * 24 * 90)
+              picker.$emit('pick', [start, end])
+            }
+          }]
+        },
+        pickerDate: '',
         statusOps: [
           {
-            label: "即将到账",
+            label: "未结算",
             value: 0
           },
           {
-            label: "已到账",
+            label: "已结算",
             value: 1
           }
         ],
@@ -146,9 +192,13 @@
         listLoading: true,
         dialogStatus: "",
         listQuery: {
+          status: '',
+          userId: '',
+          mobile: '',
+          queryStartTime: '',
+          queryEndTime: '',
           page: 1,
           limit: 20,
-          status: undefined,
           sort: "add_time",
           order: "desc"
         },
@@ -167,10 +217,19 @@
       };
     },
     created() {
+      this.init();
       this.getList();
     },
 
     methods: {
+      init() {
+        if (this.$route.query.userId === '') {
+          return
+        }
+        this.listQuery.userId = this.$route.query.userId;
+        this.listQuery.queryStartTime = this.$route.query.queryStartTime;
+        this.listQuery.queryEndTime = this.$route.query.queryEndTime;
+      },
       getList() {
         this.listLoading = true;
         apiList(this.listQuery)
@@ -178,12 +237,25 @@
             this.list = response.data.data.list;
             this.total = response.data.data.total;
             this.listLoading = false;
+            this.resetForm()
           })
           .catch(() => {
             this.list = [];
             this.total = 0;
             this.listLoading = false;
           });
+      },
+      resetForm() {
+        this.listQuery = {
+          queryEndTime: '',
+            queryStartTime: '',
+            userType: '',
+            mobile: '',
+            page: 1,
+            limit: 20,
+            sort: 'add_time',
+            order: 'desc'
+        }
       },
       handleFilter() {
         this.listQuery.page = 1;
@@ -194,6 +266,15 @@
           this.orderDetail = response.data.data
         })
         this.detailDialogVisible = true
+      },
+      pickerDateChange() {
+        if (this.pickerDate == null) {
+          this.listQuery.queryStartTime = ''
+          this.listQuery.queryEndTime = ''
+        } else {
+          this.listQuery.queryStartTime = this.pickerDate[0]
+          this.listQuery.queryEndTime = this.pickerDate[1]
+        }
       },
     }
   };

@@ -606,16 +606,6 @@ export const asyncRouterMap = [
           noCache: true
         }
       },
-      // {
-      //   path: 'orderCommission',
-      //   component: () => import('@/views/agent/orderCommission'),
-      //   name: 'orderCommission',
-      //   meta: {
-      //     perms: ['GET /admin/orderCommission/list'],
-      //     title: '佣金明细',
-      //     noCache: true
-      //   }
-      // },
     ]
   },
   {
@@ -711,12 +701,22 @@ export const asyncRouterMap = [
         }
       },
       {
-        path: 'incomeCount',
-        component: () => import('@/views/promotion/incomeCount'),
-        name: 'incomeCount',
+        path: 'orderCommission',
+        component: () => import('@/views/promotion/orderCommission'),
+        name: 'orderCommission',
         meta: {
-          perms: ['GET /admin/income/count/list'],
-          title: '收益统计',
+          perms: ['GET /admin/orderCommission/list'],
+          title: '推广明细',
+          noCache: true
+        }
+      },
+      {
+        path: 'orderCommissionCount',
+        component: () => import('@/views/promotion/orderCommissionCount'),
+        name: 'orderCommissionCount',
+        meta: {
+          perms: ['GET /admin/orderCommission/count/list'],
+          title: '推广统计',
           noCache: true
         }
       },

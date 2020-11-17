@@ -32,10 +32,3 @@ export function apiOrderDetail(id) {
   })
 }
 
-export function listIncomeCount(query) {
-  return request({
-    url: '/income/count/list',
-    method: 'get',
-    params: query
-  })
-}
