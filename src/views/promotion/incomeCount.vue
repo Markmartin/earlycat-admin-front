@@ -6,6 +6,7 @@
       <el-select v-model="listQuery.userType" clearable style="width: 200px" class="filter-item" placeholder="请选择推广类型">
         <el-option v-for="type in typeOptions" :key="type.value" :label="type.label" :value="type.value"/>
       </el-select>
+      <el-input v-model="listQuery.mobile" clearable style="width: 200px" class="filter-item" placeholder="请收入手机号"/>
       <el-date-picker
         :picker-options="pickerOptions"
         :default-time="['00:00:00', '23:59:59']"
@@ -27,9 +28,10 @@
       <el-table-column align="center" label="推广用户">
         <template slot-scope="scope">
           <img :src="scope.row.avatar" style="width:40px;height:40px;" >
-          {{ scope.row.nickname }}
+          {{ scope.row.nickName }}
         </template>
       </el-table-column>
+      <el-table-column align="center" label="手机号" prop="mobile"/>
       <el-table-column align="center" label="所属总代">
         <template slot-scope="scope">
           {{ scope.row.agentName }}
@@ -123,9 +125,10 @@ export default {
       total: 0,
       listLoading: true,
       listQuery: {
-        queryEndTime: undefined,
-        queryStartTime: undefined,
-        userType: undefined,
+        queryEndTime: '',
+        queryStartTime: '',
+        userType: '',
+        mobile: '',
         page: 1,
         limit: 20,
         sort: 'add_time',
@@ -156,7 +159,8 @@ export default {
       this.getList()
     },
     handleDetail(row) {
-      // this.$router.push({ path: '/promotion/income', query: { userId: row.userId } })
+      this.$router.push({ path: '/promotion/income', query: { userId: row.userId,
+        queryStartTime: row.queryStartTime, queryEndTime: row.queryEndTime} })
     },
     pickerDateChange() {
       if (this.pickerDate == null) {

@@ -40,11 +40,6 @@
           +{{ scope.row.amount }}
         </template>
       </el-table-column>
-      <el-table-column align="center" label="累计收益">
-        <template slot-scope="scope">
-          {{ scope.row.user.totalIncome }}
-        </template>
-      </el-table-column>
       <!-- <el-table-column align="center" label="来源">
         <template slot-scope="scope">
           <span v-if="scope.row.type == 0">注册奖励</span>
@@ -195,12 +190,12 @@ export default {
       total: 0,
       listLoading: true,
       listQuery: {
-        mobile: undefined,
-        queryEndTime: undefined,
-        queryStartTime: undefined,
-        status: undefined,
-        type: undefined,
-        userId: undefined,
+        mobile: '',
+        queryEndTime: '',
+        queryStartTime: '',
+        status: '',
+        type: '',
+        userId: '',
         page: 1,
         limit: 20,
         sort: 'add_time',
@@ -217,9 +212,18 @@ export default {
     }
   },
   created() {
+    this.init()
     this.getList()
   },
   methods: {
+    init() {
+      if (this.$route.query.userId === '') {
+        return
+      }
+      this.listQuery.userId = this.$route.query.userId;
+      this.listQuery.queryStartTime = this.$route.query.queryStartTime;
+      this.listQuery.queryEndTime = this.$route.query.queryEndTime;
+    },
     handlePayment(row) {
       this.$confirm('确认企业付款到用户零钱包', '提示', {
         confirmButtonText: '确定',
