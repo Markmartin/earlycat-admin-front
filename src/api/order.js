@@ -52,6 +52,22 @@ export function refundOrder(data) {
   })
 }
 
+export function modifyAddress (data) {
+  return request({
+    url: '/order/modifyAddress',
+    method: 'post',
+    data
+  })
+}
+
+export function addRemark (data) {
+  return request({
+    url: '/order/addRemark',
+    method: 'post',
+    data
+  })
+}
+
 export function replyComment(data) {
   return request({
     url: '/order/reply',
