@@ -18,29 +18,37 @@
               :row-class-name="tableRowClassName"
               element-loading-text="正在查询中。。。"
               border fit highlight-current-row>
-      <el-table-column align="center" min-width="100" label="姓名" prop="name"/>
-      <el-table-column align="center" min-width="100" label="年龄" prop="age"/>
-      <el-table-column align="center" min-width="100" label="性別" prop="gender">
+      <el-table-column align="center" min-width="100" label="应聘者姓名" prop="name"/>
+      <el-table-column align="center" min-width="100" label="应聘者年龄" prop="age"/>
+      <el-table-column align="center" min-width="100" label="应聘者性別" prop="gender">
       <template slot-scope="scope">
         <span v-if="scope.row.gender == 0">男</span>
         <span v-if="scope.row.gender == 1">女</span>
       </template>
       </el-table-column>
-      <el-table-column align="center" min-width="100" label="戶籍" prop="domicile"/>
-      <el-table-column align="center" min-width="100" label="民族" prop="minority"/>
-      <el-table-column align="center" min-width="100" label="电话" prop="phone"/>
-      <el-table-column align="center" label="是否有驾照" min-width="60" prop="isDrivingLicense">
+      <el-table-column align="center" min-width="100" label="应聘者戶籍" prop="domicile"/>
+      <el-table-column align="center" min-width="100" label="应聘者民族" prop="minority"/>
+      <el-table-column align="center" min-width="100" label="应聘者电话" prop="phone"/>
+      <el-table-column align="center" label="应聘者有无驾照" min-width="120" prop="isDrivingLicense">
         <template slot-scope="scope">
-          <el-tag :type="scope.row.isDrivingLicense ? 'success' : 'error' ">{{ scope.row.isDrivingLicense ? '有' : '没有' }}</el-tag>
+          <el-tag :type="scope.row.isDrivingLicense ? 'success' : 'error' ">{{ scope.row.isDrivingLicense ? '有' : '无' }}</el-tag>
         </template>
       </el-table-column>
-      <el-table-column align="center" min-width="200" label="地址" prop="address"/>
-      <el-table-column align="center" min-width="100" label="岗位" prop="age"/>
-      <el-table-column align="center" min-width="100" label="备注" prop="remark"/>
+      <el-table-column align="center" min-width="200" label="应聘者居住地址" prop="address"/>
+      <el-table-column align="center" min-width="150" label="应聘岗位"  prop="post"  >
+      <template slot-scope="scope">
+        <div>
+          <ul>
+            <li v-for="item in scope.row.post">
+              {{ item }}
+            </li>
+          </ul>
+        </div>
+      </template>
+      </el-table-column>
+      <!--<el-table-column align="center" min-width="100" label="备注" prop="remark"/>-->
     </el-table>
     <pagination v-show="total>0" :total="total" :page.sync="listQuery.page" :limit.sync="listQuery.limit" @pagination="getList"/>
-
-
     <el-tooltip placement="top" content="返回顶部">
       <back-to-top :visibility-height="100"/>
     </el-tooltip>
