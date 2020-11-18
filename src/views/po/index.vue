@@ -54,6 +54,9 @@
       <el-table-column align="center" label="采购" width="70">
         <!-- <template slot-scope="scope"></template> -->
       </el-table-column>
+      <el-table-column align="center" label="采购价" width="70">
+        <!-- <template slot-scope="scope"></template> -->
+      </el-table-column>
     </el-table>
   </div>
 </template>
