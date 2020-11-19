@@ -26,7 +26,7 @@
 
     <!-- 查询结果 -->
     <el-table v-loading="listLoading" ref="multipleTable" :data="list" element-loading-text="正在查询中。。。" border
-              fit highlight-current-row @select-all="handleSelectionAll" @select="handleSelection">
+              fit highlight-current-row @select-all="handleSelectionAll" @select="handleSelection" :header-cell-style="{background:'#B4D5F6',color:'#606266'}">
 <!--      <el-table-column :selectable="isDisabled" type="selection" width="55"/>-->
 
       <el-table-column align="center" min-width="100" label="订单编号" prop="orderSn" width="130"/>
