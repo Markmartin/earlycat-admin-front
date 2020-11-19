@@ -19,15 +19,14 @@
         end-placeholder="结束日期"
         @change="pickerDateChange"/>
       <el-input v-model="listQuery.mobile" clearable class="filter-item" style="width: 200px;" placeholder="请输入手机号"/>
+      <el-input v-model="listQuery.userId" clearable class="filter-item" style="width: 200px;" placeholder="用户ID"/>
       <el-button
         v-permission="['GET /admin/orderCommission/list']"
         class="filter-item"
         type="primary"
         icon="el-icon-search"
         @click="handleFilter"
-      >查找
-      </el-button
-      >
+      >查找</el-button>
     </div>
 
     <!-- 查询结果 -->
@@ -167,6 +166,7 @@
           }]
         },
         pickerDate: '',
+        pickerDate1: ['',''],
         statusOps: [
           {
             label: "未结算",
@@ -223,14 +223,16 @@
 
     methods: {
       init() {
-        if (this.$route.query.userId === '') {
+        if (this.$route.query.userId === '' || this.$route.query.userId == undefined) {
           return
         }
         this.listQuery.userId = this.$route.query.userId;
         this.listQuery.queryStartTime = this.$route.query.queryStartTime;
         this.listQuery.queryEndTime = this.$route.query.queryEndTime;
+        //回显
+        this.pickerDate1 = [this.listQuery.queryStartTime,  this.listQuery.queryEndTime]
+        this.pickerDate = this.pickerDate1
         this.getList();
-        this.resetForm();
       },
       getList() {
         this.listLoading = true;
@@ -245,18 +247,6 @@
             this.total = 0;
             this.listLoading = false;
           });
-      },
-      resetForm() {
-        this.listQuery = {
-          queryEndTime: '',
-            queryStartTime: '',
-            userType: '',
-            mobile: '',
-            page: 1,
-            limit: 20,
-            sort: 'add_time',
-            order: 'desc'
-        }
       },
       handleFilter() {
         this.listQuery.page = 1;
