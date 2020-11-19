@@ -7,7 +7,7 @@
       <el-input v-model="listQuery.zcmRecruitVo.domicile" clearable class="filter-item" style="width: 200px;" placeholder="请输入应聘者户籍"/>
       <el-input v-model="listQuery.zcmRecruitVo.phone" clearable class="filter-item" style="width: 200px;" placeholder="请输入应聘者电话"/>
       <el-input v-model="listQuery.zcmRecruitVo.address" clearable class="filter-item" style="width: 200px;" placeholder="请输入应聘者地址"/>
-      <el-button v-permission="['GET /admin/goods/list']" class="filter-item" type="primary" icon="el-icon-search"
+      <el-button v-permission="['POST /admin/recruit/list']" class="filter-item" type="primary" icon="el-icon-search"
                  @click="handleFilter">查找
       </el-button>
     </div>
