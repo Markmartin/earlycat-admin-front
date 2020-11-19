@@ -19,7 +19,6 @@
         end-placeholder="结束日期"
         @change="pickerDateChange"/>
       <el-input v-model="listQuery.mobile" clearable class="filter-item" style="width: 200px;" placeholder="请输入手机号"/>
-      <el-input v-model="listQuery.userId" clearable class="filter-item" style="width: 200px;" placeholder="用户ID"/>
       <el-button
         v-permission="['GET /admin/orderCommission/list']"
         class="filter-item"
@@ -193,7 +192,6 @@
         dialogStatus: "",
         listQuery: {
           status: '',
-          userId: '',
           mobile: '',
           queryStartTime: '',
           queryEndTime: '',
@@ -223,10 +221,10 @@
 
     methods: {
       init() {
-        if (this.$route.query.userId === '' || this.$route.query.userId == undefined) {
+        if (this.$route.query.mobile === '' || this.$route.query.mobile == undefined) {
           return
         }
-        this.listQuery.userId = this.$route.query.userId;
+        this.listQuery.mobile = this.$route.query.mobile;
         this.listQuery.queryStartTime = this.$route.query.queryStartTime;
         this.listQuery.queryEndTime = this.$route.query.queryEndTime;
         //回显
