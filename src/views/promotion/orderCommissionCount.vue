@@ -159,7 +159,7 @@ export default {
       this.getList()
     },
     handleDetail(row) {
-      this.$router.push({ path: '/promotion/orderCommission', query: { userId: row.userId,
+      this.$router.push({ path: '/promotion/orderCommission', query: { mobile: row.mobile,
         queryStartTime: row.queryStartTime, queryEndTime: row.queryEndTime} })
     },
     pickerDateChange() {

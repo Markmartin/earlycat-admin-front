@@ -72,13 +72,13 @@
       <!--<el-table-column align="center" label="社区名" prop="communityName"/>-->
       <el-table-column align="center" label="分拣号" prop="sortingNo"/>
       <el-table-column align="center" label="用户留言" prop="message"/>
-      <el-table-column align="center" label="客户备注" prop="remark"/>
+      <el-table-column align="center" label="客服备注" prop="remark"/>
 
       <el-table-column align="center" label="操作" width="400" class-name="small-padding fixed-width">
         <template slot-scope="scope">
           <el-button v-permission="['GET /admin/order/detail']" type="primary" size="mini" @click="handleDetail(scope.row)">详情</el-button>
           <el-button v-permission="['POST /admin/order/modifyAddress']" type="primary" size="small" @click="handleModifyAddress(scope.row)">修改地址及留言</el-button>
-          <el-button v-permission="['POST /admin/order/addRemark']" type="primary" size="small" @click="handleRemark(scope.row)">客户备注</el-button>
+          <el-button v-permission="['POST /admin/order/addRemark']" type="primary" size="small" @click="handleRemark(scope.row)">客服备注</el-button>
           <!--<el-button v-permission="['POST /admin/order/print']" type="primary" size="mini" @click="handlePrinter(scope.row)">打印</el-button>-->
           <!--<el-button v-permission="['POST /admin/order/ship']" v-if="scope.row.orderStatus==201" type="primary" size="mini" @click="handleShip(scope.row)">发货</el-button>-->
           <!-- <el-button v-permission="['POST /admin/order/arrive']" v-if="scope.row.orderStatus==201 || scope.row.orderStatus==301" type="primary" size="mini" @click="handleArrive(scope.row)">到达</el-button> -->

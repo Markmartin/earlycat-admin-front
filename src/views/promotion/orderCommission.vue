@@ -25,9 +25,7 @@
         type="primary"
         icon="el-icon-search"
         @click="handleFilter"
-      >查找
-      </el-button
-      >
+      >查找</el-button>
     </div>
 
     <!-- 查询结果 -->
@@ -167,6 +165,7 @@
           }]
         },
         pickerDate: '',
+        pickerDate1: ['',''],
         statusOps: [
           {
             label: "未结算",
@@ -193,7 +192,6 @@
         dialogStatus: "",
         listQuery: {
           status: '',
-          userId: '',
           mobile: '',
           queryStartTime: '',
           queryEndTime: '',
@@ -217,18 +215,22 @@
       };
     },
     created() {
-      this.init();
       this.getList();
+      this.init();
     },
 
     methods: {
       init() {
-        if (this.$route.query.userId === '') {
+        if (this.$route.query.mobile === '' || this.$route.query.mobile == undefined) {
           return
         }
-        this.listQuery.userId = this.$route.query.userId;
+        this.listQuery.mobile = this.$route.query.mobile;
         this.listQuery.queryStartTime = this.$route.query.queryStartTime;
         this.listQuery.queryEndTime = this.$route.query.queryEndTime;
+        //回显
+        this.pickerDate1 = [this.listQuery.queryStartTime,  this.listQuery.queryEndTime]
+        this.pickerDate = this.pickerDate1
+        this.getList();
       },
       getList() {
         this.listLoading = true;
@@ -237,25 +239,12 @@
             this.list = response.data.data.list;
             this.total = response.data.data.total;
             this.listLoading = false;
-            this.resetForm()
           })
           .catch(() => {
             this.list = [];
             this.total = 0;
             this.listLoading = false;
           });
-      },
-      resetForm() {
-        this.listQuery = {
-          queryEndTime: '',
-            queryStartTime: '',
-            userType: '',
-            mobile: '',
-            page: 1,
-            limit: 20,
-            sort: 'add_time',
-            order: 'desc'
-        }
       },
       handleFilter() {
         this.listQuery.page = 1;
