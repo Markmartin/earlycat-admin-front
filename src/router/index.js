@@ -974,7 +974,7 @@ export const asyncRouterMap = [
         component: () => import('@/views/recruit/recruitList'),
         name: 'recruitList',
         meta: {
-          perms: ['GET /admin/recruit/list'],
+          perms: ['POST /admin/recruit/list'],
           title: '招聘申请',
           noCache: true
         }
