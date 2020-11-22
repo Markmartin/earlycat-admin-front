@@ -28,7 +28,7 @@
     <el-table v-loading="listLoading" ref="multipleTable" :data="list" element-loading-text="正在查询中。。。" border
               fit highlight-current-row @select-all="handleSelectionAll" @select="handleSelection" :header-cell-style="{background:'#B4D5F6',color:'#606266'}">
 <!--      <el-table-column :selectable="isDisabled" type="selection" width="55"/>-->
-
+      <el-table-column align="center" min-width="100" label="id" prop="id" width="130"/>
       <el-table-column align="center" min-width="100" label="订单编号" prop="orderSn" width="130"/>
 
       <!--<el-table-column align="center" label="用户ID" width="100" prop="userId"/>-->
@@ -45,10 +45,9 @@
       <el-table-column align="center" label="物流单号" width="150" prop="shipSn" />
       <el-table-column align="center" label="物流渠道" prop="shipChannel"/>
       <el-table-column align="center" label="分拣号" prop="sortingNo"/>
-      <el-table-column align="center" label="操作" width="300" class-name="small-padding fixed-width">
+      <el-table-column align="center" label="操作" width="200" class-name="small-padding fixed-width">
         <template slot-scope="scope">
           <el-button v-permission="['GET /admin/order/detail']" type="primary" size="mini" @click="handleDetail(scope.row)">详情</el-button>
-          <el-button v-permission="['POST /admin/order/modifyAddress']" type="primary" size="small" @click="handleModifyAddress(scope.row)">修改地址及留言</el-button>
           <el-button v-permission="['POST /admin/order/addRemark']" type="primary" size="small" @click="handleRemark(scope.row)">客户备注</el-button>
         </template>
       </el-table-column>
@@ -157,28 +156,6 @@
       <div slot="footer" class="dialog-footer">
         <el-button @click="refundDialogVisible = false">取消</el-button>
         <el-button type="primary" @click="confirmRefund">确定</el-button>
-      </div>
-    </el-dialog>
-
-    <!-- 修改收货地址对话框 -->
-    <el-dialog :visible.sync="modifyAddressDialogVisible" title="修改地址及留言">
-      <el-form ref="modifyAddressForm" :model="modifyAddressForm" status-icon label-position="left" label-width="100px" >
-        <el-form-item label="订单编号" prop="orderSn">
-          <span>{{modifyAddressForm.orderSn}}</span>
-        </el-form-item>
-        <el-form-item label="收货人" prop="consignee">
-          <span>{{modifyAddressForm.consignee}}</span>
-        </el-form-item>
-        <el-form-item label="收货地址" prop="newAddress">
-          <el-input v-model="modifyAddressForm.newAddress"/>
-        </el-form-item>
-        <el-form-item label="用户留言" prop="newMessage">
-          <el-input v-model="modifyAddressForm.newMessage"/>
-        </el-form-item>
-      </el-form>
-      <div slot="footer" class="dialog-footer">
-        <el-button @click="modifyAddressDialogVisible = false">取消</el-button>
-        <el-button type="primary" @click="confirmModifyAddress">确定</el-button>
       </div>
     </el-dialog>
 
@@ -309,18 +286,11 @@
           orderId: undefined,
           refundMoney: undefined
         },
-        modifyAddressForm: {
-          orderSn: undefined,
-          consignee: undefined,
-          newAddress: undefined,
-          newMessage: undefined
-        },
         remarkForm: {
           orderSn: undefined,
           remark: undefined
         },
         refundDialogVisible: false,
-        modifyAddressDialogVisible: false,
         remarkDialogVisible: false,
         downloadLoading: false,
         downloadLoading1: false
@@ -545,35 +515,6 @@
       },
       handleDetail(row) {
         this.$router.push({ path: '/afterSale/orderDetail' ,query: {id: row.id}})
-      },
-      handleModifyAddress(row) {
-        this.modifyAddressForm.orderSn = row.orderSn
-        this.modifyAddressForm.consignee = row.consignee
-        this.modifyAddressForm.newAddress = row.address
-        this.modifyAddressForm.newMessage = row.message
-        this.modifyAddressDialogVisible = true
-        this.$nextTick(() => {
-          this.$refs['modifyAddressForm'].clearValidate()
-        })
-      },
-      confirmModifyAddress() {
-        this.$refs['modifyAddressForm'].validate((valid) => {
-          if (valid) {
-            modifyAddress(this.modifyAddressForm).then(response => {
-              this.modifyAddressDialogVisible = false
-              this.$notify.success({
-                title: '成功',
-                message: '订单修改成功'
-              })
-              this.getList()
-            }).catch(response => {
-              this.$notify.error({
-                title: '失败',
-                message: response.data.errmsg
-              })
-            })
-          }
-        })
       },
       handleRemark(row) {
         this.remarkForm.orderSn = row.orderSn

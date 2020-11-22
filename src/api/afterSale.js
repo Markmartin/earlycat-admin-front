@@ -75,3 +75,11 @@ export function getOrderGoodsRefundPrice(data) {
     params: data
   })
 }
+
+export function applyAfterSale(data) {
+  return request({
+    url: `/afterSale/applyAfterSale`,
+    method: 'post',
+    data
+  })
+}
