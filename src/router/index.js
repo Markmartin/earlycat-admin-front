@@ -23,7 +23,7 @@ import Layout from '@/views/layout/Layout'
     icon: 'svg-name'             the icon show in the sidebar,
     noCache: true                if true ,the page will no be cached(default is false)
   }
-**/
+ **/
 export const constantRouterMap = [
   {
     path: '/redirect',
@@ -65,7 +65,7 @@ export const constantRouterMap = [
         path: 'dashboard',
         component: () => import('@/views/dashboard/index'),
         name: 'Dashboard',
-        meta: { title: '首页', icon: 'dashboard', noCache: true }
+        meta: {title: '首页', icon: 'dashboard', noCache: true}
       }
     ]
   }
@@ -73,7 +73,7 @@ export const constantRouterMap = [
 
 export default new Router({
   // mode: 'history', // require service support
-  scrollBehavior: () => ({ y: 0 }),
+  scrollBehavior: () => ({y: 0}),
   routes: constantRouterMap
 })
 
@@ -104,18 +104,8 @@ export const asyncRouterMap = [
         component: () => import('@/views/po/purchase'),
         name: 'poPurchase',
         meta: {
-          perms: ['GET /admin/purchaserGoods/listByAdmin'],
+          perms: ['GET /admin/po/allList'],
           title: '填写采购单',
-          noCache: true
-        }
-      },
-      {
-        path: 'purchaseJob',
-        component: () => import('@/views/po/purchaseJob'),
-        name: 'poPurchaseJob',
-        meta: {
-          perms: ['GET /admin/purchaserGoods/listByAdmin'],
-          title: '采购单管理',
           noCache: true
         }
       },
@@ -551,8 +541,29 @@ export const asyncRouterMap = [
     },
     children: [
       {
-        path: 'list',
-        component: () => import('@/views/afterSale/list'),
+        path: 'orderList',
+        component: () => import('@/views/afterSale/orderList'),
+        name: 'orderList',
+        meta: {
+          perms: ['GET /admin/order/list', 'GET /admin/order/detail', 'POST /admin/order/ordership', 'POST /admin/order/orderrefund', 'POST /admin/order/orderreply'],
+          title: '订单管理',
+          noCache: true
+        }
+      },
+      {
+        path: 'orderDetail',
+        component: () => import('@/views/afterSale/orderDetail'),
+        name: 'orderDetail',
+        meta: {
+          perms: ['GET /admin/goods/detail', 'POST /admin/goods/update', 'POST /admin/goods/catAndBrand'],
+          title: '订单详情',
+          noCache: true
+        },
+        hidden: true
+      },
+      {
+        path: 'afterSaleList',
+        component: () => import('@/views/afterSale/afterSaleList'),
         name: 'afterSaleList',
         meta: {
           perms: ['GET /admin/afterSale/list', 'POST /admin/afterSale/delete'],
