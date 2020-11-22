@@ -60,3 +60,18 @@ export function detailOrder(id) {
     params: { id }
   })
 }
+
+export function getResonList() {
+  return request({
+    url: '/afterSale/getResonList',
+    method: 'get'
+  })
+}
+
+export function getOrderGoodsRefundPrice(data) {
+  return request({
+    url: '/afterSale/getOrderGoodsRefundPrice',
+    method: 'get',
+    params: data
+  })
+}

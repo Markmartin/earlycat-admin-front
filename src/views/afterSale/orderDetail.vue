@@ -74,7 +74,8 @@
                   <template slot-scope="scope">
                     <el-button
                       v-if="scope.row.refundNumber === 0 &&(scope.row.acStatus === 0||scope.row.acStatus === 1||scope.row.acStatus === 2)"
-                      v-permission="['POST /admin/afterSale/refund']" type="warning " size="mini" round @click="handleRefund(scope.row)">退款
+                      v-permission="['POST /admin/afterSale/refund']" type="warning " size="mini" round
+                      @click="handleRefund(scope.row)">退款
                     </el-button>
                   </template>
                 </el-table-column>
@@ -119,13 +120,28 @@
 
     <!-- 退款对话框 -->
     <el-dialog :visible.sync="refundDialogVisible" title="退款">
-      <el-form ref="refundForm" :model="refundForm" status-icon label-position="left" label-width="100px" style="width: 400px; margin-left:50px;">
-        <el-form-item label="退款金额" prop="picUrl" >
-          <el-input v-model="picUrl"/>
+      <el-form ref="refundForm" :model="refundForm" status-icon label-position="left" label-width="100px"
+               style="width: 400px; margin-left:50px;">
+        <el-form-item label="退款物品" prop="goodsName">
+          <el-input v-model="refundForm.goodsName" disabled/>
         </el-form-item>
-        <el-form-item label="退款金额" prop="goodsName" />
-        <el-form-item label="退款金额" prop="finalPrice" />
-        <el-form-item label="退款金额" prop="number" />
+        <el-form-item label="退款图片" prop="picUrl">
+          <img v-if="refundForm.picUrl" :src="refundForm.picUrl" class="avatar" width="200" disabled>
+        </el-form-item>
+        <el-form-item label="退款数量" prop="number">
+          <el-input-number v-model="refundForm.number" :min="minNum" :max="maxNum" @change="handleNumberChange"/>
+        </el-form-item>
+        <el-form-item label="退款金额" prop="finalPrice">
+          <el-input v-model="refundForm.finalPrice" disabled/>
+        </el-form-item>
+        <el-form-item label="退款原因" prop="reason">
+          <el-select v-model="refundForm.reason" placeholder="请选择">
+            <el-option v-for="item in resonList" :key="item.value" :label="item.label" :value="item.value"></el-option>
+          </el-select>
+        </el-form-item>
+        <el-form-item label="问题描述" prop="detail">
+          <el-input v-model="refundForm.detail" type="textarea"/>
+        </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
         <el-button @click="refundDialogVisible = false">取消</el-button>
@@ -140,7 +156,8 @@
 
 <script>
 import Pagination from '@/components/Pagination' // Secondary package based on el-pagination
-import {detailOrder} from '@/api/afterSale'
+import {detailOrder, getResonList, getOrderGoodsRefundPrice} from '@/api/afterSale'
+import {orderDetail} from "../../api/afterSale";
 
 const statusMap = {
   101: '未付款',
@@ -175,12 +192,24 @@ export default {
       refundDialogVisible: false,
       refundForm: {
         orderId: undefined,
-        refundMoney: undefined
+        refundMoney: undefined,
+        number: undefined,
+        reason: undefined,
+        detail: undefined
       },
+      minNum: 1,
+      maxNum: undefined,
+      resonList: [],
+      orderGoodsPrice: {
+        orderId: undefined,
+        goodsId: undefined,
+        number: undefined
+      }
     }
   },
   created() {
-    this.init()
+    this.init();
+    this.getResonList()
   },
   methods: {
     init: function () {
@@ -192,10 +221,24 @@ export default {
         this.priceDetail.push(response.data.data.order);
       })
     },
+    getResonList: function () {
+      getResonList().then(response => {
+        this.resonList = response.data.data;
+      })
+    },
     handleCancel: function () {
       this.$router.push({path: "/afterSale/orderList"});
     },
     handShowRefund: function () {
+
+    },
+    handleNumberChange(value) {
+      debugger
+      this.orderGoodsPrice.number = value;
+      getOrderGoodsRefundPrice(this.orderGoodsPrice).then(response => {
+        debugger
+        this.refundForm.finalPrice = response.data.applyRefundPrice;
+      })
 
     },
 
@@ -204,7 +247,10 @@ export default {
       this.refundForm.goodsName = row.goodsName
       this.refundForm.finalPrice = row.finalPrice
       this.refundForm.number = row.number
-
+      this.maxNum = row.number
+      this.orderGoodsPrice.goodsId = row.orderId;
+      this.orderGoodsPrice.orderId = row.goodsId;
+      this.orderGoodsPrice.number = row.number;
       this.refundDialogVisible = true
       this.$nextTick(() => {
         this.$refs['refundForm'].clearValidate()
