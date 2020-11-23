@@ -29,7 +29,11 @@
       <el-table-column align="center" label="充值金额" min-width="120px" prop="amount"/>
       <el-table-column align="center" label="赠送金额" min-width="120px" prop="aditionalAmount"/>
       <el-table-column align="center" label="描述" min-width="120px" prop="desc"/>
-      <el-table-column align="center" label="封面图片" min-width="120px" prop="picUrl"/>
+      <el-table-column align="center" label="封面图片" min-width="120px" prop="picUrl">
+        <template slot-scope="scope">
+          <img :src="scope.row.picUrl" style="width:80px;height:40px;" >
+        </template>
+      </el-table-column>
       <el-table-column align="center" label="创建时间" min-width="120px" prop="addTime" sortable/>
 
       <el-table-column
@@ -39,9 +43,8 @@
         class-name="small-padding fixed-width"
       >
         <template slot-scope="scope">
-          <el-button v-permission="['POST /admin/recharge/delete']"
-                     type="danger" size="mini" @click="handleDelete(scope.row)">删除
-          </el-button>
+          <el-button v-permission="['POST /admin/recharge/update']" type="primary" size="mini" @click="handleUpdate(scope.row)">编辑</el-button>
+          <el-button v-permission="['POST /admin/recharge/delete']" type="danger" size="mini" @click="handleDelete(scope.row)">删除</el-button>
         </template>
       </el-table-column>
     </el-table>
@@ -76,7 +79,19 @@
           <el-input v-model="dataForm.desc">
           </el-input>
         </el-form-item>
-
+        <el-form-item label="封面图片" prop="picUrl">
+          <el-upload
+            :headers="headers"
+            :action="uploadPath"
+            :show-file-list="false"
+            :on-success="uploadPicUrl"
+            class="avatar-uploader"
+            accept=".jpg,.jpeg,.png,.gif"
+          >
+            <img v-if="dataForm.picUrl" :src="dataForm.picUrl" class="avatar">
+            <i v-else class="el-icon-plus avatar-uploader-icon"/>
+          </el-upload>
+        </el-form-item>
 
       </el-form>
       <div slot="footer" class="dialog-footer">
@@ -97,15 +112,28 @@
     position: relative;
     overflow: hidden;
   }
-
   .avatar-uploader .el-upload:hover {
     border-color: #20a0ff;
   }
-
+  .avatar-uploader-icon {
+    font-size: 28px;
+    color: #8c939d;
+    width: 120px;
+    height: 120px;
+    line-height: 120px;
+    text-align: center;
+  }
+  .avatar {
+    width: 145px;
+    height: 145px;
+    display: block;
+  }
 </style>
 
 <script>
   import {apiList, apiCreate, apiUpdate, apiDelete} from "@/api/recharge";
+  import { createStorage, uploadPath } from "@/api/storage";
+  import { getToken } from "@/utils/auth";
   import Pagination from "@/components/Pagination"; // Secondary package based on el-pagination
 
   export default {
@@ -134,12 +162,19 @@
           picUrl: '',
         },
         dialogFormVisible: false,
+        uploadPath,
       };
+    },
+    computed: {
+      headers() {
+        return {
+          "X-Wali-Token": getToken()
+        };
+      }
     },
     created() {
       this.getList();
     },
-
     methods: {
       getList() {
         this.listLoading = true;
@@ -257,6 +292,9 @@
               });
           }
         });
+      },
+      uploadPicUrl: function(response) {
+        this.dataForm.picUrl = response.data.url;
       },
     }
   };
