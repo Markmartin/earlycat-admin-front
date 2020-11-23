@@ -586,6 +586,39 @@ export const asyncRouterMap = [
     ]
   },
   {
+    path: '/storedvalue',
+    component: Layout,
+    redirect: 'noredirect',
+    alwaysShow: true,
+    name: 'storedvalueManage',
+    meta: {
+      title: '储值管理',
+      icon: 'promotion'
+    },
+    children: [
+      {
+        path: 'recharge',
+        component: () => import('@/views/storedvalue/recharge'),
+        name: 'recharge',
+        meta: {
+          perms: ['GET /admin/recharge/list'],
+          title: '充值卡管理',
+          noCache: true
+        }
+      },
+      // {
+      //   path: 'agentWithdraw',
+      //   component: () => import('@/views/agent/agentWithdraw'),
+      //   name: 'agentWithdraw',
+      //   meta: {
+      //     perms: ['GET /admin/agent/withdraw/list'],
+      //     title: '总代提现管理',
+      //     noCache: true
+      //   }
+      // },
+    ]
+  },
+  {
     path: '/agent',
     component: Layout,
     redirect: 'noredirect',

@@ -19,7 +19,7 @@
       </el-button
       >
       <el-button
-        v-permission="['GET /admin/agent/add']"
+        v-permission="['POST /admin/agent/create']"
         class="filter-item"
         type="primary"
         icon="el-icon-edit"
