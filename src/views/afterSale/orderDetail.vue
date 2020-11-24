@@ -128,7 +128,7 @@
       </el-form>
     </el-card>
     <!-- 退款对话框 -->
-    <el-dialog :visible.sync="refundDialogVisible" width="50%" title="退款">
+    <el-dialog :visible.sync="refundDialogVisible" width="55%" title="退款">
       <el-form ref="refundForm" :model="refundForm" status-icon label-position="left" label-width="100px">
         <el-row>
           <h4>售后物品</h4>
@@ -230,319 +230,319 @@
 </template>
 
 <style>
-  .customWidth {
-    width: 30%;
-  }
+.customWidth {
+  width: 30%;
+}
 </style>
 
 <script>
-  import Pagination from '@/components/Pagination' // Secondary package based on el-pagination
-  import {detailOrder, getResonList, getOrderGoodsRefundPrice, applyAfterSale} from '@/api/afterSale'
-  import {modifyAddress} from '@/api/order'
-  import {createStorage, uploadPath} from '@/api/storage'
-  import {getToken} from '@/utils/auth'
+import Pagination from '@/components/Pagination' // Secondary package based on el-pagination
+import {detailOrder, getResonList, getOrderGoodsRefundPrice, applyAfterSale} from '@/api/afterSale'
+import {modifyAddress} from '@/api/order'
+import {createStorage, uploadPath} from '@/api/storage'
+import {getToken} from '@/utils/auth'
 
-  const statusMap = {
-    101: '未付款',
-    102: '用户取消',
-    103: '系统取消',
-    201: '已付款',
-    202: '申请退款',
-    203: '已退款',
-    204: '配货中',
-    301: '已发货',
-    302: '待取货',
-    401: '用户收货',
-    402: '系统收货'
-  }
+const statusMap = {
+  101: '未付款',
+  102: '用户取消',
+  103: '系统取消',
+  201: '已付款',
+  202: '申请退款',
+  203: '已退款',
+  204: '配货中',
+  301: '已发货',
+  302: '待取货',
+  401: '用户收货',
+  402: '系统收货'
+}
 
-  export default {
-    name: 'orderDetail',
-    components: {Pagination},
-    computed: {
-      headers() {
-        return {
-          'X-Wali-Token': getToken()
-        }
-      }
-    },
-    filters: {
-      orderStatusFilter(status) {
-        return statusMap[status]
-      }
-    },
-    data() {
+export default {
+  name: 'orderDetail',
+  components: {Pagination},
+  computed: {
+    headers() {
       return {
-        uploadPath,
-        orderDetail: {
-          order: {},
-          user: {},
-          orderGoods: []
-        },
-        priceDetail: [],
-        resonList: [],
-        orderGoodsPrice: {
-          orderId: undefined,
-          goodsId: undefined,
-          number: undefined
-        },
-        afterSaleVo: {
-          refundPrice: 0.00
-        },
-        afterSaleItemVos: [],
-        url: [],
-        refundDialogVisible: false,
-        refundForm: {
-          refundGoodsList: [],
-          reason: undefined,
-          detail: undefined
-        },
-        refundGoods: {
-          orderId: undefined,
-          goodsId: undefined,
-          goodsPicUrl: undefined,
-          number: undefined,
-          refundMoney: undefined,
-          maxNum: undefined,
-          minNum: 0
-        },
-        modifyAddressDialogVisible: false,
-        modifyAddressForm: {
-          orderSn: undefined,
-          newConsignee: undefined,
-          newAddress: undefined,
-          newMessage: undefined,
-          newMobile: undefined,
-        },
+        'X-Wali-Token': getToken()
       }
-    },
-    created() {
-      this.init();
-      this.getResonList()
-    },
-    methods: {
-      init: function () {
-        if (this.$route.query.id == null) {
-          return
-        }
-        detailOrder(this.$route.query.id).then(response => {
-          this.orderDetail = response.data.data;
-          this.priceDetail = [];
-          this.priceDetail.push(response.data.data.order);
-        })
+    }
+  },
+  filters: {
+    orderStatusFilter(status) {
+      return statusMap[status]
+    }
+  },
+  data() {
+    return {
+      uploadPath,
+      orderDetail: {
+        order: {},
+        user: {},
+        orderGoods: []
       },
-      getResonList: function () {
-        getResonList().then(response => {
-          this.resonList = response.data.data;
-        })
+      priceDetail: [],
+      resonList: [],
+      orderGoodsPrice: {
+        orderId: undefined,
+        goodsId: undefined,
+        number: undefined
       },
-      handleCancel: function () {
-        this.$router.push({path: "/afterSale/orderList"});
+      afterSaleVo: {
+        refundPrice: 0.00
       },
-      handShowRefund: function () {
-
+      afterSaleItemVos: [],
+      url: [],
+      refundDialogVisible: false,
+      refundForm: {
+        refundGoodsList: [],
+        reason: undefined,
+        detail: undefined
       },
-      handleNumberChange(item) {
-        this.orderGoodsPrice.number = item.number;
-        this.orderGoodsPrice.orderId = item.orderId;
-        this.orderGoodsPrice.goodsId = item.goodsId;
-        getOrderGoodsRefundPrice(this.orderGoodsPrice).then(response => {
-          const refundGoods = {
-            id: item.id,
-            orderId: item.orderId,
-            goodsId: item.goodsId,
-            number: item.number,
-            refundMoney: response.data.data.data.applyRefundPrice,
-            goodsPicUrl: item.goodsPicUrl,
-            goodsName: item.goodsName,
-            maxNum: item.maxNum
-          };
-          this.refundForm.refundGoodsList.splice(item.id, 1, refundGoods);
-          const afterSaleItemVo = {
-            orderId: this.orderGoodsPrice.orderId,
-            orderGoodsId: this.orderGoodsPrice.goodsId,
-            number: this.orderGoodsPrice.number,
-            price: response.data.data.data.applyRefundPrice,
-          };
-          this.afterSaleItemVos.splice(item.id, 1, afterSaleItemVo);
-
-          this.afterSaleVo.refundPrice = 0.00;
-          for (var j = 0; j < this.refundForm.refundGoodsList.length; j++) {
-            this.afterSaleVo.refundPrice = this.afterSaleVo.refundPrice + this.refundForm.refundGoodsList[j].refundMoney;
-          }
-
-
-        }).catch(response => {
-          this.$notify.error({
-            title: '价格获取异常',
-            message: response.data.errmsg
-          })
-        });
-
-
+      refundGoods: {
+        orderId: undefined,
+        goodsId: undefined,
+        goodsPicUrl: undefined,
+        number: undefined,
+        refundMoney: undefined,
+        maxNum: undefined,
+        minNum: 0
       },
-      handleAllRefund() {
-        const orderGoodsList = this.orderDetail.orderGoods;
-        this.refundForm.refundGoodsList = [];
-        this.afterSaleItemVos = [];
-        this.afterSaleVo.refundPrice = 0.00;
-        for (var i = 0; i < orderGoodsList.length; i++) {
-          if (orderGoodsList[i].acStatus != 98 && orderGoodsList[i].acStatus != 99) {
-            this.refundGoods = {
-              id: i,
-              orderId: orderGoodsList[i].orderId,
-              goodsId: orderGoodsList[i].goodsId,
-              number: this.orderDetail.order.orderStatus === 201 ? orderGoodsList[i].number : orderGoodsList[i].number - orderGoodsList[i].refundNumber,
-              refundMoney: orderGoodsList[i].finalPrice,
-              goodsPicUrl: orderGoodsList[i].picUrl,
-              goodsName: orderGoodsList[i].goodsName,
-              maxNum: this.orderDetail.order.orderStatus === 201 ? orderGoodsList[i].number : orderGoodsList[i].number - orderGoodsList[i].refundNumber
-            };
-            this.refundForm.refundGoodsList.push(this.refundGoods);
-            const afterSaleItemVo = {
-              orderId: this.refundGoods.orderId,
-              orderGoodsId: this.refundGoods.goodsId,
-              number: this.refundGoods.number,
-              price: orderGoodsList[i].finalPrice,
-            };
-            this.afterSaleItemVos.push(afterSaleItemVo);
-            this.afterSaleVo.refundPrice = this.afterSaleVo.refundPrice + orderGoodsList[i].finalPrice;
-
-          }
-        }
-        this.afterSaleVo.isAll = true;
-        this.refundDialogVisible = true;
-        this.$nextTick(() => {
-          this.$refs['refundForm'].clearValidate()
-        })
-      },
-      handleRefund(row) {
-        this.refundForm.refundGoodsList = [];
-        this.afterSaleVo.refundPrice = 0.00;
-        this.afterSaleItemVos = [];
-        this.refundGoods = {};
-        this.refundGoods = {
-          orderId: row.orderId,
-          goodsId: row.goodsId,
-          number: this.orderDetail.order.orderStatus === 201 ? row.number : row.number - row.refundNumber,
-          goodsPicUrl: row.picUrl,
-          goodsName: row.goodsName,
-          maxNum: this.orderDetail.order.orderStatus === 201 ? row.number : row.number - row.refundNumber
-        };
-        this.orderGoodsPrice = {
-          orderId: row.orderId,
-          goodsId: row.goodsId,
-          number: this.orderDetail.order.orderStatus === 201 ? row.number : row.number - row.refundNumber,
-        };
-        getOrderGoodsRefundPrice(this.orderGoodsPrice).then(response => {
-          this.refundGoods.refundMoney = response.data.data.data.applyRefundPrice;
-          this.refundGoods.number = this.orderGoodsPrice.number;
-          this.refundForm.refundGoodsList.push(this.refundGoods);
-          const afterSaleItemVo = {
-            orderId: row.orderId,
-            orderGoodsId: row.goodsId,
-            number: row.number,
-            price: this.refundGoods.refundMoney,
-          };
-          this.afterSaleItemVos.push(afterSaleItemVo);
-          this.afterSaleVo.refundPrice = this.refundGoods.refundMoney;
-        }).catch(response => {
-          this.$notify.error({
-            title: '价格获取异常',
-            message: response.data.errmsg
-          })
-        });
-
-        this.afterSaleVo.isAll = false;
-        this.refundDialogVisible = true;
-        this.$nextTick(() => {
-          this.$refs['refundForm'].clearValidate()
-        })
-      },
-      confirmRefund() {
-        this.afterSaleVo.afterSaleItemVos = this.afterSaleItemVos;
-        this.afterSaleVo.url = this.url;
-        this.afterSaleVo.detail = this.refundForm.detail;
-        this.afterSaleVo.reason = this.refundForm.reason;
-        this.afterSaleVo.userId = this.orderDetail.order.userId;
-        this.afterSaleVo.orderId = this.orderDetail.order.id;
-        this.afterSaleVo.orderStatus = this.orderDetail.order.orderStatus;
-        this.afterSaleVo.type = 1;
-
-        applyAfterSale(this.afterSaleVo).then(response => {
-          this.refundForm = {};
-          this.refundDialogVisible = false;
-          this.$notify.success({
-            title: '成功',
-            message: '退款申请提交成功！'
-          });
-          this.init()
-        }).catch(response => {
-          this.$notify.error({
-            title: '退款申请提交失败！',
-            message: response.data.errmsg
-          })
-        })
-      },
-      handleModifyAddress(row) {
-        this.modifyAddressForm.orderSn = row.orderSn
-        this.modifyAddressForm.newConsignee = row.consignee
-        this.modifyAddressForm.newMobile = row.mobile
-        this.modifyAddressForm.newAddress = row.address
-        this.modifyAddressForm.newMessage = row.message
-        this.modifyAddressDialogVisible = true
-        this.$nextTick(() => {
-          this.$refs['modifyAddressForm'].clearValidate()
-        })
-      },
-      confirmModifyAddress() {
-        this.$refs['modifyAddressForm'].validate((valid) => {
-          if (valid) {
-            modifyAddress(this.modifyAddressForm).then(response => {
-              this.modifyAddressDialogVisible = false
-              this.$notify.success({
-                title: '成功',
-                message: '订单修改成功'
-              })
-              this.init();
-            }).catch(response => {
-              this.$notify.error({
-                title: '失败',
-                message: response.data.errmsg
-              })
-            })
-          }
-        })
-      },
-      uploadOverrun: function () {
-        this.$message({
-          type: 'error',
-          message: '上传文件个数超出限制!最多上传5张图片!'
-        })
-      },
-      handleUrl(response, file, fileList) {
-        if (response.errno === 0) {
-          this.url.push(response.data.url)
-        }
-      },
-      handleUrlRemove: function (file, fileList) {
-        for (var i = 0; i < this.url.length; i++) {
-          // 这里存在两种情况
-          // 1. 如果所删除图片是刚刚上传的图片，那么图片地址是file.response.data.url
-          //    此时的file.url虽然存在，但是是本机地址，而不是远程地址。
-          // 2. 如果所删除图片是后台返回的已有图片，那么图片地址是file.url
-          var pictureUrl
-          if (file.response === undefined) {
-            pictureUrl = file.url
-          } else {
-            pictureUrl = file.response.data.url
-          }
-
-          if (this.url[i] === pictureUrl) {
-            this.url.splice(i, 1)
-          }
-        }
+      modifyAddressDialogVisible: false,
+      modifyAddressForm: {
+        orderSn: undefined,
+        newConsignee: undefined,
+        newAddress: undefined,
+        newMessage: undefined,
+        newMobile: undefined,
       },
     }
+  },
+  created() {
+    this.init();
+    this.getResonList()
+  },
+  methods: {
+    init: function () {
+      if (this.$route.query.id == null) {
+        return
+      }
+      detailOrder(this.$route.query.id).then(response => {
+        this.orderDetail = response.data.data;
+        this.priceDetail = [];
+        this.priceDetail.push(response.data.data.order);
+      })
+    },
+    getResonList: function () {
+      getResonList().then(response => {
+        this.resonList = response.data.data;
+      })
+    },
+    handleCancel: function () {
+      this.$router.push({path: "/afterSale/orderList"});
+    },
+    handShowRefund: function () {
+
+    },
+    handleNumberChange(item) {
+      this.orderGoodsPrice.number = item.number;
+      this.orderGoodsPrice.orderId = item.orderId;
+      this.orderGoodsPrice.goodsId = item.goodsId;
+      getOrderGoodsRefundPrice(this.orderGoodsPrice).then(response => {
+        const refundGoods = {
+          id: item.id,
+          orderId: item.orderId,
+          goodsId: item.goodsId,
+          number: item.number,
+          refundMoney: response.data.data.data.applyRefundPrice,
+          goodsPicUrl: item.goodsPicUrl,
+          goodsName: item.goodsName,
+          maxNum: item.maxNum
+        };
+        this.refundForm.refundGoodsList.splice(item.id, 1, refundGoods);
+        const afterSaleItemVo = {
+          orderId: this.orderGoodsPrice.orderId,
+          orderGoodsId: this.orderGoodsPrice.goodsId,
+          number: this.orderGoodsPrice.number,
+          price: response.data.data.data.applyRefundPrice,
+        };
+        this.afterSaleItemVos.splice(item.id, 1, afterSaleItemVo);
+
+        this.afterSaleVo.refundPrice = 0.00;
+        for (var j = 0; j < this.refundForm.refundGoodsList.length; j++) {
+          this.afterSaleVo.refundPrice = this.afterSaleVo.refundPrice + this.refundForm.refundGoodsList[j].refundMoney;
+        }
+
+
+      }).catch(response => {
+        this.$notify.error({
+          title: '价格获取异常',
+          message: response.data.errmsg
+        })
+      });
+
+
+    },
+    handleAllRefund() {
+      const orderGoodsList = this.orderDetail.orderGoods;
+      this.refundForm.refundGoodsList = [];
+      this.afterSaleItemVos = [];
+      this.afterSaleVo.refundPrice = 0.00;
+      for (var i = 0; i < orderGoodsList.length; i++) {
+        if (orderGoodsList[i].acStatus != 98 && orderGoodsList[i].acStatus != 99 && orderGoodsList[i].number > 0) {
+          this.refundGoods = {
+            id: i,
+            orderId: orderGoodsList[i].orderId,
+            goodsId: orderGoodsList[i].goodsId,
+            number: this.orderDetail.order.orderStatus === 201 ? orderGoodsList[i].number : orderGoodsList[i].number - orderGoodsList[i].refundNumber,
+            refundMoney: orderGoodsList[i].finalPrice,
+            goodsPicUrl: orderGoodsList[i].picUrl,
+            goodsName: orderGoodsList[i].goodsName,
+            maxNum: this.orderDetail.order.orderStatus === 201 ? orderGoodsList[i].number : orderGoodsList[i].number - orderGoodsList[i].refundNumber
+          };
+          this.refundForm.refundGoodsList.push(this.refundGoods);
+          const afterSaleItemVo = {
+            orderId: this.refundGoods.orderId,
+            orderGoodsId: this.refundGoods.goodsId,
+            number: this.refundGoods.number,
+            price: orderGoodsList[i].finalPrice,
+          };
+          this.afterSaleItemVos.push(afterSaleItemVo);
+          this.afterSaleVo.refundPrice = this.afterSaleVo.refundPrice + orderGoodsList[i].finalPrice;
+
+        }
+      }
+      this.afterSaleVo.isAll = true;
+      this.refundDialogVisible = true;
+      this.$nextTick(() => {
+        this.$refs['refundForm'].clearValidate()
+      })
+    },
+    handleRefund(row) {
+      this.refundForm.refundGoodsList = [];
+      this.afterSaleVo.refundPrice = 0.00;
+      this.afterSaleItemVos = [];
+      this.refundGoods = {};
+      this.refundGoods = {
+        orderId: row.orderId,
+        goodsId: row.goodsId,
+        number: this.orderDetail.order.orderStatus === 201 ? row.number : row.number - row.refundNumber,
+        goodsPicUrl: row.picUrl,
+        goodsName: row.goodsName,
+        maxNum: this.orderDetail.order.orderStatus === 201 ? row.number : row.number - row.refundNumber
+      };
+      this.orderGoodsPrice = {
+        orderId: row.orderId,
+        goodsId: row.goodsId,
+        number: this.orderDetail.order.orderStatus === 201 ? row.number : row.number - row.refundNumber,
+      };
+      getOrderGoodsRefundPrice(this.orderGoodsPrice).then(response => {
+        this.refundGoods.refundMoney = response.data.data.data.applyRefundPrice;
+        this.refundGoods.number = this.orderGoodsPrice.number;
+        this.refundForm.refundGoodsList.push(this.refundGoods);
+        const afterSaleItemVo = {
+          orderId: row.orderId,
+          orderGoodsId: row.goodsId,
+          number: row.number,
+          price: this.refundGoods.refundMoney,
+        };
+        this.afterSaleItemVos.push(afterSaleItemVo);
+        this.afterSaleVo.refundPrice = this.refundGoods.refundMoney;
+      }).catch(response => {
+        this.$notify.error({
+          title: '价格获取异常',
+          message: response.data.errmsg
+        })
+      });
+
+      this.afterSaleVo.isAll = false;
+      this.refundDialogVisible = true;
+      this.$nextTick(() => {
+        this.$refs['refundForm'].clearValidate()
+      })
+    },
+    confirmRefund() {
+      this.afterSaleVo.afterSaleItemVos = this.afterSaleItemVos;
+      this.afterSaleVo.url = this.url;
+      this.afterSaleVo.detail = this.refundForm.detail;
+      this.afterSaleVo.reason = this.refundForm.reason;
+      this.afterSaleVo.userId = this.orderDetail.order.userId;
+      this.afterSaleVo.orderId = this.orderDetail.order.id;
+      this.afterSaleVo.orderStatus = this.orderDetail.order.orderStatus;
+      this.afterSaleVo.type = 1;
+
+      applyAfterSale(this.afterSaleVo).then(response => {
+        this.refundForm = {};
+        this.refundDialogVisible = false;
+        this.$notify.success({
+          title: '成功',
+          message: '退款申请提交成功！'
+        });
+        this.init()
+      }).catch(response => {
+        this.$notify.error({
+          title: '退款申请提交失败！',
+          message: response.data.errmsg
+        })
+      })
+    },
+    handleModifyAddress(row) {
+      this.modifyAddressForm.orderSn = row.orderSn
+      this.modifyAddressForm.newConsignee = row.consignee
+      this.modifyAddressForm.newMobile = row.mobile
+      this.modifyAddressForm.newAddress = row.address
+      this.modifyAddressForm.newMessage = row.message
+      this.modifyAddressDialogVisible = true
+      this.$nextTick(() => {
+        this.$refs['modifyAddressForm'].clearValidate()
+      })
+    },
+    confirmModifyAddress() {
+      this.$refs['modifyAddressForm'].validate((valid) => {
+        if (valid) {
+          modifyAddress(this.modifyAddressForm).then(response => {
+            this.modifyAddressDialogVisible = false
+            this.$notify.success({
+              title: '成功',
+              message: '订单修改成功'
+            })
+            this.init();
+          }).catch(response => {
+            this.$notify.error({
+              title: '失败',
+              message: response.data.errmsg
+            })
+          })
+        }
+      })
+    },
+    uploadOverrun: function () {
+      this.$message({
+        type: 'error',
+        message: '上传文件个数超出限制!最多上传5张图片!'
+      })
+    },
+    handleUrl(response, file, fileList) {
+      if (response.errno === 0) {
+        this.url.push(response.data.url)
+      }
+    },
+    handleUrlRemove: function (file, fileList) {
+      for (var i = 0; i < this.url.length; i++) {
+        // 这里存在两种情况
+        // 1. 如果所删除图片是刚刚上传的图片，那么图片地址是file.response.data.url
+        //    此时的file.url虽然存在，但是是本机地址，而不是远程地址。
+        // 2. 如果所删除图片是后台返回的已有图片，那么图片地址是file.url
+        var pictureUrl
+        if (file.response === undefined) {
+          pictureUrl = file.url
+        } else {
+          pictureUrl = file.response.data.url
+        }
+
+        if (this.url[i] === pictureUrl) {
+          this.url.splice(i, 1)
+        }
+      }
+    },
   }
+}
 </script>
