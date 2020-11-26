@@ -606,16 +606,16 @@ export const asyncRouterMap = [
           noCache: true
         }
       },
-      // {
-      //   path: 'agentWithdraw',
-      //   component: () => import('@/views/agent/agentWithdraw'),
-      //   name: 'agentWithdraw',
-      //   meta: {
-      //     perms: ['GET /admin/agent/withdraw/list'],
-      //     title: '总代提现管理',
-      //     noCache: true
-      //   }
-      // },
+      {
+        path: 'rechargeOrder',
+        component: () => import('@/views/storedvalue/rechargeOrder'),
+        name: 'rechargeOrder',
+        meta: {
+          perms: ['GET /admin/rechargeOrder/list'],
+          title: '充值订单管理',
+          noCache: true
+        }
+      },
     ]
   },
   {
