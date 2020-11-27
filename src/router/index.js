@@ -262,11 +262,35 @@ export const asyncRouterMap = [
     ]
   },
   {
+    path: '/miniShop',
+    component: Layout,
+    redirect: 'noredirect',
+    alwaysShow: true,
+    name: 'miniShopManage',
+    meta: {
+      title: '微菜场管理',
+      icon: 'community'
+    },
+    children: [
+      {
+        path: 'miniShop',
+        component: () => import('@/views/miniShop/list'),
+        name: 'miniShop',
+        meta: {
+          perms: ['GET /admin/retail/selectAll'],
+          title: '销售管理',
+          noCache: true
+        }
+      },
+    ]
+  },
+  {
     path: '/terminal',
     component: Layout,
     redirect: 'noredirect',
     alwaysShow: true,
     name: 'terminalManage',
+    hidden: true,
     meta: {
       title: '设备管理',
       icon: 'terminal'

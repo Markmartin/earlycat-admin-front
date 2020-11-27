@@ -5,7 +5,7 @@
         <el-input v-model="params.goodsName" placeholder="名称"></el-input>
       </el-form-item>
       <el-form-item label="日期">
-        <el-date-picker v-model="params.checkDate" type="date" placeholder="选择日期" value-format="yyyy-MM-dd"></el-date-picker>
+        <el-date-picker v-model="params.date" type="date" placeholder="选择日期" value-format="yyyy-MM-dd"></el-date-picker>
       </el-form-item>
       <el-form-item label="对象">
         <el-select v-model="params.lineId" placeholder="请选择" filterable clearable>
@@ -102,7 +102,7 @@
 <script>
 import path from "path";
 import Pagination from "@/components/Pagination";
-import { deepClone, formatDateTime } from "@/utils";
+import { deepClone, formatDateTime,formatDate } from "@/utils";
 import { getToken } from "@/utils/auth";
 import {
   outList,
@@ -136,7 +136,8 @@ export default {
       params: {
         type: 2,
         pageNo: 1,
-        pageSize: 10
+        pageSize: 10,
+        date: ''
       }, 
       total: 0,
       // importInUrl: process.env.BASE_API + importIn(),
@@ -155,6 +156,7 @@ export default {
   created() {
     this.outList();
     this.listByType();
+    this.params.date = formatDate(new Date())
   },
   methods: {
     async outList() {
@@ -193,7 +195,7 @@ export default {
       });
     },
     handleExportOut() {
-      exportOut().then(res => {
+      exportOut(this.params).then(res => {
         const blob = new Blob([res], {
           type: "application/vnd.ms-excel"
         });

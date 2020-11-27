@@ -202,7 +202,6 @@ export default {
     handleEdit(scope) {
       this.dialogVisible = true;
       this.job = deepClone(scope.row);
-      console.log(this.job);
     },
     confirmJob() {
       if (!this.job.number) {

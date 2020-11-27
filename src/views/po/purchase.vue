@@ -20,7 +20,7 @@
           </el-option>
         </el-select>
       </el-form-item>
-      <el-form-item label="供应商">
+      <!-- <el-form-item label="供应商">
         <el-select
           v-model="params.supplierId"
           filterable
@@ -35,7 +35,7 @@
           >
           </el-option>
         </el-select>
-      </el-form-item>
+      </el-form-item> -->
       <el-form-item label="填写时间">
         <el-date-picker
           v-model="inDate"
@@ -73,11 +73,11 @@
           {{ scope.row.offlineSpec }}
         </template>
       </el-table-column>
-      <el-table-column label="系数" align="center" width="90">
+      <!-- <el-table-column label="系数" align="center" width="90">
         <template slot-scope="scope">
           <el-input v-model="scope.row.outRatio" placeholder="系数"></el-input>
         </template>
-      </el-table-column>
+      </el-table-column> -->
       <el-table-column label="入库日期" align="center" width="140">
         <template slot-scope="scope">
           <el-date-picker
@@ -114,6 +114,7 @@
             placeholder="入库价"
             type="number"
             min="0"
+            @input="inStock(scope.row)"
           ></el-input>
         </template>
       </el-table-column>
@@ -122,6 +123,17 @@
           <el-input
             v-model="scope.row.number"
             placeholder="数量"
+            type="number"
+            min="0"
+            @input="inStock(scope.row)"
+          ></el-input>
+        </template>
+      </el-table-column>
+      <el-table-column label="金额" align="center">
+        <template slot-scope="scope">
+          <el-input
+            v-model="scope.row.payPrice"
+            placeholder="金额"
             type="number"
             min="0"
           ></el-input>
@@ -213,11 +225,10 @@ export default {
         number: row.number,
         price: row.price,
         purchaseSn: row.inDate.replace(/\-/g, "") + "-" + row.supplierId,
-        outRatio: row.outRatio,
+        payPrice: row.payPrice,
         isVerify: 0,
         updateOutJob: true,
       };
-      console.log(obj);
       if (!obj.goodsSpec) {
         this.$message.error("规格为空，请联系运营");
         return;
@@ -238,17 +249,28 @@ export default {
         this.$message.error("日期不能为空");
         return;
       }
-      if (!obj.outRatio) {
-        this.$message.error("系数不能为空");
+      if (!obj.payPrice) {
+        this.$message.error("金额不能为空");
         return;
       }
-      saveOrUpdate(obj).then((res) => {
-        this.$message({
-          message: '保存成功',
-          type: 'success'
+      saveOrUpdate(obj)
+        .then((res) => {
+          this.$message({
+            message: "保存成功",
+            type: "success",
+          });
+          this.listByAdmin();
+        })
+        .catch((e) => {
+          this.$message.error(e.data.errmsg);
         });
-        this.listByAdmin();
-      });
+    },
+    inStock(row) {
+      if (row.number && row.price) {
+        row.payPrice = row.number * row.price;
+      }else {
+        row.payPrice = null
+      }
     },
   },
 };

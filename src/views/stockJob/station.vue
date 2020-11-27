@@ -69,8 +69,7 @@
 import print from "print-js";
 import path from "path";
 import { formatTime, formatDate } from "@/utils";
-import { stationList } from "@/api/station";
-import { stationOrder } from "@/api/stockJob";
+import { stationList,stationOrder } from "@/api/station";
 
 export default {
   data() {
