@@ -3,11 +3,8 @@
     <!-- 查询和其他操作 -->
     <div class="filter-container">
       <el-input v-model="listQuery.nickname" clearable class="filter-item" style="width: 200px;" placeholder="请输入用户名"/>
-      <el-select v-model="listQuery.orderStatus" clearable style="width: 200px" class="filter-item" placeholder="订单状态">
-        <el-option v-for="type in statusOps" :key="type.value" :label="type.label" :value="type.value"/>
-      </el-select>
       <el-button
-        v-permission="['GET /admin/rechargeOrder/list']"
+        v-permission="['GET /admin/userRecharge/list']"
         class="filter-item"
         type="primary"
         icon="el-icon-search"
@@ -19,23 +16,15 @@
     <!-- 查询结果 -->
     <el-table v-loading="listLoading" :data="list" element-loading-text="正在查询中。。。"
               border fit highlight-current-row>
-      <!--<el-table-column align="center" width="100px" label="ID" prop="id" sortable/>-->
-      <el-table-column align="center" label="订单号" min-width="120px" prop="orderSn"/>
-      <el-table-column align="center" label="订单状态" min-width="120px" prop="orderStatus">
-        <template slot-scope="scope">
-          <el-tag>{{ statusOps[scope.row.orderStatus].label }}</el-tag>
-        </template>
-      </el-table-column>
+      <el-table-column align="center" width="100px" label="ID" prop="id" sortable/>
       <el-table-column align="center" label="头像">
         <template slot-scope="scope">
           <img :src="scope.row.avatar" style="width:40px;height:40px;" >
         </template>
       </el-table-column>
       <el-table-column align="center" label="用户名" min-width="120px" prop="nickname"/>
-      <el-table-column align="center" label="充值金额" min-width="120px" prop="amount"/>
-      <el-table-column align="center" label="赠送金额" min-width="120px" prop="aditionalAmount"/>
-      <el-table-column align="center" label="支付时间" min-width="120px" prop="payTime"/>
-      <el-table-column align="center" label="创建时间" min-width="120px" prop="addTime" sortable/>
+      <el-table-column align="center" label="账户余额" min-width="120px" prop="remaining"/>
+      <el-table-column align="center" label="开户时间" min-width="120px" prop="openTime" sortable/>
     </el-table>
 
     <pagination
@@ -79,11 +68,11 @@
 </style>
 
 <script>
-  import {apiList} from "@/api/rechargeOrder";
+  import {apiList} from "@/api/userRecharge";
   import Pagination from "@/components/Pagination"; // Secondary package based on el-pagination
 
   export default {
-    name: "rechargeOrder",
+    name: "userRecharge",
     components: {Pagination},
     data() {
       return {
@@ -92,9 +81,7 @@
         listLoading: true,
         dialogStatus: "",
         listQuery: {
-          userId: '',
           nickname: '',
-          orderStatus: '',
           page: 1,
           limit: 20,
           sort: "add_time",
@@ -104,16 +91,6 @@
           update: "编辑",
           create: "创建"
         },
-        statusOps: [
-          {
-            label: "未支付",
-            value: 0
-          },
-          {
-            label: "已支付",
-            value: 1
-          }
-        ],
         dialogFormVisible: false,
       };
     },

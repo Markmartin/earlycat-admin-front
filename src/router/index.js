@@ -616,6 +616,16 @@ export const asyncRouterMap = [
           noCache: true
         }
       },
+      {
+        path: 'userRecharge',
+        component: () => import('@/views/storedvalue/userRecharge'),
+        name: 'userRecharge',
+        meta: {
+          perms: ['GET /admin/userRecharge/list'],
+          title: '充值用户管理',
+          noCache: true
+        }
+      },
     ]
   },
   {
