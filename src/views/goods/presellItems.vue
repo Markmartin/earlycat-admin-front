@@ -4,7 +4,8 @@
     <!-- 查询和其他操作 -->
     <div class="filter-container">
       <el-button v-if="this.$route.query.type==1" v-permission="['POST /admin/presell/create']" class="filter-item" type="primary" icon="el-icon-edit" @click="handleCreate">添加预售物品</el-button>
-      <el-button v-else v-permission="['POST /admin/presell/create']" class="filter-item" type="primary" icon="el-icon-edit" @click="handleCreate">添加限时特价物品</el-button>
+      <el-button v-if="this.$route.query.type==2" v-permission="['POST /admin/presell/create']" class="filter-item" type="primary" icon="el-icon-edit" @click="handleCreate">添加限时特价物品</el-button>
+      <el-button v-if="this.$route.query.type==4" v-permission="['POST /admin/presell/create']" class="filter-item" type="primary" icon="el-icon-edit" @click="handleCreate">添加大件物品</el-button>
     </div>
 
     <!-- 查询结果 -->
@@ -36,6 +37,11 @@
         </el-form-item>
         <el-form-item v-if="this.$route.query.type === 2" label="特价商品" prop="goodsId">
           <el-select v-model="dataForm.goodsId" filterable  placeholder="请选择限时特价商品">
+            <el-option v-for="item in presellGoodsList" :key="item.id" :label="item.name" :value="item.id"/>
+          </el-select>
+        </el-form-item>
+        <el-form-item v-if="this.$route.query.type === 4" label="大件商品" prop="goodsId">
+          <el-select v-model="dataForm.goodsId" filterable  placeholder="请选择大件商品">
             <el-option v-for="item in presellGoodsList" :key="item.id" :label="item.name" :value="item.id"/>
           </el-select>
         </el-form-item>

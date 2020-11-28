@@ -23,6 +23,7 @@
           <span v-if="scope.row.type == 0">其他</span>
           <span v-if="scope.row.type == 1">预售</span>
           <span v-if="scope.row.type == 2">限时特价</span>
+          <span v-if="scope.row.type == 4">大件商品</span>
         </template>
       </el-table-column>
       <el-table-column align="center" label="标题" prop="title"/>
@@ -47,6 +48,9 @@
           </el-button>
           <el-button v-else="scope.row.type == 2" v-permission="['POST /admin/zcmpresell/update']" type="primary" size="small"
                      @click="handleItemGoods(scope.row)">编辑特价物品
+          </el-button>
+          <el-button v-else="scope.row.type == 4" v-permission="['POST /admin/zcmpresell/update']" type="primary" size="small"
+                     @click="handleItemGoods(scope.row)">编辑大件物品
           </el-button>
           <el-button v-permission="['POST /admin/zcmpresell/delete']" type="danger" size="mini"
                      @click="handleDelete(scope.row)">删除
@@ -194,6 +198,10 @@
           {
             label: '限时特价',
             value: 2
+          },
+          {
+            label: '大件商品',
+            value: 4
           }
         ],
         uploadPath,
