@@ -95,14 +95,13 @@ export default {
   },
   methods: {
     async stationOrder() {
+      const res = await stationOrder(this.params);
+        this.list = res.data.data;
+        this.list_bak = res.data.data;
       if (this.params.stationId) {
           let data = JSON.parse(JSON.stringify(this.list_bak))
           this.list = data.filter(f => f.stationId == this.params.stationId)
-      } else {
-        const res = await stationOrder(this.params);
-        this.list = res.data.data;
-        this.list_bak = res.data.data;
-      }
+      } 
     },
     async stationList() {
       const res = await stationList();

@@ -112,7 +112,7 @@ export const asyncRouterMap = [
       {
         path: 'purchaseJob',
         component: () => import('@/views/po/purchaseJob'),
-        name: 'poPurchase',
+        name: 'purchaseJob',
         meta: {
           perms: ['GET /admin/purchaseJob/listByAdmin'],
           title: '采购单管理',
