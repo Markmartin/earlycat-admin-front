@@ -3,6 +3,19 @@
     <!-- 查询和其他操作 -->
     <div class="filter-container">
       <el-input v-model="listQuery.nickname" clearable class="filter-item" style="width: 200px;" placeholder="请输入用户名"/>
+      <el-date-picker
+        :picker-options="pickerOptions"
+        :default-time="['00:00:00', '23:59:59']"
+        v-model="pickerDate"
+        type="datetimerange"
+        align="right"
+        value-format="yyyy-MM-dd HH:mm:ss"
+        style="margin-bottom:10px;vertical-align: middle;"
+        unlink-panels
+        range-separator="至"
+        start-placeholder="开始日期"
+        end-placeholder="结束日期"
+        @change="pickerDateChange"/>
       <el-button
         v-permission="['GET /admin/userRecharge/list']"
         class="filter-item"
@@ -76,6 +89,34 @@
     components: {Pagination},
     data() {
       return {
+        pickerOptions: {
+          shortcuts: [{
+            text: '最近一周',
+            onClick(picker) {
+              const end = new Date()
+              const start = new Date()
+              start.setTime(start.getTime() - 3600 * 1000 * 24 * 7)
+              picker.$emit('pick', [start, end])
+            }
+          }, {
+            text: '最近一个月',
+            onClick(picker) {
+              const end = new Date()
+              const start = new Date()
+              start.setTime(start.getTime() - 3600 * 1000 * 24 * 30)
+              picker.$emit('pick', [start, end])
+            }
+          }, {
+            text: '最近三个月',
+            onClick(picker) {
+              const end = new Date()
+              const start = new Date()
+              start.setTime(start.getTime() - 3600 * 1000 * 24 * 90)
+              picker.$emit('pick', [start, end])
+            }
+          }]
+        },
+        pickerDate: '',
         list: null,
         total: 0,
         listLoading: true,
@@ -85,7 +126,9 @@
           page: 1,
           limit: 20,
           sort: "add_time",
-          order: "desc"
+          order: "desc",
+          queryStartTime: '',
+          queryEndTime: '',
         },
         textMap: {
           update: "编辑",
@@ -115,6 +158,15 @@
       handleFilter() {
         this.listQuery.page = 1;
         this.getList();
+      },
+      pickerDateChange() {
+        if (this.pickerDate == null) {
+          this.listQuery.queryStartTime = ''
+          this.listQuery.queryEndTime = ''
+        } else {
+          this.listQuery.queryStartTime = this.pickerDate[0]
+          this.listQuery.queryEndTime = this.pickerDate[1]
+        }
       },
     }
   };

@@ -3,9 +3,9 @@
     <!-- 查询和其他操作 -->
     <div class="filter-container">
       <el-input v-model="listQuery.nickname" clearable class="filter-item" style="width: 200px;" placeholder="请输入用户名"/>
-      <el-select v-model="listQuery.orderStatus" clearable style="width: 200px" class="filter-item" placeholder="订单状态">
-        <el-option v-for="type in statusOps" :key="type.value" :label="type.label" :value="type.value"/>
-      </el-select>
+      <!--<el-select v-model="listQuery.orderStatus" clearable style="width: 200px" class="filter-item" placeholder="订单状态">-->
+        <!--<el-option v-for="type in statusOps" :key="type.value" :label="type.label" :value="type.value"/>-->
+      <!--</el-select>-->
       <el-button
         v-permission="['GET /admin/rechargeOrder/list']"
         class="filter-item"
