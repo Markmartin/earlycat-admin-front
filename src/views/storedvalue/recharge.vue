@@ -26,7 +26,7 @@
     <el-table v-loading="listLoading" :data="list" element-loading-text="正在查询中。。。"
               border fit highlight-current-row>
       <el-table-column align="center" width="100px" label="ID" prop="id" sortable/>
-      <el-table-column align="center" label="充值金额" min-width="120px" prop="amount"/>
+      <el-table-column align="center" label="充值金额" min-width="120px" prop="amount" sortable/>
       <el-table-column align="center" label="赠送金额" min-width="120px" prop="aditionalAmount"/>
       <el-table-column align="center" label="描述" min-width="120px" prop="desc"/>
       <el-table-column align="center" label="封面图片" min-width="120px" prop="picUrl">
