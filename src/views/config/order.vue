@@ -13,12 +13,12 @@
         </el-input>
         <span class="info">用户收货后x天，不能申请售后</span>
       </el-form-item>
-      <el-form-item label="结算日期" prop="litemall_order_settle_day">
-        <el-input v-model="dataForm.litemall_order_settle_day" class="input-width">
-          <template slot="append">天</template>
-        </el-input>
-        <span class="info">用户收货后，第x天进行结算</span>
-      </el-form-item>
+      <!--<el-form-item label="结算日期" prop="litemall_order_settle_day">-->
+        <!--<el-input v-model="dataForm.litemall_order_settle_day" class="input-width">-->
+          <!--<template slot="append">天</template>-->
+        <!--</el-input>-->
+        <!--<span class="info">用户收货后，第x天进行结算</span>-->
+      <!--</el-form-item>-->
       <!--<el-form-item label="订单发货后超期" prop="litemall_order_unconfirm">-->
         <!--<el-input v-model="dataForm.litemall_order_unconfirm" class="input-width">-->
           <!--<template slot="append"> 天</template>-->
