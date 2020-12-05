@@ -454,6 +454,17 @@ export const asyncRouterMap = [
         }
       },
       {
+        path: 'wxOrder',
+        component: () => import('@/views/mall/wxOrder'),
+        name: 'wxOrder',
+        hidden: true,
+        meta: {
+          perms: ['GET /admin/order/listMainOrder'],
+          title: '微信订单',
+          noCache: true
+        }
+      },
+      {
         path: 'issue',
         component: () => import('@/views/mall/issue'),
         name: 'issue',

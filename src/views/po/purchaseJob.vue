@@ -68,7 +68,7 @@
           {{ scope.row.number }}
         </template>
       </el-table-column>
-      <el-table-column label="实际收获" align="center">
+      <el-table-column label="实际收货" align="center">
         <template slot-scope="scope">
           {{ scope.row.finalNumber }}
         </template>
@@ -80,7 +80,7 @@
       </el-table-column>
       <el-table-column label="金额" align="center">
         <template slot-scope="scope">
-          {{ scope.row.finalPrice }}
+          {{ scope.row.payPrice }}
         </template>
       </el-table-column>
       <el-table-column

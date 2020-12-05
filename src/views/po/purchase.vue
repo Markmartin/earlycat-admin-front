@@ -70,7 +70,7 @@
       </el-table-column>
       <el-table-column label="库存规格" align="center">
         <template slot-scope="scope">
-          {{ scope.row.offlineSpec }}
+          {{ scope.row.cargoSpec }}
         </template>
       </el-table-column>
       <!-- <el-table-column label="系数" align="center" width="90">
@@ -133,7 +133,7 @@
         <template slot-scope="scope">
           <el-input
             v-model="scope.row.payPrice"
-            placeholder="金额"
+            :placeholder="scope.row.payPricePH"
             type="number"
             min="0"
           ></el-input>
@@ -221,14 +221,17 @@ export default {
         goodsId: row.id,
         supplierId: row.supplierId,
         goodsName: row.offlineName,
-        goodsSpec: row.offlineSpec,
+        goodsSpec: row.cargoSpec,
         number: row.number,
         price: row.price,
-        purchaseSn: row.inDate.replace(/\-/g, "") + "-" + row.supplierId,
         payPrice: row.payPrice,
+        purchaseSn: row.inDate.replace(/\-/g, "") + "-" + row.supplierId,
         isVerify: 0,
         updateOutJob: true,
       };
+      if (!obj.payPrice) {
+        obj.payPrice = row.payPricePH
+      }
       if (!obj.goodsSpec) {
         this.$message.error("规格为空，请联系运营");
         return;
@@ -267,9 +270,9 @@ export default {
     },
     inStock(row) {
       if (row.number && row.price) {
-        row.payPrice = row.number * row.price;
+        row.payPricePH = (row.number * row.price).toFixed(2);
       }else {
-        row.payPrice = null
+        row.payPricePH = null
       }
     },
   },
