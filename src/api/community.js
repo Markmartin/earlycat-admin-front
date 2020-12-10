@@ -8,6 +8,13 @@ export function listCommunity(query) {
   })
 }
 
+export function allList() {
+  return request({
+    url: '/community/allList',
+    method: 'get',
+  })
+}
+
 export function createCommunity(data) {
   return request({
     url: '/community/create',

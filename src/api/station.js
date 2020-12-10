@@ -7,3 +7,11 @@ export function stationList(query) {
     params: query
   })
 }
+
+export function stationOrder(params) {
+  return request({
+    url: '/station/stationOrder',
+    method: 'get',
+    params: params
+  })
+}

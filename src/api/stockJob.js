@@ -69,11 +69,12 @@ export function importIn() {
   return '/stockJob/importIn'
 }
 
-export function exportOut() {
+export function exportOut(params) {
   return request({
     url: '/stockJob/exportOut',
     method: 'get',
-    responseType: 'blob'
+    responseType: 'blob',
+    params: params
   })
 }
 
@@ -90,10 +91,3 @@ export function exportOutSearch(params) {
   })
 }
 
-export function stationOrder(params) {
-  return request({
-    url: '/stockJob/stationOrder',
-    method: 'get',
-    params: params
-  })
-}

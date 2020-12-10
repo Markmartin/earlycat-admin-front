@@ -51,3 +51,35 @@ export function orderDetail(id) {
     params: { id }
   })
 }
+
+
+export function detailOrder(id) {
+  return request({
+    url: '/order/detail',
+    method: 'get',
+    params: { id }
+  })
+}
+
+export function getResonList() {
+  return request({
+    url: '/afterSale/getResonList',
+    method: 'get'
+  })
+}
+
+export function getOrderGoodsRefundPrice(data) {
+  return request({
+    url: '/afterSale/getOrderGoodsRefundPrice',
+    method: 'get',
+    params: data
+  })
+}
+
+export function applyAfterSale(data) {
+  return request({
+    url: `/afterSale/applyAfterSale`,
+    method: 'post',
+    data
+  })
+}

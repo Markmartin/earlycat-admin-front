@@ -122,3 +122,15 @@ export function listMainOrder(params) {
     params: params
   })
 }
+
+export function getOrderByAcStatus(params) {
+  return request({
+    url: '/order/getOrderByAcStatus',
+    method: 'get',
+    params: params
+  })
+}
+
+export function importWxShopOrder() {
+  return '/order/importWxShopOrder'
+}
