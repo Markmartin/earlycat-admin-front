@@ -161,3 +161,11 @@ export function updateAdminStock(goodsId,number) {
     },
   })
 }
+
+export function queryParmList(data) {
+  return request({
+    url: '/goods/queryParmList',
+    method: 'post',
+    data
+  })
+}

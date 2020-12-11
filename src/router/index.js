@@ -835,7 +835,7 @@ export const asyncRouterMap = [
         name: 'discountRule',
         meta: {
           perms: ['GET /admin/presell/list'],
-          title: '优惠规则',
+          title: '活动规则',
           noCache: true
         }
       },
@@ -845,7 +845,7 @@ export const asyncRouterMap = [
         name: 'discountRuleDetail',
         meta: {
           perms: ['POST /admin/presell/detail'],
-          title: '优惠规则详情',
+          title: '规则详情',
           noCache: true
         },
         hidden: true

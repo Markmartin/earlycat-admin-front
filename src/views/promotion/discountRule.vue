@@ -3,23 +3,20 @@
 
     <!-- 查询和其他操作 -->
     <div class="filter-container">
-      <el-button v-permission="['POST /admin/presell/create']" class="filter-item" type="primary" icon="el-icon-edit"
-                 @click="handleCreate">添加
-      </el-button>
+<!--      <el-button v-permission="['POST /admin/presell/create']" class="filter-item" type="primary" icon="el-icon-edit"-->
+<!--                 @click="handleCreate">添加-->
+<!--      </el-button>-->
     </div>
 
     <!-- 查询结果 -->
     <el-table v-loading="listLoading" :data="list" element-loading-text="正在查询中。。。" border fit highlight-current-row>
-      <el-table-column align="center" label="标题" prop="title"/>
-      <el-table-column align="center" label="副标题" prop="subtitle"/>
-      <el-table-column align="center" label="能否使用优惠券" prop="isCoupons">
+      <el-table-column align="center" label="规则标题" prop="title"/>
+      <el-table-column align="center" label="规则副标题" prop="subtitle"/>
+      <el-table-column align="center" label="规则类型" min-width="100" prop="type">
         <template slot-scope="scope">
-          <el-tag>{{scope.row.isCoupons ? '是' : '否' }}</el-tag>
-        </template>
-      </el-table-column>
-      <el-table-column align="center" label="能都优惠券叠加使用" prop="isCouponsAdd">
-        <template slot-scope="scope">
-          <el-tag>{{scope.row.isCouponsAdd ? '是' : '否' }}</el-tag>
+          <span v-if="scope.row.type == 1">满赠</span>
+          <span v-if="scope.row.type == 2">买A赠B</span>
+          <span v-if="scope.row.type == 3">新用户赠送</span>
         </template>
       </el-table-column>
       <el-table-column align="center" label="启用状态" prop="status">
@@ -28,22 +25,23 @@
         </template>
       </el-table-column>
       <el-table-column align="center" label="排序" width="60" prop="sort"/>
-      <el-table-column align="center" fixed="right" label="操作" width="370" class-name="small-padding fixed-width">
+      <el-table-column align="center" fixed="right" label="操作" width="250" class-name="small-padding fixed-width">
         <template slot-scope="scope">
-          <el-button v-if v-permission="['POST /admin/zcmpresell/update']" type="primary" size="mini"
-                     @click="handChangeStatus(scope.row)">
-            <span v-if=" scope.row.status == 0">启用</span>
-            <span v-else=" scope.row.status == 1">停用</span>
+          <el-button v-if=" scope.row.status == 0" v-permission="['POST /admin/zcmpresell/update']" type="warning" size="mini" @click="handChangeStatus(scope.row)">
+            启用
           </el-button>
-          <el-button v-permission="['POST /admin/zcmpresell/update']" type="primary" size="mini"
-                     @click="handleUpdate(scope.row)">编辑
+          <el-button v-if=" scope.row.status == 1" v-permission="['POST /admin/zcmpresell/update']" type="danger" size="mini" @click="handChangeStatus(scope.row)">
+            停用
           </el-button>
+<!--          <el-button v-permission="['POST /admin/zcmpresell/update']" type="primary" size="mini"-->
+<!--                     @click="handleUpdate(scope.row)">编辑-->
+<!--          </el-button>-->
           <el-button v-permission="['POST /admin/zcmpresell/update']" type="primary" size="mini"
                      @click="handleItemGoods(scope.row)">详细
           </el-button>
-          <el-button v-permission="['POST /admin/zcmpresell/delete']" type="danger" size="mini"
-                     @click="handleDelete(scope.row)">删除
-          </el-button>
+<!--          <el-button v-permission="['POST /admin/zcmpresell/delete']" type="danger" size="mini"-->
+<!--                     @click="handleDelete(scope.row)">删除-->
+<!--          </el-button>-->
         </template>
       </el-table-column>
     </el-table>
@@ -60,20 +58,13 @@
         <el-form-item label="副标题" prop="subtitle">
           <el-input v-model="dataForm.subtitle"/>
         </el-form-item>
+        <el-form-item label="规则类型" prop="type">
+          <el-select v-model="dataForm.type" placeholder="赠送物品">
+            <el-option v-for="type in discountOption" :key="type.value" :label="type.label" :value="type.value"/>
+          </el-select>
+        </el-form-item>
         <el-form-item label="排序" prop="sort">
           <el-input v-model="dataForm.sort"/>
-        </el-form-item>
-        <el-form-item label="能否使用优惠券" prop="isCoupons">
-          <el-radio-group v-model="dataForm.isCoupons">
-            <el-radio :label="true">是</el-radio>
-            <el-radio :label="false">否</el-radio>
-          </el-radio-group>
-        </el-form-item>
-        <el-form-item label="能都优惠券叠加使用" prop="isCouponsAdd">
-          <el-radio-group v-model="dataForm.isCouponsAdd">
-            <el-radio :label="true">是</el-radio>
-            <el-radio :label="false">否</el-radio>
-          </el-radio-group>
         </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
@@ -129,12 +120,26 @@
     components: { Pagination },
     data() {
       return {
+        discountOption: [
+          {
+            label: '满赠',
+            value: 1
+          },
+          {
+            label: '买A赠B',
+            value: 2
+          },
+          {
+            label: '新用户赠送',
+            value: 3
+          }
+        ],
         list: [],
         listLoading: true,
         total: 0,
         listQuery: {
           page: 1,
-          limit: 20,
+          limit: 10,
           activityVo: {}
         },
         activityVo: {},
@@ -294,7 +299,7 @@
         })
       },
       handleItemGoods(row) {
-        this.$router.push({ path: '/promotion/discountRuleDetail', query: { id: row.id } })
+        this.$router.push({ path: '/promotion/discountRuleDetail', query: { id: row.id, type: row.type } })
       }
     }
   }
