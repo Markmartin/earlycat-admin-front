@@ -9,7 +9,8 @@
     </div>
 
     <!-- 查询结果 -->
-    <el-table v-loading="listLoading" :data="list" element-loading-text="正在查询中。。。" border fit highlight-current-row>
+    <el-table v-loading="listLoading" :data="list" element-loading-text="正在查询中。。。" border fit highlight-current-row
+              :header-cell-style="{background:'#B4D5F6',color:'#606266'}">
       <el-table-column align="center" label="类型" min-width="100" prop="type">
         <template slot-scope="scope">
           <span v-if="scope.row.type == 1">满赠</span>
@@ -17,10 +18,10 @@
           <span v-if="scope.row.type == 3">新用户赠送</span>
         </template>
       </el-table-column>
-      <el-table-column v-if="type ===1" align="center" label="达标金额（元）" min-width="100" prop="limitAmount"/>
-      <el-table-column v-if="type ===4" align="center" label="立减金额（元）" min-width="100" prop="reduceAmount"/>
-      <el-table-column v-if="type ===2" align="center" label="购买物品名称" min-width="100" prop="buyGoodsVo.title"/>
-      <el-table-column v-if="type===2" align="center" label="购买物品规格" min-width="100" prop="buyGoodsVo.onlineSpec"/>
+      <el-table-column v-if="type === 1" align="center" label="达标金额（元）" min-width="100" prop="limitAmount"/>
+      <el-table-column v-if="type === 4" align="center" label="立减金额（元）" min-width="100" prop="reduceAmount"/>
+      <el-table-column v-if="type === 2" align="center" label="购买物品名称" min-width="100" prop="buyGoodsVo.title"/>
+      <el-table-column v-if="type === 2" align="center" label="购买物品规格" min-width="100" prop="buyGoodsVo.onlineSpec"/>
       <el-table-column v-if="type === 2" align="center" label="购买数量" min-width="100" prop="buyNum"/>
       <el-table-column align="center" label="满赠物品名称" min-width="100" prop="givingGoodsVo.title"/>
       <el-table-column align="center" label="满赠物品规格" min-width="100" prop="givingGoodsVo.onlineSpec"/>
@@ -71,21 +72,21 @@
         </el-form-item>
         <el-form-item v-if="dataForm.buyGoodsVo != null && dataForm.buyGoodsVo != undefined && dataForm.type ===2 "
                       label="购买物品" prop="buyGoodsVo">
-          <el-select v-model="dataForm.buyGoodsVo.id" placeholder="购买物品">
+          <el-select v-model="dataForm.buyGoodsVo.id" filterable placeholder="购买物品">
             <el-option v-for="item in buyGoods" :key="item.id" :label="item.name" :value="item.id"/>
           </el-select>
         </el-form-item>
         <el-form-item v-if="dataForm.buyGoodsVo != null && dataForm.buyGoodsVo != undefined && dataForm.type ===2 "
                       label="购买数量" prop="buyNum">
-          <el-input v-model="dataForm.buyNum"/>
+          <el-input-number v-model="dataForm.buyNum" :min="0"/>
         </el-form-item>
         <el-form-item label="赠送物品" prop="givingGoodsId">
-          <el-select v-model="dataForm.givingGoodsVo.id" placeholder="赠送物品">
+          <el-select v-model="dataForm.givingGoodsVo.id" filterable placeholder="赠送物品">
             <el-option v-for="item in givingGoods" :key="item.id" :label="item.name" :value="item.id"/>
           </el-select>
         </el-form-item>
         <el-form-item label="赠送数量" prop="giveNum">
-          <el-input v-model="dataForm.giveNum"/>
+          <el-input-number v-model="dataForm.giveNum" :min="0"/>
         </el-form-item>
         <el-form-item label="是否叠加" prop="isSuperposition">
           <el-radio-group v-model="dataForm.isSuperposition">
@@ -105,244 +106,254 @@
 </template>
 
 <style scoped>
-.filter-item {
-  margin-left: 100px;
-}
+  .filter-item {
+    margin-left: 100px;
+  }
 
-.avatar-uploader .el-upload {
-  border: 1px dashed #d9d9d9;
-  border-radius: 6px;
-  cursor: pointer;
-  position: relative;
-  overflow: hidden;
-}
+  .avatar-uploader .el-upload {
+    border: 1px dashed #d9d9d9;
+    border-radius: 6px;
+    cursor: pointer;
+    position: relative;
+    overflow: hidden;
+  }
 
-.avatar-uploader .el-upload:hover {
-  border-color: #20a0ff;
-}
+  .avatar-uploader .el-upload:hover {
+    border-color: #20a0ff;
+  }
 
-.avatar-uploader-icon {
-  font-size: 28px;
-  color: #8c939d;
-  width: 120px;
-  height: 120px;
-  line-height: 120px;
-  text-align: center;
-}
+  .avatar-uploader-icon {
+    font-size: 28px;
+    color: #8c939d;
+    width: 120px;
+    height: 120px;
+    line-height: 120px;
+    text-align: center;
+  }
 
-.avatar {
-  width: 145px;
-  height: 145px;
-  display: block;
-}
+  .avatar {
+    width: 145px;
+    height: 145px;
+    display: block;
+  }
 </style>
 
 <script>
-import {getPressGoodsList,queryParmList} from '@/api/goods'
-import {getZcmActivitySpecList, saveOrUpdateZcmActivitySpec, deleteZcmActivitySpecById} from '@/api/discountRule'
-import {getToken} from '@/utils/auth'
-import Pagination from '@/components/Pagination' // Secondary package based on el-pagination
+  import {getPressGoodsList, queryParmList} from '@/api/goods'
+  import {getZcmActivitySpecList, saveOrUpdateZcmActivitySpec, deleteZcmActivitySpecById} from '@/api/discountRule'
+  import {getToken} from '@/utils/auth'
+  import Pagination from '@/components/Pagination'
+  import ElInputNumber from "../../../node_modules/element-ui/packages/input-number/src/input-number.vue"; // Secondary package based on el-pagination
 
-export default {
-  name: 'discountRuleDetail',
-  components: {Pagination},
-  data() {
-    return {
-      discountOption: [
-        {
-          label: '满赠',
-          value: 1
-        },
-        {
-          label: '买A赠B',
-          value: 2
-        },
-        {
-          label: '新用户赠送',
-          value: 3
-        }
-      ],
-      type: undefined,
-      list: [],
-      buyGoods:[],
-      givingGoods:[],
-      presellGoodsList: [],
-      listLoading: true,
-      total: 0,
-      listQuery: {
-        page: 1,
-        limit: 10,
-        activitySpecVo: {id: undefined}
-      },
-      dataForm: {
-        buyGoodsVo: {id: undefined},
-        givingGoodsVo: {id: undefined}
-      },
-      dialogFormVisible: false,
-      dialogStatus: '',
-      textMap: {
-        update: '编辑',
-        create: '创建'
-      },
-      activitySpecVo: {
-        id: undefined,
-        isSuperposition: undefined
-      },
-      rules: {
-        // type: [{ required: true, message: '规则类型不能为空', trigger: 'blur' }],
-        // limitAmount: [{ required: true, message: '达标金额不能为空', trigger: 'blur' }],
-        // goodsId: [{ required: this.goodsShow, message: '赠送物品不能为空', trigger: 'blur' }],
-        // reduceAmount: [{ required: this.limitAmountShow, message: '立减金额不能为空', trigger: 'blur' }]
-      }
-    }
-  },
-  computed: {
-    headers() {
+  export default {
+    name: 'discountRuleDetail',
+    components: {
+      ElInputNumber,
+      Pagination},
+    data() {
       return {
-        'X-Wali-Token': getToken()
-      }
-    },
-    goodsShow() {
-      return this.dataForm.type === 2
-    },
-    limitAmountShow() {
-      return dataForm.type === 1
-    }
-  },
-  created() {
-    this.init()
-    this.getPressGoodsList()
-  },
-  methods: {
-    init() {
-      if (this.$route.query.id == null) {
-        return
-      }
-      this.listQuery.activitySpecVo.acId = this.$route.query.id
-      this.type = this.$route.query.type
-      this.listLoading = true
-      getZcmActivitySpecList(this.listQuery.activitySpecVo, this.listQuery.page, this.listQuery.limit).then(response => {
-        this.list = response.data.data
-        this.total = response.data.data.length
-        this.listLoading = false
-      }).catch(() => {
-        this.list = []
-        this.total = 0
-        this.listLoading = false
-      })
-    },
-    getPressGoodsList() {
-      let acstatus = 3 // 赠送物品
-      queryParmList(acstatus).then(response => {
-        this.buyGoods = response.data.data.goodsVos;
-        this.givingGoods = response.data.data.givingGoodsVos;
-      })
-    },
-
-    resetForm() {
-      this.dataForm = {
-        id: undefined,
-        presellId: '',
-        sort: '',
-        goodsId: undefined
-      }
-    },
-    handleCreate() {
-      this.resetForm()
-      this.dataForm.type = this.$route.query.type
-      this.dataForm.acId = this.$route.query.id
-      this.dialogStatus = 'create'
-      this.dialogFormVisible = true
-      this.$nextTick(() => {
-        this.$refs['dataForm'].clearValidate()
-      })
-    },
-    createData() {
-      this.$refs['dataForm'].validate(valid => {
-        if (valid) {
-          saveOrUpdateZcmActivitySpec(this.dataForm).then(response => {
-            this.init()
-            this.dialogFormVisible = false
-            this.$notify.success({
-              title: '成功',
-              message: '创建成功'
-            })
-          }).catch(response => {
-            this.$notify.error({
-              title: '失败',
-              message: response.data.errmsg
-            })
-          })
+        discountOption: [
+          {
+            label: '满赠',
+            value: 1
+          },
+          {
+            label: '买A赠B',
+            value: 2
+          },
+          {
+            label: '新用户赠送',
+            value: 3
+          }
+        ],
+        type: undefined,
+        list: [],
+        buyGoods: [],
+        givingGoods: [],
+        presellGoodsList: [],
+        listLoading: true,
+        total: 0,
+        listQuery: {
+          page: 1,
+          limit: 10,
+          zcmActivitySpecVo: {id: undefined}
+        },
+        goodsQuery: {
+          isGiving: undefined
+        },
+        dataForm: {
+          buyGoodsVo: {id: undefined},
+          givingGoodsVo: {id: undefined}
+        },
+        dialogFormVisible: false,
+        dialogStatus: '',
+        textMap: {
+          update: '编辑',
+          create: '创建'
+        },
+        activitySpecVo: {
+          id: undefined,
+          isSuperposition: undefined
+        },
+        rules: {
+          // type: [{ required: true, message: '规则类型不能为空', trigger: 'blur' }],
+          // limitAmount: [{ required: true, message: '达标金额不能为空', trigger: 'blur' }],
+          // goodsId: [{ required: this.goodsShow, message: '赠送物品不能为空', trigger: 'blur' }],
+          // reduceAmount: [{ required: this.limitAmountShow, message: '立减金额不能为空', trigger: 'blur' }]
         }
-        this.init()
-      })
+      }
     },
-    handleFilter() {
-      this.listQuery.page = 1
+    computed: {
+      headers() {
+        return {
+          'X-Wali-Token': getToken()
+        }
+      },
+      goodsShow() {
+        return this.dataForm.type === 2
+      },
+      limitAmountShow() {
+        return dataForm.type === 1
+      }
+    },
+    created() {
       this.init()
     },
-    handleIsSuperpositionChange(row) {
-      this.activitySpecVo.id = row.id
-      this.activitySpecVo.isSuperposition = row.isSuperposition;
-      saveOrUpdateZcmActivitySpec(this.activitySpecVo).then(() => {
-        this.init()
-        this.$notify.success({
-          title: '成功',
-          message: '更新成功'
-        })
-      }).catch(response => {
-        this.$notify.error({
-          title: '失败',
-          message: response.data.errmsg
-        })
-      })
-    },
-
-    handleUpdate(row) {
-      this.dataForm = Object.assign({}, row)
-      this.dialogStatus = 'update'
-      this.dialogFormVisible = true
-      this.$nextTick(() => {
-        this.$refs['dataForm'].clearValidate()
-      })
-    },
-    updateData() {
-      this.$refs['dataForm'].validate(valid => {
-        if (valid) {
-          saveOrUpdateZcmActivitySpec(this.dataForm).then(() => {
-            this.dialogFormVisible = false
-            this.init()
-            this.$notify.success({
-              title: '成功',
-              message: '更新成功'
-            })
-          }).catch(response => {
-            this.$notify.error({
-              title: '失败',
-              message: response.data.errmsg
-            })
-          })
+    methods: {
+      init() {
+        if (this.$route.query.id == null) {
+          return
         }
-      })
-      this.init()
-    },
-    handleDelete(row) {
-      deleteZcmActivitySpecById(row.id).then(response => {
-        this.$notify({
-          title: '移除成功',
-          message: '移除成功',
-          type: 'success',
-          duration: 2000
+        this.listQuery.zcmActivitySpecVo.acId = this.$route.query.id
+        this.type = this.$route.query.type;
+        this.listLoading = true;
+        getZcmActivitySpecList(this.listQuery.zcmActivitySpecVo, this.listQuery.page, this.listQuery.limit).then(response => {
+          this.list = response.data.data
+          this.total = response.data.data.length
+          this.listLoading = false
+        }).catch(() => {
+          this.list = []
+          this.total = 0
+          this.listLoading = false
         })
-        const index = this.list.indexOf(row)
-        this.list.splice(index, 1)
-      }).catch(response => {
-        this.$notify.error({
-          title: '移除失败',
-          message: response.data.errmsg
+      },
+      getGoodsList() {
+        queryParmList(this.goodsQuery).then(response => {
+          this.buyGoods = response.data.data.goodsVos;
+          this.givingGoods = response.data.data.givingGoodsVos;
         })
-      })
+      },
+
+      resetForm() {
+        this.dataForm = {
+          id: undefined,
+          isSuperposition:false,
+          buyGoodsVo: {id: undefined},
+          givingGoodsVo: {id: undefined}
+        }
+      },
+      handleCreate() {
+        this.resetForm();
+        if(this.type != 2){
+          this.goodsQuery.isGiving =  true;
+        }
+        this.getGoodsList();
+        this.dataForm.type = this.$route.query.type
+        this.dataForm.acId = this.$route.query.id
+        this.dialogStatus = 'create'
+        this.dialogFormVisible = true
+        this.$nextTick(() => {
+          this.$refs['dataForm'].clearValidate()
+        })
+      },
+      createData() {
+        this.$refs['dataForm'].validate(valid => {
+          if (valid) {
+            saveOrUpdateZcmActivitySpec(this.dataForm).then(response => {
+              this.init()
+              this.dialogFormVisible = false
+              this.$notify.success({
+                title: '成功',
+                message: '创建成功'
+              })
+            }).catch(response => {
+              this.$notify.error({
+                title: '失败',
+                message: response.data.errmsg
+              })
+            })
+          }
+          this.init()
+        })
+      },
+      handleFilter() {
+        this.listQuery.page = 1
+        this.init()
+      },
+      handleIsSuperpositionChange(row) {
+        saveOrUpdateZcmActivitySpec(row).then(() => {
+          this.init()
+          this.$notify.success({
+            title: '成功',
+            message: '更新成功'
+          })
+        }).catch(response => {
+          this.$notify.error({
+            title: '失败',
+            message: response.data.errmsg
+          })
+        })
+      },
+
+      handleUpdate(row) {
+        if(row.type != 2){
+          this.goodsQuery.isGiving =  true;
+        }
+        this.getGoodsList();
+        this.dataForm = Object.assign({}, row)
+        this.dialogStatus = 'update'
+        this.dialogFormVisible = true
+        this.$nextTick(() => {
+          this.$refs['dataForm'].clearValidate()
+        })
+      },
+      updateData() {
+        this.$refs['dataForm'].validate(valid => {
+          if (valid) {
+            saveOrUpdateZcmActivitySpec(this.dataForm).then(() => {
+              this.dialogFormVisible = false
+              this.init()
+              this.$notify.success({
+                title: '成功',
+                message: '更新成功'
+              })
+            }).catch(response => {
+              this.$notify.error({
+                title: '失败',
+                message: response.data.errmsg
+              })
+            })
+          }
+        })
+        this.init()
+      },
+      handleDelete(row) {
+        deleteZcmActivitySpecById(row.id).then(response => {
+          this.$notify({
+            title: '移除成功',
+            message: '移除成功',
+            type: 'success',
+            duration: 2000
+          })
+          const index = this.list.indexOf(row)
+          this.list.splice(index, 1)
+        }).catch(response => {
+          this.$notify.error({
+            title: '移除失败',
+            message: response.data.errmsg
+          })
+        })
+      }
     }
   }
-}
 </script>

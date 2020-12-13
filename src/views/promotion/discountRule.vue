@@ -9,7 +9,8 @@
     </div>
 
     <!-- 查询结果 -->
-    <el-table v-loading="listLoading" :data="list" element-loading-text="正在查询中。。。" border fit highlight-current-row>
+    <el-table v-loading="listLoading" :data="list" element-loading-text="正在查询中。。。" border fit highlight-current-row
+               :header-cell-style="{background:'#B4D5F6',color:'#606266'}">
       <el-table-column align="center" label="规则标题" prop="title"/>
       <el-table-column align="center" label="规则副标题" prop="subtitle"/>
       <el-table-column align="center" label="规则类型" min-width="100" prop="type">
