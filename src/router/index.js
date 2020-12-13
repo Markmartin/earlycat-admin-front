@@ -570,6 +570,27 @@ export const asyncRouterMap = [
           noCache: true
         },
         hidden: false
+      },
+      {
+        path: 'discountRule',
+        component: () => import('@/views/goods/discountRule'),
+        name: 'discountRule',
+        meta: {
+          perms: ['GET /admin/presell/list'],
+          title: '赠品规则管理',
+          noCache: true
+        }
+      },
+      {
+        path: 'discountRuleDetail',
+        component: () => import('@/views/goods/discountRuleDetail'),
+        name: 'discountRuleDetail',
+        meta: {
+          perms: ['POST /admin/promotion/detail'],
+          title: '赠品规则详情',
+          noCache: true
+        },
+        hidden: true
       }
     ]
   },
@@ -828,27 +849,6 @@ export const asyncRouterMap = [
           title: '推广统计',
           noCache: true
         }
-      },
-      {
-        path: 'discountRule',
-        component: () => import('@/views/promotion/discountRule'),
-        name: 'discountRule',
-        meta: {
-          perms: ['GET /admin/presell/list'],
-          title: '活动规则',
-          noCache: true
-        }
-      },
-      {
-        path: 'discountRuleDetail',
-        component: () => import('@/views/promotion/discountRuleDetail'),
-        name: 'discountRuleDetail',
-        meta: {
-          perms: ['POST /admin/presell/detail'],
-          title: '规则详情',
-          noCache: true
-        },
-        hidden: true
       }
     ]
   },

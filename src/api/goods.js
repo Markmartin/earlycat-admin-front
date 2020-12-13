@@ -169,3 +169,11 @@ export function queryParmList(data) {
     data
   })
 }
+
+export function updateAdminGoods(data) {
+  return request({
+    url: '/goods/updateAdminGoods',
+    method: 'post',
+    data
+  })
+}

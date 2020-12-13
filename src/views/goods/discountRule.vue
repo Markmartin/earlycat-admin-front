@@ -300,7 +300,7 @@
         })
       },
       handleItemGoods(row) {
-        this.$router.push({ path: '/promotion/discountRuleDetail', query: { id: row.id, type: row.type } })
+        this.$router.push({ path: '/goods/discountRuleDetail', query: { id: row.id, type: row.type } })
       }
     }
   }
