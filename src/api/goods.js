@@ -140,17 +140,6 @@ export function updateBaseInfo(data) {
   })
 }
 
-export function updateAdminSort(id,sort) {
-  return request({
-    url: '/goods/updateAdminSort',
-    method: 'get',
-    params: {
-      'id': id,
-      'sort': sort
-    },
-  })
-}
-
 export function updateAdminStock(goodsId,number) {
   return request({
     url: '/goods/updateAdminStock',
