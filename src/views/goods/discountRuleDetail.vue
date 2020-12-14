@@ -78,7 +78,7 @@
         </el-form-item>
         <el-form-item v-if="dataForm.buyGoodsVo != null && dataForm.buyGoodsVo != undefined && dataForm.type ===2 "
                       label="购买数量" prop="buyNum">
-          <el-input-number v-model="dataForm.buyNum" :min="0"/>
+          <el-input-number v-model="dataForm.buyNum" :min="1" />
         </el-form-item>
         <el-form-item label="赠送物品" prop="givingGoodsId">
           <el-select v-model="dataForm.givingGoodsVo.id" filterable placeholder="赠送物品">
@@ -86,7 +86,7 @@
           </el-select>
         </el-form-item>
         <el-form-item label="赠送数量" prop="giveNum">
-          <el-input-number v-model="dataForm.giveNum" :min="0"/>
+          <el-input-number v-model="dataForm.giveNum" :min="1"/>
         </el-form-item>
         <el-form-item label="是否叠加" prop="isSuperposition">
           <el-radio-group v-model="dataForm.isSuperposition">
