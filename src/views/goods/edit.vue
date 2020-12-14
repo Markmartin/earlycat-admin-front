@@ -554,11 +554,11 @@
             label: '限时特价物品',
             value: 2
           }, {
-            label: '新用户赠送物品',
+            label: '赠送物品',
             value: 98
           }, {
             value: 99,
-            label: '赠送物品'
+            label: '买即送物品'
           }],
         onlineOptions: [
           {
