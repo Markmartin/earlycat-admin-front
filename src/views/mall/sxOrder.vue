@@ -122,7 +122,7 @@ export default {
       } else {
         this.$message.error(res.errmsg);
       }
-      this.outList()
+      this.getOrderByAcStatus()
     },
     onError() {
       this.$message.error("导入失败");
