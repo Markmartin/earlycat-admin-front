@@ -17,7 +17,8 @@
     </div>
 
     <!-- 查询结果 -->
-    <el-table v-loading="listLoading" :data="list" element-loading-text="正在查询中。。。" border fit highlight-current-row>
+    <el-table v-loading="listLoading" :data="list" element-loading-text="正在查询中。。。" border fit highlight-current-row
+              :header-cell-style="{background:'#B4D5F6',color:'#606266'}">
       <el-table-column align="center" label="销售类型" width="80" prop="type">
         <template slot-scope="scope">
           <span v-if="scope.row.type == 0">其他</span>
