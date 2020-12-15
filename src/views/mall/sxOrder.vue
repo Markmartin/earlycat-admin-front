@@ -25,6 +25,12 @@
       >
         <el-button type="primary">导入</el-button>
       </el-upload>
+       <!-- <el-button
+        type="primary"
+        @click="tempSendEgg"
+        v-permission="['GET /admin/order/getOrderByAcStatus']"
+        >赠送鸡蛋（勿点）</el-button
+      > -->
     </el-form>
 
     <el-table
@@ -74,7 +80,7 @@
 <script>
 import path from "path";
 import { formatTime, formatDate } from "@/utils";
-import { getOrderByAcStatus,importWxShopOrder } from "@/api/order";
+import { getOrderByAcStatus,importSxShopOrder,tempSendEgg } from "@/api/order";
 import Pagination from '@/components/Pagination';
 import { getToken } from "@/utils/auth";
 
@@ -85,14 +91,14 @@ export default {
       list: [],
       total: 0,
       listLoading: true,
-      importUrl: process.env.BASE_API + importWxShopOrder(),
+      importUrl: process.env.BASE_API + importSxShopOrder(),
       importHeaders: {
         'X-Wali-Token': getToken()
       },
       listQuery: {
         page: 1,
         limit: 20,
-        acStatus: 5,
+        acStatus: 6,
         date: "",
       },
     };
@@ -112,6 +118,7 @@ export default {
           type: "success",
           message: "导入成功"
         });
+        this.getOrderByAcStatus();
       } else {
         this.$message.error(res.errmsg);
       }
@@ -120,6 +127,11 @@ export default {
     onError() {
       this.$message.error("导入失败");
     },
+    // tempSendEgg(){
+    //   tempSendEgg({date: '2020-12-12',fullPrice: 59}).then(res => {
+
+    //   })
+    // }
   },
 };
 </script>

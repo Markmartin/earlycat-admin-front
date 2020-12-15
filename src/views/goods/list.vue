@@ -46,7 +46,8 @@
     </div>
 
     <!-- 查询结果 -->
-    <el-table v-loading="listLoading" :data="list" element-loading-text="正在查询中。。。" border fit highlight-current-row>
+    <el-table v-loading="listLoading" :data="list" element-loading-text="正在查询中。。。" border fit highlight-current-row
+              :header-cell-style="{background:'#B4D5F6',color:'#606266'}">
 
       <el-table-column type="expand">
         <template slot-scope="props">
@@ -327,7 +328,12 @@ export default {
         {
           label: '限时特价',
           value: 2
-        }, {
+        },
+        {
+          label: '大件商品',
+          value: 4
+        },
+        {
           label: '赠送物品',
           value: 98
         }, {

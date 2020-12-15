@@ -134,3 +134,24 @@ export function getOrderByAcStatus(params) {
 export function importWxShopOrder() {
   return '/order/importWxShopOrder'
 }
+
+export function importSxShopOrder() {
+  return '/order/importSxShopOrder'
+}
+
+export function tempSendEgg(params) {
+  return request({
+    url: '/order/tempSendEgg',
+    method: 'get',
+    params: params
+  })
+}
+
+export function exportAllOrderToDFH(params) {
+  return request({
+    url: '/order/exportAllOrderToDFH',
+    method: 'get',
+    responseType: 'blob',
+    params: params
+  })
+}

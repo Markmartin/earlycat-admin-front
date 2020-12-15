@@ -23,3 +23,12 @@ export function listByAdmin(query) {
       params:query
     })
   }
+
+  export function exportPurchase(query) {
+    return request({
+      url: '/purchaseJob/exportPurchase',
+      method: 'get',
+      params:query,
+      responseType: 'blob'
+    })
+  }
