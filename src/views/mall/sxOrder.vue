@@ -127,11 +127,11 @@ export default {
     onError() {
       this.$message.error("导入失败");
     },
-    tempSendEgg(){
-      tempSendEgg({date: '2020-12-12',fullPrice: 59}).then(res => {
+    // tempSendEgg(){
+    //   tempSendEgg({date: '2020-12-12',fullPrice: 59}).then(res => {
 
-      })
-    }
+    //   })
+    // }
   },
 };
 </script>
