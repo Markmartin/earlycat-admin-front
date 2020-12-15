@@ -11,20 +11,10 @@
       </el-form-item>
       <el-button
         type="primary"
-        @click="getOrderByAcStatus"
-        v-permission="['GET /admin/order/getOrderByAcStatus']"
+        @click="queryList"
+        v-permission="['GET /admin/expressLabel/list']"
         >查询</el-button
       >
-     <el-upload
-        class="upload-demo"
-        :action="importUrl"
-        :headers="importHeaders"
-        :on-success="onSuccess"
-        :on-error="onError"
-        style="display:inline;margin-left:10px;"
-      >
-        <el-button type="primary">导入</el-button>
-      </el-upload>
     </el-form>
 
     <el-table
@@ -48,17 +38,14 @@
       <el-table-column align="center" label="订单" width="200">
         <template slot-scope="scope">{{ scope.row.orderSn }}</template>
       </el-table-column>
-      <el-table-column align="center" label="客户" width="140">
+      <el-table-column label="客户" width="140">
         <template slot-scope="scope">{{ scope.row.consignee }}</template>
       </el-table-column>
-      <el-table-column label="电话" width="120">
+      <el-table-column align="center" label="电话" width="120">
         <template slot-scope="scope">{{ scope.row.mobile }}</template>
       </el-table-column>
       <el-table-column label="地址">
         <template slot-scope="scope">{{ scope.row.address }}</template>
-      </el-table-column>
-      <el-table-column align="center" label="编号" width="80">
-        <template slot-scope="scope">{{ scope.row.sortingNo }}</template>
       </el-table-column>
     </el-table>
     <pagination
@@ -66,7 +53,7 @@
       :total="total"
       :page.sync="listQuery.page"
       :limit.sync="listQuery.limit"
-      @pagination="getOrderByAcStatus"
+      @pagination="listAll"
     />
   </div>
 </template>
@@ -74,8 +61,8 @@
 <script>
 import path from "path";
 import { formatTime, formatDate } from "@/utils";
-import { getOrderByAcStatus,importWxShopOrder } from "@/api/order";
-import Pagination from '@/components/Pagination';
+import { listAll } from "@/api/expressLabel";
+import Pagination from "@/components/Pagination";
 import { getToken } from "@/utils/auth";
 
 export default {
@@ -85,41 +72,31 @@ export default {
       list: [],
       total: 0,
       listLoading: true,
-      importUrl: process.env.BASE_API + importWxShopOrder(),
-      importHeaders: {
-        'X-Wali-Token': getToken()
-      },
       listQuery: {
         page: 1,
         limit: 20,
-        acStatus: 1,
         date: "",
       },
     };
   },
   created() {
-    this.getOrderByAcStatus();
+    this.listAll();
   },
   methods: {
-    async getOrderByAcStatus() {
-      const res = await getOrderByAcStatus(this.listQuery);
+    async queryList() {
+      this.listQuery.page = 1;
+      this.listAll();
+    },
+    async listAll() {
+      const res = await listAll(this.listQuery);
       this.list = res.data.data.list;
       this.total = res.data.data.total;
     },
-    onSuccess(res) {
-      if (res.errno === 0) {
-        this.$message({
-          type: "success",
-          message: "导入成功"
-        });
-      } else {
-        this.$message.error(res.errmsg);
-      }
-      this.outList()
-    },
-    onError() {
-      this.$message.error("导入失败");
-    },
+    // tempSendEgg(){
+    //   tempSendEgg({date: '2020-12-12',fullPrice: 59}).then(res => {
+
+    //   })
+    // }
   },
 };
 </script>

@@ -476,6 +476,17 @@ export const asyncRouterMap = [
         }
       },
       {
+        path: 'expressLabel',
+        component: () => import('@/views/mall/expressLabel'),
+        name: 'expressLabel',
+        hidden: false,
+        meta: {
+          perms: ['GET /admin/expressLabel/list'],
+          title: '多包打印记录',
+          noCache: true
+        }
+      },
+      {
         path: 'issue',
         component: () => import('@/views/mall/issue'),
         name: 'issue',

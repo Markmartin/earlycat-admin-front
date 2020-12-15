@@ -45,16 +45,22 @@
       <!-- <el-table-column align="center" label="品类" width="100">
         <template slot-scope="scope">{{ scope.row.plateName }}</template>
       </el-table-column> -->
+      <el-table-column
+        align="center"
+        label="序号"
+        width="70"
+        type="index"
+      ></el-table-column>
       <el-table-column align="center" label="订单" width="200">
         <template slot-scope="scope">{{ scope.row.orderSn }}</template>
       </el-table-column>
       <el-table-column align="center" label="客户" width="140">
         <template slot-scope="scope">{{ scope.row.consignee }}</template>
       </el-table-column>
-      <el-table-column align="center" label="电话" width="120">
+      <el-table-column label="电话" width="120">
         <template slot-scope="scope">{{ scope.row.mobile }}</template>
       </el-table-column>
-      <el-table-column align="center" label="地址">
+      <el-table-column label="地址">
         <template slot-scope="scope">{{ scope.row.address }}</template>
       </el-table-column>
       <el-table-column align="center" label="编号" width="80">

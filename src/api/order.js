@@ -146,3 +146,12 @@ export function tempSendEgg(params) {
     params: params
   })
 }
+
+export function exportAllOrderToDFH(params) {
+  return request({
+    url: '/order/exportAllOrderToDFH',
+    method: 'get',
+    responseType: 'blob',
+    params: params
+  })
+}

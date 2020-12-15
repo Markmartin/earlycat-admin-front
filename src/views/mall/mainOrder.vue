@@ -16,6 +16,7 @@
       </el-form-item>
       <el-button type="primary" @click="listMainOrder" v-permission="['GET /admin/order/listMainOrder']">查询</el-button>
       <el-button type="primary" @click="CreateOneFormPage">打印</el-button>
+      <el-button type="primary" @click="handleExportOrder">导出所有订单</el-button>
     </el-form>
 
     <el-table
@@ -32,9 +33,6 @@
       </el-table-column> -->
       <el-table-column align="center" label="运单" width="200">
         <template slot-scope="scope">{{ scope.row.shipSn }}</template>
-      </el-table-column>
-      <el-table-column align="center" label="片区" width="140">
-        <template slot-scope="scope">{{ scope.row.shipPqCode }}</template>
       </el-table-column>
       <el-table-column align="center" label="行政区" width="120">
         <template slot-scope="scope">{{ scope.row.area }}</template>
@@ -53,7 +51,7 @@
 import print from "print-js";
 import path from "path";
 import { formatTime, formatDate } from "@/utils";
-import { listMainOrder } from "@/api/order";
+import { listMainOrder,exportAllOrderToDFH } from "@/api/order";
 
 export default {
   data() {
@@ -92,6 +90,26 @@ export default {
         scanStyles: false,
         style:
           "table tr td,th { border-collapse: collapse;padding: 15px;border:1px #000 solid;}", // 表格样式
+      });
+    },
+    handleExportOrder() {
+      exportAllOrderToDFH(this.params).then((res) => {
+        const blob = new Blob([res], {
+          type: "application/vnd.ms-excel",
+        });
+        let fileName = "东方汇" + formatDate(new Date()) + ".xlsx";
+        if ("download" in document.createElement("a")) {
+          const elink = document.createElement("a");
+          elink.download = fileName;
+          elink.style.display = "none";
+          elink.href = URL.createObjectURL(blob);
+          document.body.appendChild(elink);
+          elink.click();
+          URL.revokeObjectURL(elink.href); // 释放URL 对象
+          document.body.removeChild(elink);
+        } else {
+          navigator.msSaveBlob(blob, fileName);
+        }
       });
     },
   },
