@@ -9,7 +9,8 @@
     </div>
 
     <!-- 查询结果 -->
-    <el-table v-loading="listLoading" :data="list" element-loading-text="正在查询中。。。" border fit highlight-current-row>
+    <el-table v-loading="listLoading" :data="list" element-loading-text="正在查询中。。。" border fit highlight-current-row
+              :header-cell-style="{background:'#B4D5F6',color:'#606266'}">
       <el-table-column align="center" label="线上名称"  min-width="100"  prop="goodsVo.onlineName"/>
       <el-table-column align="center" label="线上价格"  min-width="100"  prop="goodsVo.onlinePrice"/>
       <el-table-column align="center" label="线上规格"  min-width="100"  prop="goodsVo.onlineSpec"/>
