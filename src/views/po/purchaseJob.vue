@@ -20,11 +20,31 @@
           </el-option>
         </el-select>
       </el-form-item>
+      <el-form-item label="日期">
+        <el-date-picker
+          v-model="searchTime"
+          type="daterange"
+          align="right"
+          unlink-panels
+          range-separator="至"
+          start-placeholder="开始日期"
+          end-placeholder="结束日期"
+          value-format="yyyy-MM-dd"
+          :picker-options="pickerOptions"
+        >
+        </el-date-picker>
+      </el-form-item>
       <el-button
         type="primary"
         @click="listByAdmin"
         v-permission="['GET /admin/purchaser/list']"
         >查询</el-button
+      >
+      <el-button
+        type="primary"
+        @click="exportPurchase"
+        v-permission="['GET /admin/purchaser/list']"
+        >导出</el-button
       >
     </el-form>
     <el-table
@@ -141,7 +161,12 @@ import path from "path";
 import { deepClone, formatTime, formatDate } from "@/utils";
 import Pagination from "@/components/Pagination";
 import { listSupplier } from "@/api/supplier";
-import { listByAdmin, saveOrUpdate, deleteJob } from "@/api/purchaseJob";
+import {
+  listByAdmin,
+  saveOrUpdate,
+  deleteJob,
+  exportPurchase,
+} from "@/api/purchaseJob";
 
 const defaultJob = {
   id: "",
@@ -166,6 +191,66 @@ export default {
       total: 0,
       inDate: "",
       dialogVisible: false,
+      searchTime: "",
+      pickerOptions: {
+        shortcuts: [
+          {
+            text: "今天",
+            onClick(picker) {
+              const end = new Date();
+              const start = new Date();
+              picker.$emit("pick", [start, end]);
+            },
+          },
+          {
+            text: "昨天",
+            onClick(picker) {
+              const end = new Date();
+              const start = new Date();
+              start.setTime(start.getTime() - 3600 * 1000 * 24 * 1);
+              end.setTime(end.getTime() - 3600 * 1000 * 24 * 1);
+              picker.$emit("pick", [start, end]);
+            },
+          },
+          {
+            text: "前天",
+            onClick(picker) {
+              const end = new Date();
+              const start = new Date();
+              start.setTime(start.getTime() - 3600 * 1000 * 24 * 2);
+              end.setTime(end.getTime() - 3600 * 1000 * 24 * 2);
+              picker.$emit("pick", [start, end]);
+            },
+          },
+          {
+            text: "最近一周",
+            onClick(picker) {
+              const end = new Date();
+              const start = new Date();
+              start.setTime(start.getTime() - 3600 * 1000 * 24 * 7);
+              picker.$emit("pick", [start, end]);
+            },
+          },
+          {
+            text: "最近一个月",
+            onClick(picker) {
+              const end = new Date();
+              const start = new Date();
+              start.setTime(start.getTime() - 3600 * 1000 * 24 * 30);
+              picker.$emit("pick", [start, end]);
+            },
+          },
+          {
+            text: "最近三个月",
+            onClick(picker) {
+              const end = new Date();
+              const start = new Date();
+              start.setTime(start.getTime() - 3600 * 1000 * 24 * 90);
+              picker.$emit("pick", [start, end]);
+            },
+          },
+        ],
+      },
     };
   },
   created() {
@@ -188,6 +273,10 @@ export default {
       this.listByAdmin();
     },
     listByAdmin() {
+      if (this.searchTime) {
+        this.params.startTime = this.searchTime[0];
+        this.params.endTime = this.searchTime[1];
+      }
       listByAdmin(this.params).then((res) => {
         this.list = res.data.data.list.map((m) => {
           m.inDate = this.inDate;
@@ -235,6 +324,37 @@ export default {
         });
       });
     },
+    exportPurchase() {
+      if (this.searchTime) {
+        this.params.startTime = this.searchTime[0];
+        this.params.endTime = this.searchTime[1];
+        exportPurchase(this.params).then((res) => {
+          const blob = new Blob([res], {
+            type: "application/vnd.ms-excel",
+          });
+          let fileName =
+            "采购单" +
+            this.params.startTime +
+            "-" +
+            this.params.endTime +
+            ".xlsx";
+          if ("download" in document.createElement("a")) {
+            const elink = document.createElement("a");
+            elink.download = fileName;
+            elink.style.display = "none";
+            elink.href = URL.createObjectURL(blob);
+            document.body.appendChild(elink);
+            elink.click();
+            URL.revokeObjectURL(elink.href); // 释放URL 对象
+            document.body.removeChild(elink);
+          } else {
+            navigator.msSaveBlob(blob, fileName);
+          }
+        });
+      } else {
+        this.$message.error("请选择日期")
+      }
+    },
   },
 };
 </script>
@@ -247,8 +367,5 @@ export default {
   .permission-tree {
     margin-bottom: 30px;
   }
-}
-.el-input__inner {
-  width: 54% !important;
 }
 </style>

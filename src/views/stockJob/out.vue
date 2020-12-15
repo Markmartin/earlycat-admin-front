@@ -4,11 +4,28 @@
       <el-form-item label="名称">
         <el-input v-model="params.goodsName" placeholder="名称"></el-input>
       </el-form-item>
+
       <el-form-item label="日期">
-        <el-date-picker v-model="params.date" type="date" placeholder="选择日期" value-format="yyyy-MM-dd"></el-date-picker>
+        <el-date-picker
+          v-model="searchTime"
+          type="daterange"
+          align="right"
+          unlink-panels
+          range-separator="至"
+          start-placeholder="开始日期"
+          end-placeholder="结束日期"
+          value-format="yyyy-MM-dd"
+          :picker-options="pickerOptions"
+        >
+        </el-date-picker>
       </el-form-item>
       <el-form-item label="对象">
-        <el-select v-model="params.lineId" placeholder="请选择" filterable clearable>
+        <el-select
+          v-model="params.lineId"
+          placeholder="请选择"
+          filterable
+          clearable
+        >
           <el-option
             v-for="item in lines"
             :key="item.id"
@@ -17,24 +34,52 @@
           ></el-option>
         </el-select>
       </el-form-item>
-      <el-button type="primary" v-permission="['GET /admin/stockJob/outList']" @click="outList">查询</el-button>
-      <el-button type="primary" v-permission="['GET /admin/stockJob/exportOutSearch']" @click="handleExportOutSearch">导出查询结果</el-button>
-      <el-button type="primary" v-permission="['GET /admin/stockJob/exportOut']" @click="handleExportOut">导出出库模版表</el-button>
-      <!-- <el-button type="primary" @click="handleImportIn">导出入库数据</el-button> -->
+      <el-button
+        type="primary"
+        v-permission="['GET /admin/stockJob/outList']"
+        @click="outList"
+        >查询</el-button
+      >
+      <el-button
+        type="primary"
+        v-permission="['GET /admin/stockJob/exportOutSearch']"
+        @click="handleExportOutSearch"
+        >导出查询结果</el-button
+      >
+      <br />
+      <el-form-item label="日期">
+        <el-date-picker
+          v-model="params.date"
+          type="date"
+          placeholder="选择日期"
+          value-format="yyyy-MM-dd"
+        ></el-date-picker>
+      </el-form-item>
+      <el-button
+        type="primary"
+        v-permission="['GET /admin/stockJob/exportOut']"
+        @click="handleExportOut"
+        >导出出库模版表</el-button
+      >
       <el-upload
         class="upload-demo"
         :action="importOutUrl"
         :headers="importHeaders"
         :on-success="onSuccess"
         :on-error="onError"
-        style="display:inline;margin-left:10px;"
+        style="display: inline; margin-left: 10px"
       >
         <el-button type="primary">导入出库数据</el-button>
       </el-upload>
     </el-form>
 
-    <el-table :data="jobList" style="width: 100%;margin-top:20px;" border>
-      <el-table-column align="center" label="序号" width="60" type="index"></el-table-column>
+    <el-table :data="jobList" style="width: 100%; margin-top: 20px" border>
+      <el-table-column
+        align="center"
+        label="序号"
+        width="60"
+        type="index"
+      ></el-table-column>
       <el-table-column align="center" label="code" width="80">
         <template slot-scope="scope">{{ scope.row.jobCode }}</template>
       </el-table-column>
@@ -54,15 +99,31 @@
         <template slot-scope="scope">{{ scope.row.priceSum }}</template>
       </el-table-column>
       <el-table-column align="center" label="对象" width="120">
-        <template slot-scope="scope">{{ scope.row.lineId === 0?'仓库':scope.row.lineName }}</template>
+        <template slot-scope="scope">{{
+          scope.row.lineId === 0 ? "仓库" : scope.row.lineName
+        }}</template>
       </el-table-column>
       <el-table-column align="center" label="时间" min-width="130">
-        <template slot-scope="scope">{{ scope.row.addTime | formatTime }}</template>
+        <template slot-scope="scope">{{
+          scope.row.addTime | formatTime
+        }}</template>
       </el-table-column>
       <el-table-column align="center" label="操作" min-width="150">
         <template slot-scope="scope">
-          <el-button type="primary" size="small" v-permission="['POST /admin/stockJob/updateOut']" @click="handleEdit(scope)">编辑</el-button>
-          <el-button type="danger" size="small" v-permission="['GET /admin/stockJob/deleteOut']" @click="handleDelete(scope)">删除</el-button>
+          <el-button
+            type="primary"
+            size="small"
+            v-permission="['POST /admin/stockJob/updateOut']"
+            @click="handleEdit(scope)"
+            >编辑</el-button
+          >
+          <el-button
+            type="danger"
+            size="small"
+            v-permission="['GET /admin/stockJob/deleteOut']"
+            @click="handleDelete(scope)"
+            >删除</el-button
+          >
         </template>
       </el-table-column>
     </el-table>
@@ -73,7 +134,10 @@
       :limit.sync="params.pageSize"
       @pagination="getList"
     />
-    <el-dialog :visible.sync="dialogVisible" :title="dialogType==='edit'?'编辑':'新增'">
+    <el-dialog
+      :visible.sync="dialogVisible"
+      :title="dialogType === 'edit' ? '编辑' : '新增'"
+    >
       <el-form :model="job" label-width="80px" label-position="left">
         <el-form-item label="名称">
           <el-input v-model="job.goodsName" placeholder="名称" disabled />
@@ -91,8 +155,8 @@
           <el-input value="仓库" placeholder="仓库" disabled />
         </el-form-item>
       </el-form>
-      <div style="text-align:right;">
-        <el-button type="danger" @click="dialogVisible=false">取消</el-button>
+      <div style="text-align: right">
+        <el-button type="danger" @click="dialogVisible = false">取消</el-button>
         <el-button type="primary" @click="confirmJob">保存</el-button>
       </div>
     </el-dialog>
@@ -102,7 +166,7 @@
 <script>
 import path from "path";
 import Pagination from "@/components/Pagination";
-import { deepClone, formatDateTime,formatDate } from "@/utils";
+import { deepClone, formatDateTime, formatDate } from "@/utils";
 import { getToken } from "@/utils/auth";
 import {
   outList,
@@ -110,18 +174,16 @@ import {
   deleteOut,
   exportOut,
   importOut,
-  exportOutSearch
+  exportOutSearch,
 } from "@/api/stockJob";
-import {
-  listByType
-} from "@/api/line";
+import { listByType } from "@/api/line";
 
 const defaultJob = {
   id: "",
   goods_name: "",
   specification: "",
   price_out: "",
-  number: ""
+  number: "",
 };
 
 export default {
@@ -137,36 +199,100 @@ export default {
         type: 2,
         pageNo: 1,
         pageSize: 10,
-        date: ''
-      }, 
+        date: "",
+      },
       total: 0,
       // importInUrl: process.env.BASE_API + importIn(),
       importOutUrl: process.env.BASE_API + importOut(),
       importHeaders: {
-        'X-Wali-Token': getToken()
+        "X-Wali-Token": getToken(),
       },
-      lines:[],
+      lines: [],
+      searchTime: "",
+      pickerOptions: {
+        shortcuts: [
+          {
+            text: "今天",
+            onClick(picker) {
+              const end = new Date();
+              const start = new Date();
+              picker.$emit("pick", [start, end]);
+            },
+          },
+          {
+            text: "昨天",
+            onClick(picker) {
+              const end = new Date();
+              const start = new Date();
+              start.setTime(start.getTime() - 3600 * 1000 * 24 * 1);
+              end.setTime(end.getTime() - 3600 * 1000 * 24 * 1);
+              picker.$emit("pick", [start, end]);
+            },
+          },
+          {
+            text: "前天",
+            onClick(picker) {
+              const end = new Date();
+              const start = new Date();
+              start.setTime(start.getTime() - 3600 * 1000 * 24 * 2);
+              end.setTime(end.getTime() - 3600 * 1000 * 24 * 2);
+              picker.$emit("pick", [start, end]);
+            },
+          },
+          {
+            text: "最近一周",
+            onClick(picker) {
+              const end = new Date();
+              const start = new Date();
+              start.setTime(start.getTime() - 3600 * 1000 * 24 * 7);
+              picker.$emit("pick", [start, end]);
+            },
+          },
+          {
+            text: "最近一个月",
+            onClick(picker) {
+              const end = new Date();
+              const start = new Date();
+              start.setTime(start.getTime() - 3600 * 1000 * 24 * 30);
+              picker.$emit("pick", [start, end]);
+            },
+          },
+          {
+            text: "最近三个月",
+            onClick(picker) {
+              const end = new Date();
+              const start = new Date();
+              start.setTime(start.getTime() - 3600 * 1000 * 24 * 90);
+              picker.$emit("pick", [start, end]);
+            },
+          },
+        ],
+      },
     };
   },
   filters: {
-    formatTime: function(value) {
+    formatTime: function (value) {
       return formatDateTime(value);
-    }
+    },
   },
   created() {
     this.outList();
     this.listByType();
-    this.params.date = formatDate(new Date())
+    this.params.date = formatDate(new Date());
   },
   methods: {
     async outList() {
+      if (this.searchTime) {
+        this.params.startTime = this.searchTime[0];
+        this.params.endTime = this.searchTime[1];
+      }
       const res = await outList(this.params);
       this.jobList = res.data.data.jobs;
       this.total = res.data.data.total;
     },
-    async listByType(){
+    async listByType() {
       const res = await listByType(1);
-      this.lines = res.data.data
+      this.lines = res.data.data;
     },
 
     async getList(e) {
@@ -174,30 +300,36 @@ export default {
       this.params.pageSize = e.limit;
       this.outList();
     },
-    handleExportOutSearch(){
-      exportOutSearch(this.params).then(res => {
-        const blob = new Blob([res], {
-          type: "application/vnd.ms-excel"
+    handleExportOutSearch() {
+      if (this.searchTime) {
+        this.params.startTime = this.searchTime[0];
+        this.params.endTime = this.searchTime[1];
+        exportOutSearch(this.params).then((res) => {
+          const blob = new Blob([res], {
+            type: "application/vnd.ms-excel",
+          });
+          let fileName = "查询出库导出.xlsx";
+          if ("download" in document.createElement("a")) {
+            const elink = document.createElement("a");
+            elink.download = fileName;
+            elink.style.display = "none";
+            elink.href = URL.createObjectURL(blob);
+            document.body.appendChild(elink);
+            elink.click();
+            URL.revokeObjectURL(elink.href); // 释放URL 对象
+            document.body.removeChild(elink);
+          } else {
+            navigator.msSaveBlob(blob, fileName);
+          }
         });
-        let fileName = "查询出库导出.xlsx";
-        if ("download" in document.createElement("a")) {
-          const elink = document.createElement("a");
-          elink.download = fileName;
-          elink.style.display = "none";
-          elink.href = URL.createObjectURL(blob);
-          document.body.appendChild(elink);
-          elink.click();
-          URL.revokeObjectURL(elink.href); // 释放URL 对象
-          document.body.removeChild(elink);
-        } else {
-          navigator.msSaveBlob(blob, fileName);
-        }
-      });
+      } else {
+        this.$message.error("请选择日期");
+      }
     },
     handleExportOut() {
-      exportOut(this.params).then(res => {
+      exportOut(this.params).then((res) => {
         const blob = new Blob([res], {
-          type: "application/vnd.ms-excel"
+          type: "application/vnd.ms-excel",
         });
         let fileName = "出库模版" + formatDateTime(new Date()) + ".xlsx";
         if ("download" in document.createElement("a")) {
@@ -218,12 +350,12 @@ export default {
       if (res.errno === 0) {
         this.$message({
           type: "success",
-          message: "导入成功"
+          message: "导入成功",
         });
       } else {
         this.$message.error(res.errmsg);
       }
-      this.outList()
+      this.outList();
     },
     onError() {
       this.$message.error("导入失败");
@@ -237,18 +369,18 @@ export default {
       this.$confirm("确定删除吗？", "提示", {
         confirmButtonText: "确定",
         cancelButtonText: "取消",
-        type: "提示"
+        type: "提示",
       })
         .then(async () => {
-          await deleteOut({id:row.id}).then(res => {
+          await deleteOut({ id: row.id }).then((res) => {
             this.outList();
             this.$message({
               type: "success",
-              message: "删除成功"
+              message: "删除成功",
             });
           });
         })
-        .catch(err => {
+        .catch((err) => {
           console.error(err);
         });
     },
@@ -257,7 +389,7 @@ export default {
       const isEdit = this.dialogType === "edit";
 
       if (isEdit) {
-        await updateOut(this.job).then(res => {
+        await updateOut(this.job).then((res) => {
           this.outList();
         });
       } else {
@@ -268,11 +400,10 @@ export default {
       this.$notify({
         title: "保存成功",
         dangerouslyUseHTMLString: true,
-        type: "success"
+        type: "success",
       });
     },
-    
-  }
+  },
 };
 </script>
 
