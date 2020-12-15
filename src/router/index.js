@@ -457,10 +457,21 @@ export const asyncRouterMap = [
         path: 'wxOrder',
         component: () => import('@/views/mall/wxOrder'),
         name: 'wxOrder',
-        hidden: true,
+        hidden: false,
         meta: {
-          perms: ['GET /admin/order/listMainOrder'],
+          perms: ['GET /admin/order/importWxShopOrder'],
           title: '微信订单',
+          noCache: true
+        }
+      },
+      {
+        path: 'sxOrder',
+        component: () => import('@/views/mall/sxOrder'),
+        name: 'sxOrder',
+        hidden: false,
+        meta: {
+          perms: ['GET /admin/order/importSxShopOrder'],
+          title: '善行订单',
           noCache: true
         }
       },
@@ -591,7 +602,7 @@ export const asyncRouterMap = [
           noCache: true
         },
         hidden: true
-      }
+      } 
     ]
   },
 
