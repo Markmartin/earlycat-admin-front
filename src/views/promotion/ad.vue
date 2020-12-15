@@ -28,6 +28,8 @@
         </template>
       </el-table-column>
 
+      <el-table-column align="center" label="排序" prop="sort"/>
+
       <el-table-column align="center" label="是否启用" prop="enabled">
         <template slot-scope="scope">
           <el-tag :type="scope.row.enabled ? 'success' : 'error' ">{{ scope.row.enabled ? '启用' : '不启用' }}</el-tag>
@@ -100,6 +102,9 @@
         <el-form-item label="广告内容" prop="content">
           <editor v-if="dataForm.type == 1" :init="editorInit" v-model="dataForm.content" :disabled="dialogStatus==='look'"/>
           <el-input v-else v-model="dataForm.content" :disabled="dialogStatus==='look'"/>
+        </el-form-item>
+        <el-form-item label="排序" prop="sort">
+          <el-input v-model="dataForm.sort"/>
         </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
@@ -273,12 +278,13 @@ export default {
         'name': this.dataForm.name,
         'position': this.dataForm.position,
         'enabled': this.dataForm.enabled,
-        'startTime': this.dataForm.time[0],
-        'endTime': this.dataForm.time[1],
+        'startTime': (this.dataForm.time != null || this.dataForm.time != undefined)&&  this.dataForm.time.length > 1 ? this.dataForm.time[0] : undefined,
+        'endTime': (this.dataForm.time != null || this.dataForm.time != undefined) &&  this.dataForm.time.length > 1? this.dataForm.time[1] :undefined,
         'url': this.dataForm.url,
         'channel': this.dataForm.channel,
         'type': this.dataForm.type,
-        'content': this.dataForm.content
+        'content': this.dataForm.content,
+        'sort': this.dataForm.sort
       }
       this.$refs['dataForm'].validate(valid => {
         if (valid) {
@@ -315,12 +321,13 @@ export default {
         'name': this.dataForm.name,
         'position': this.dataForm.position,
         'enabled': this.dataForm.enabled,
-        'startTime': this.dataForm.time[0],
-        'endTime': this.dataForm.time[1],
+        'startTime': (this.dataForm.time != null || this.dataForm.time != undefined)&&  this.dataForm.time.length > 1 ? this.dataForm.time[0] : undefined,
+        'endTime': (this.dataForm.time != null || this.dataForm.time != undefined) &&  this.dataForm.time.length > 1? this.dataForm.time[1] :undefined,
         'url': this.dataForm.url,
         'channel': this.dataForm.channel,
         'type': this.dataForm.type,
-        'content': this.dataForm.content
+        'content': this.dataForm.content,
+        'sort': this.dataForm.sort
       }
       this.$refs['dataForm'].validate(valid => {
         if (valid) {
