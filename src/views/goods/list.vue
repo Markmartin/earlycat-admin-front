@@ -97,8 +97,8 @@
             <span v-if="scope.row.acStatus == 0">正常物品</span>
             <span v-if="scope.row.acStatus == 1">预售物品</span>
             <span v-if="scope.row.acStatus == 2">限时特价物品</span>
-            <span v-if="scope.row.acStatus == 98">新用户赠送物品</span>
-            <span v-if="scope.row.acStatus == 99">赠送物品</span>
+            <span v-if="scope.row.acStatus == 98">赠送物品</span>
+            <span v-if="scope.row.acStatus == 99">买即送物品</span>
             】
           </p>
           <p>线上名称：{{ scope.row.onlineName }}</p>
