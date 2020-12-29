@@ -76,17 +76,19 @@
                 <el-table-column align="center" label="操作" width="100" class-name="small-padding fixed-width">
                   <template slot-scope="scope">
                     <el-button
-                      v-if="(orderDetail.order.orderStatus ===201 && scope.row.number > 0) &&(scope.row.acStatus === 0||scope.row.acStatus === 1||scope.row.acStatus === 2)"
+                      v-if="(orderDetail.order.orderStatus ===201 && scope.row.number > 0) &&(scope.row.acStatus === 0||scope.row.acStatus === 1||scope.row.acStatus === 2||scope.row.acStatus === 4)"
                       v-permission="['POST /admin/afterSale/refund']" type="warning " size="mini" round
                       @click="handleRefund(scope.row)">退款
                     </el-button>
                     <el-button
                       v-if="(orderDetail.order.orderStatus >201 && orderDetail.order.orderStatus !=202 && orderDetail.order.orderStatus !=203
                       && scope.row.refundNumber < scope.row.number)
-                      &&(scope.row.acStatus === 0||scope.row.acStatus === 1||scope.row.acStatus === 2)"
+                      &&(scope.row.acStatus === 0||scope.row.acStatus === 1||scope.row.acStatus === 2||scope.row.acStatus === 4)"
                       v-permission="['POST /admin/afterSale/refund']" type="warning " size="mini" round
                       @click="handleRefund(scope.row)">退款
                     </el-button>
+                    <el-button
+                      v-if="scope.row.acStatus === 3" v-permission="['POST /admin/afterSale/refund']" type="warning " size="mini" round disabled>补单单品</el-button>
                   </template>
                 </el-table-column>
               </el-table>
