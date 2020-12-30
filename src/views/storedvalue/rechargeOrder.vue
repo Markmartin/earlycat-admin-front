@@ -3,9 +3,9 @@
     <!-- 查询和其他操作 -->
     <div class="filter-container">
       <el-input v-model="listQuery.nickname" clearable class="filter-item" style="width: 200px;" placeholder="请输入用户名"/>
-      <!--<el-select v-model="listQuery.orderStatus" clearable style="width: 200px" class="filter-item" placeholder="订单状态">-->
-        <!--<el-option v-for="type in statusOps" :key="type.value" :label="type.label" :value="type.value"/>-->
-      <!--</el-select>-->
+      <el-select v-model="listQuery.payType" clearable style="width: 200px" class="filter-item" placeholder="消费类型">
+        <el-option v-for="type in payTypeOps" :key="type.value" :label="type.label" :value="type.value"/>
+      </el-select>
       <el-button
         v-permission="['GET /admin/rechargeOrder/list']"
         class="filter-item"
@@ -32,7 +32,12 @@
         </template>
       </el-table-column>
       <el-table-column align="center" label="用户名" min-width="120px" prop="nickname"/>
-      <el-table-column align="center" label="充值金额" min-width="120px" prop="amount"/>
+      <el-table-column align="center" label="消费类型" min-width="120px" prop="payType">
+        <template slot-scope="scope">
+          <el-tag>{{ payTypeOps[scope.row.payType].label }}</el-tag>
+        </template>
+      </el-table-column>
+      <el-table-column align="center" label="金额" min-width="120px" prop="amount"/>
       <el-table-column align="center" label="赠送金额" min-width="120px" prop="aditionalAmount"/>
       <el-table-column align="center" label="支付时间" min-width="120px" prop="payTime"/>
       <el-table-column align="center" label="创建时间" min-width="120px" prop="addTime" sortable/>
@@ -95,6 +100,7 @@
           userId: '',
           nickname: '',
           orderStatus: '',
+          payType: '',
           page: 1,
           limit: 20,
           sort: "add_time",
@@ -111,6 +117,16 @@
           },
           {
             label: "已支付",
+            value: 1
+          }
+        ],
+        payTypeOps: [
+          {
+            label: "充值",
+            value: 0
+          },
+          {
+            label: "消费",
             value: 1
           }
         ],
