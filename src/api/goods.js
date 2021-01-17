@@ -166,3 +166,20 @@ export function updateAdminGoods(data) {
     data
   })
 }
+
+export function goodsInfo(params) {
+  return request({
+    url: '/goods/goodsInfo',
+    method: 'get',
+    params: params
+  })
+}
+
+export function exportGoodsInfo(params) {
+  return request({
+    url: '/goods/exportGoodsInfo',
+    method: 'get',
+    params: params,
+    responseType: 'blob'
+  })
+}
