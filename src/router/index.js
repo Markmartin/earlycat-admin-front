@@ -613,6 +613,16 @@ export const asyncRouterMap = [
           noCache: true
         },
         hidden: true
+      },
+      {
+        path: 'goodsInfo',
+        component: () => import('@/views/goods/goodsInfo'),
+        name: 'goodsInfo',
+        meta: {
+          perms: ['GET /admin/goods/goodsInfo'],
+          title: '商品定价',
+          noCache: true
+        },
       } 
     ]
   },
