@@ -79,6 +79,29 @@ export default new Router({
 
 export const asyncRouterMap = [
   {
+    path: '/erp',
+    component: Layout,
+    redirect: 'noredirect',
+    alwaysShow: true,
+    name: 'erp',
+    meta: {
+      title: 'ERP',
+      icon: 'list'
+    },
+    children: [
+      {
+        path: 'supplier',
+        component: () => import('@/views/erp/supplier'),
+        name: 'supplier',
+        meta: {
+          perms: ['GET /admin/erp/supplier/list'],
+          title: '供应商管理',
+          noCache: true
+        }
+      }
+    ]
+  },
+  {
     path: '/po',
     component: Layout,
     redirect: 'noredirect',
@@ -308,7 +331,6 @@ export const asyncRouterMap = [
       }
     ]
   },
-
   {
     path: '/user',
     component: Layout,
@@ -382,7 +404,6 @@ export const asyncRouterMap = [
       }
     ]
   },
-
   {
     path: '/mall',
     component: Layout,
@@ -623,10 +644,9 @@ export const asyncRouterMap = [
           title: '商品定价',
           noCache: true
         },
-      } 
+      }
     ]
   },
-
   {
     path: '/afterSale',
     component: Layout,
