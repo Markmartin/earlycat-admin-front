@@ -77,7 +77,6 @@
         listSupplier(this.supplierVo, this.params.page, this.params.limit).then(response => {
           this.list = response.data.data.list
           this.total = response.data.data.total
-          debugger
           this.listLoading = false
         }).catch(() => {
           this.list = []

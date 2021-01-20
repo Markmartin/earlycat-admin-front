@@ -1,8 +1,8 @@
 import request from '@/utils/request'
 
-export function listSupplier(data, page, limit) {
+export function listSpu(data, page, limit) {
   return request({
-    url: '/erp/supplier/list',
+    url: '/erp/spu/list',
     headers: { 'Content-Type': 'application/json' },
     method: 'post',
     params: {
@@ -15,7 +15,7 @@ export function listSupplier(data, page, limit) {
 
 export function save(data) {
     return request({
-      url: '/supplier/save',
+      url: '/erp/spu/save',
       method: 'post',
       data
     })
@@ -23,7 +23,7 @@ export function save(data) {
 
 export function deleteSupplier(params) {
     return request({
-      url: '/supplier/delete',
+      url: '/erp/spu/delete',
       method: 'get',
       params: params
     })
