@@ -90,12 +90,32 @@ export const asyncRouterMap = [
     },
     children: [
       {
-        path: 'supplier',
-        component: () => import('@/views/erp/supplier'),
-        name: 'supplier',
+        path: 'erpSupplier',
+        component: () => import('@/views/erp/erpSupplier'),
+        name: 'erpSupplier',
         meta: {
           perms: ['GET /admin/erp/supplier/list'],
           title: '供应商管理',
+          noCache: true
+        }
+      },
+      {
+        path: 'erpSpu',
+        component: () => import('@/views/erp/erpSpu'),
+        name: 'erpSpu',
+        meta: {
+          perms: ['GET /admin/erp/supplier/spu'],
+          title: '物料管理',
+          noCache: true
+        }
+      },
+      {
+        path: 'erpDepot',
+        component: () => import('@/views/erp/erpDepot'),
+        name: 'erpDepot',
+        meta: {
+          perms: ['GET /admin/erp/supplier/spu'],
+          title: '仓库管理',
           noCache: true
         }
       }
