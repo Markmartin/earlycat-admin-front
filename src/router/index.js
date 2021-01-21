@@ -89,6 +89,27 @@ export const asyncRouterMap = [
       icon: 'list'
     },
     children: [
+
+      {
+        path: 'spuList',
+        name: 'spuList',
+        component: () => import('@/views/erp/spu/index'),
+        meta: {title: '物料列表', icon: 'goods'}
+      },
+      {
+        path: 'spu/add',
+        name: 'add',
+        component: () => import('@/views/erp/spu/add'),
+        meta: {title: '添加物料', icon: 'goods'},
+        hidden: true
+      },
+      {
+        path: 'spu/update',
+        name: 'update',
+        component: () => import('@/views/erp/spu/update'),
+        meta: {title: '修改物料', icon: 'goods'},
+        hidden: true
+      },
       {
         path: 'erpSupplier',
         component: () => import('@/views/erp/erpSupplier'),
@@ -96,16 +117,6 @@ export const asyncRouterMap = [
         meta: {
           perms: ['GET /admin/erp/supplier/list'],
           title: '供应商管理',
-          noCache: true
-        }
-      },
-      {
-        path: 'erpSpu',
-        component: () => import('@/views/erp/erpSpu'),
-        name: 'erpSpu',
-        meta: {
-          perms: ['GET /admin/erp/supplier/spu'],
-          title: '物料管理',
           noCache: true
         }
       },
