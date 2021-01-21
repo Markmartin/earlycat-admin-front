@@ -119,9 +119,6 @@
   </div>
 </template>
 <script>
-import { updateDeleteStatus, updateNewStatus, updateRecommendStatus, updatePublishStatus} from '@/api/test/product'
-import {fetchList as fetchSkuStockList, update as updateSkuStockList} from '@/api/test/skuStock'
-import {fetchList as fetchProductAttrList} from '@/api/test/productAttr'
 import {listSpu} from '@/api/erp/spu'
 import {listCatAndBrand} from '@/api/goods'
 

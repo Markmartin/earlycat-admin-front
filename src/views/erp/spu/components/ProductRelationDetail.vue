@@ -61,8 +61,8 @@
       };
     },
     created() {
-      this.getSubjectList();
-      this.getPrefrenceAreaList();
+//      this.getSubjectList();
+//      this.getPrefrenceAreaList();
     },
     computed:{
       //选中的专题

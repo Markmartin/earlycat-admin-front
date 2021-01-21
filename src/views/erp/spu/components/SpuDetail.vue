@@ -1,44 +1,21 @@
 <template>
   <el-card class="form-container" shadow="never">
     <el-steps :active="active" finish-status="success" align-center>
-      <el-step title="填写商品信息"></el-step>
-      <el-step title="填写商品促销"></el-step>
-      <el-step title="填写商品属性"></el-step>
+      <el-step title="填写物料信息"></el-step>
+      <el-step title="填写物料规格信息"></el-step>
+      <el-step title="填写物库存属性"></el-step>
       <el-step title="选择商品关联"></el-step>
     </el-steps>
-    <product-info-detail
-      v-show="showStatus[0]"
-      v-model="productParam"
-      :is-edit="isEdit"
-      @nextStep="nextStep">
-    </product-info-detail>
-    <product-sale-detail
-      v-show="showStatus[1]"
-      v-model="productParam"
-      :is-edit="isEdit"
-      @nextStep="nextStep"
-      @prevStep="prevStep">
-    </product-sale-detail>
-    <product-attr-detail
-      v-show="showStatus[2]"
-      v-model="productParam"
-      :is-edit="isEdit"
-      @nextStep="nextStep"
-      @prevStep="prevStep">
-    </product-attr-detail>
-    <product-relation-detail
-      v-show="showStatus[3]"
-      v-model="productParam"
-      :is-edit="isEdit"
-      @prevStep="prevStep"
-      @finishCommit="finishCommit">
-    </product-relation-detail>
+    <spu-info-detail v-show="showStatus[0]" v-model="productParam" :is-edit="isEdit" @nextStep="nextStep"></spu-info-detail>
+    <product-sale-detail v-show="showStatus[1]" v-model="productParam" :is-edit="isEdit" @nextStep="nextStep" @prevStep="prevStep"></product-sale-detail>
+    <spu-attr-detail v-show="showStatus[2]" v-model="productParam" :is-edit="isEdit" @nextStep="nextStep" @prevStep="prevStep"></spu-attr-detail>
+    <product-relation-detail v-show="showStatus[3]" v-model="productParam" :is-edit="isEdit" @prevStep="prevStep" @finishCommit="finishCommit"></product-relation-detail>
   </el-card>
 </template>
 <script>
-  import ProductInfoDetail from './ProductInfoDetail';
+  import SpuInfoDetail from './SpuInfoDetail';
   import ProductSaleDetail from './ProductSaleDetail';
-  import ProductAttrDetail from './ProductAttrDetail';
+  import SpuAttrDetail from './SpuAttrDetail';
   import ProductRelationDetail from './ProductRelationDetail';
   import {createProduct,getProduct,updateProduct} from '@/api/test/product';
 
@@ -105,7 +82,7 @@
   };
   export default {
     name: 'SpuDetail',
-    components: {ProductInfoDetail, ProductSaleDetail, ProductAttrDetail, ProductRelationDetail},
+    components: {SpuInfoDetail, ProductSaleDetail, SpuAttrDetail, ProductRelationDetail},
     props: {
       isEdit: {
         type: Boolean,
@@ -121,9 +98,9 @@
     },
     created(){
       if(this.isEdit){
-        getProduct(this.$route.query.id).then(response=>{
-          this.productParam=response.data;
-        });
+//        getProduct(this.$route.query.id).then(response=>{
+//          this.productParam=response.data;
+//        });
       }
     },
     methods: {

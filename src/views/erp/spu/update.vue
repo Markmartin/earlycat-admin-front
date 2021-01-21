@@ -1,11 +1,11 @@
 <template> 
-  <product-detail :is-edit='true'></product-detail>
+  <spu-detail :is-edit='true'></spu-detail>
 </template>
 <script>
-  import ProductDetail from './components/SpuDetail'
+  import SpuDetail from './components/SpuDetail'
   export default {
-    name: 'updateProduct',
-    components: { ProductDetail }
+    name: 'updateSpu',
+    components: { SpuDetail }
   }
 </script>
 <style>

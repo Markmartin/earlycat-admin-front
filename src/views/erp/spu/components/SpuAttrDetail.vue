@@ -2,15 +2,8 @@
   <div style="margin-top: 50px">
     <el-form :model="value" ref="productAttrForm" label-width="120px" style="width: 720px" size="small">
       <el-form-item label="属性类型：">
-        <el-select v-model="value.productAttributeCategoryId"
-                   placeholder="请选择属性类型"
-                   @change="handleProductAttrChange">
-          <el-option
-            v-for="item in productAttributeCategoryOptions"
-            :key="item.value"
-            :label="item.label"
-            :value="item.value">
-          </el-option>
+        <el-select v-model="value.productAttributeCategoryId" placeholder="请选择属性类型" @change="handleProductAttrChange">
+          <el-option v-for="item in productAttributeCategoryOptions" :key="item.value" :label="item.label" :value="item.value"></el-option>
         </el-select>
       </el-form-item>
       <el-form-item label="商品规格：">
@@ -18,16 +11,13 @@
           <div v-for="(productAttr,idx) in selectProductAttr">
             {{productAttr.name}}：
             <el-checkbox-group v-if="productAttr.handAddStatus===0" v-model="selectProductAttr[idx].values">
-              <el-checkbox v-for="item in getInputListArr(productAttr.inputList)" :label="item" :key="item"
-                           class="littleMarginLeft"></el-checkbox>
+              <el-checkbox v-for="item in getInputListArr(productAttr.inputList)" :label="item" :key="item" class="littleMarginLeft"></el-checkbox>
             </el-checkbox-group>
             <div v-else>
               <el-checkbox-group v-model="selectProductAttr[idx].values">
-                <div v-for="(item,index) in selectProductAttr[idx].options" style="display: inline-block"
-                     class="littleMarginLeft">
+                <div v-for="(item,index) in selectProductAttr[idx].options" style="display: inline-block" class="littleMarginLeft">
                   <el-checkbox :label="item" :key="item"></el-checkbox>
-                  <el-button type="text" class="littleMarginLeft" @click="handleRemoveProductAttrValue(idx,index)">删除
-                  </el-button>
+                  <el-button type="text" class="littleMarginLeft" @click="handleRemoveProductAttrValue(idx,index)">删除</el-button>
                 </div>
               </el-checkbox-group>
               <el-input v-model="addProductAttrValue" style="width: 160px;margin-left: 10px" clearable></el-input>
@@ -35,83 +25,48 @@
             </div>
           </div>
         </el-card>
-        <el-table style="width: 100%;margin-top: 20px"
-                  :data="value.skuStockList"
-                  border>
-          <el-table-column
-            v-for="(item,index) in selectProductAttr"
-            :label="item.name"
-            :key="item.id"
-            align="center">
+        <el-table style="width: 100%;margin-top: 20px" :data="value.skuStockList" border>
+          <el-table-column v-for="(item,index) in selectProductAttr" :label="item.name" :key="item.id" align="center">
             <template slot-scope="scope">
               {{getProductSkuSp(scope.row,index)}}
             </template>
           </el-table-column>
-          <el-table-column
-            label="销售价格"
-            width="80"
-            align="center">
+          <el-table-column label="销售价格" width="80" align="center">
             <template slot-scope="scope">
               <el-input v-model="scope.row.price"></el-input>
             </template>
           </el-table-column>
-          <el-table-column
-            label="商品库存"
-            width="80"
-            align="center">
+          <el-table-column label="商品库存" width="80" align="center">
             <template slot-scope="scope">
               <el-input v-model="scope.row.stock"></el-input>
             </template>
           </el-table-column>
-          <el-table-column
-            label="库存预警值"
-            width="80"
-            align="center">
+          <el-table-column label="库存预警值" width="80" align="center">
             <template slot-scope="scope">
               <el-input v-model="scope.row.lowStock"></el-input>
             </template>
           </el-table-column>
-          <el-table-column
-            label="SKU编号"
-            align="center">
+          <el-table-column label="SKU编号" align="center">
             <template slot-scope="scope">
               <el-input v-model="scope.row.skuCode"></el-input>
             </template>
           </el-table-column>
-          <el-table-column
-            label="操作"
-            width="80"
-            align="center">
+          <el-table-column label="操作" width="80" align="center">
             <template slot-scope="scope">
-              <el-button
-                type="text"
-                @click="handleRemoveProductSku(scope.$index, scope.row)">删除
+              <el-button type="text" @click="handleRemoveProductSku(scope.$index, scope.row)">删除
               </el-button>
             </template>
           </el-table-column>
         </el-table>
-        <el-button
-          type="primary"
-          style="margin-top: 20px"
-          @click="handleRefreshProductSkuList">刷新列表
-        </el-button>
-        <el-button
-          type="primary"
-          style="margin-top: 20px"
-          @click="handleSyncProductSkuPrice">同步价格
-        </el-button>
-        <el-button
-          type="primary"
-          style="margin-top: 20px"
-          @click="handleSyncProductSkuStock">同步库存
-        </el-button>
+        <el-button type="primary" style="margin-top: 20px" @click="handleRefreshProductSkuList">刷新列表</el-button>
+        <el-button type="primary" style="margin-top: 20px" @click="handleSyncProductSkuPrice">同步价格</el-button>
+        <el-button type="primary" style="margin-top: 20px" @click="handleSyncProductSkuStock">同步库存</el-button>
       </el-form-item>
       <el-form-item label="属性图片：" v-if="hasAttrPic">
         <el-card shadow="never" class="cardBg">
           <div v-for="(item,index) in selectProductAttrPics">
             <span>{{item.name}}:</span>
-            <single-upload v-model="item.pic"
-                           style="width: 300px;display: inline-block;margin-left: 10px"></single-upload>
+            <single-upload v-model="item.pic" style="width: 300px;display: inline-block;margin-left: 10px"></single-upload>
           </div>
         </el-card>
       </el-form-item>
@@ -120,12 +75,7 @@
           <div v-for="(item,index) in selectProductParam" :class="{littleMarginTop:index!==0}">
             <div class="paramInputLabel">{{item.name}}:</div>
             <el-select v-if="item.inputType===1" class="paramInput" v-model="selectProductParam[index].value">
-              <el-option
-                v-for="item in getParamInputList(item.inputList)"
-                :key="item"
-                :label="item"
-                :value="item">
-              </el-option>
+              <el-option v-for="item in getParamInputList(item.inputList)" :key="item" :label="item" :value="item"></el-option>
             </el-select>
             <el-input v-else class="paramInput" v-model="selectProductParam[index].value"></el-input>
           </div>
@@ -160,7 +110,7 @@
   import Tinymce from '@/components/Tinymce'
 
   export default {
-    name: "ProductAttrDetail",
+    name: "SpuAttrDetail",
     components: {SingleUpload, MultiUpload, Tinymce},
     props: {
       value: Object,
@@ -236,14 +186,14 @@
       }
     },
     created() {
-      this.getProductAttrCateList();
+//      this.getProductAttrCateList();
     },
     watch: {
       productId:function (newValue) {
-        if(!this.isEdit)return;
-        if(this.hasEditCreated)return;
-        if(newValue===undefined||newValue==null||newValue===0)return;
-        this.handleEditCreated();
+//        if(!this.isEdit)return;
+//        if(this.hasEditCreated)return;
+//        if(newValue===undefined||newValue==null||newValue===0)return;
+//        this.handleEditCreated();
       }
     },
     methods: {
