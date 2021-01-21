@@ -1,10 +1,10 @@
 <template>
   <div style="margin-top: 50px">
     <el-form :model="value" ref="productSaleForm" label-width="120px" style="width: 600px" size="small">
-      <el-form-item label="详细页标题：">
+      <el-form-item label="入库单位：">
         <el-input v-model="value.detailTitle"></el-input>
       </el-form-item>
-      <el-form-item label="详细页描述：">
+      <el-form-item label="出库单位：">
         <el-input v-model="value.detailDesc"></el-input>
       </el-form-item>
       <el-form-item label="商品关键字：">
@@ -25,7 +25,7 @@
   import {fetchList as fetchMemberLevelList} from '@/api/test/memberLevel'
 
   export default {
-    name: "ProductSaleDetail",
+    name: "SpuUnitDetail",
     props: {
       value: Object,
       isEdit: {

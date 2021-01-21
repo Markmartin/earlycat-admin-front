@@ -94,20 +94,20 @@ export const asyncRouterMap = [
         path: 'spuList',
         name: 'spuList',
         component: () => import('@/views/erp/spu/index'),
-        meta: {title: '物料列表', icon: 'goods'}
+        meta: {title: '物料列表'}
       },
       {
         path: 'spu/add',
         name: 'add',
         component: () => import('@/views/erp/spu/add'),
-        meta: {title: '添加物料', icon: 'goods'},
+        meta: {title: '添加物料'},
         hidden: true
       },
       {
         path: 'spu/update',
         name: 'update',
         component: () => import('@/views/erp/spu/update'),
-        meta: {title: '修改物料', icon: 'goods'},
+        meta: {title: '修改物料'},
         hidden: true
       },
       {

@@ -7,14 +7,14 @@
       <el-step title="选择商品关联"></el-step>
     </el-steps>
     <spu-info-detail v-show="showStatus[0]" v-model="productParam" :is-edit="isEdit" @nextStep="nextStep"></spu-info-detail>
-    <product-sale-detail v-show="showStatus[1]" v-model="productParam" :is-edit="isEdit" @nextStep="nextStep" @prevStep="prevStep"></product-sale-detail>
+    <spu-unit-detail v-show="showStatus[1]" v-model="productParam" :is-edit="isEdit" @nextStep="nextStep" @prevStep="prevStep"></spu-unit-detail>
     <spu-attr-detail v-show="showStatus[2]" v-model="productParam" :is-edit="isEdit" @nextStep="nextStep" @prevStep="prevStep"></spu-attr-detail>
     <product-relation-detail v-show="showStatus[3]" v-model="productParam" :is-edit="isEdit" @prevStep="prevStep" @finishCommit="finishCommit"></product-relation-detail>
   </el-card>
 </template>
 <script>
   import SpuInfoDetail from './SpuInfoDetail';
-  import ProductSaleDetail from './ProductSaleDetail';
+  import SpuUnitDetail from './SpuUnitDetail';
   import SpuAttrDetail from './SpuAttrDetail';
   import ProductRelationDetail from './ProductRelationDetail';
   import {createProduct,getProduct,updateProduct} from '@/api/test/product';
@@ -82,7 +82,7 @@
   };
   export default {
     name: 'SpuDetail',
-    components: {SpuInfoDetail, ProductSaleDetail, SpuAttrDetail, ProductRelationDetail},
+    components: {SpuInfoDetail, SpuUnitDetail, SpuAttrDetail, ProductRelationDetail},
     props: {
       isEdit: {
         type: Boolean,
