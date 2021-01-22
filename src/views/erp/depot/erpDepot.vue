@@ -47,7 +47,7 @@
             </el-button>
           </p>
           <p>
-            <el-button v-permission="['GET /admin/erp/depot/saveOrUpdate']" type="danger" size="mini"
+            <el-button v-permission="['GET /admin/erp/depot/delete']" type="danger" size="mini"
                        @click="handleDelete(scope.row)">删除
             </el-button>
           </p>
@@ -86,130 +86,150 @@
 </template>
 
 <script>
-import {listDepot, saveOrUpdate, deleteDepot} from "@/api/erp/depot";
-import Pagination from "@/components/Pagination";
+  import {listDepot, saveOrUpdate, deleteDepot} from "@/api/erp/depot";
+  import Pagination from "@/components/Pagination";
 
-export default {
-  components: {Pagination},
-  data() {
-    return {
-      listLoading: true,
-      list: [],
-      params: {
-        page: 1,
-        limit: 10,
+  export default {
+    components: {Pagination},
+    data() {
+      return {
+        listLoading: true,
+        list: [],
+        params: {
+          page: 1,
+          limit: 10,
+        },
+        erpDepotVo: {
+          id: undefined
+        },
+        total: 0,
+        categorys: {},
+        dialogFormVisible: false,
+        textMap: {
+          update: '编辑',
+          create: '创建'
+        },
+        dialogStatus: '',
+        dataForm: {
+          id: undefined,
+          name: undefined,
+          address: undefined,
+          principal: undefined,
+          phone: undefined
+        },
+
+        rules: {
+          name: [{required: true, message: '标题不能为空', trigger: 'blur'}],
+          address: [{required: true, message: '开始时间不能为空', trigger: 'blur'}]
+        }
+      };
+    },
+    created() {
+      this.listDepot();
+    },
+    methods: {
+      listDepot() {
+        this.listLoading = true
+        listDepot(this.erpDepotVo, this.params.page, this.params.limit).then(response => {
+          this.list = response.data.data.list
+          this.total = response.data.data.total
+          this.listLoading = false
+        }).catch(() => {
+          this.list = []
+          this.total = 0
+          this.listLoading = false
+        })
       },
-      erpDepotVo: {
-        id: undefined
-      },
-      total: 0,
-      categorys: {},
-      dialogFormVisible: false,
-      textMap: {
-        update: '编辑',
-        create: '创建'
-      },
-      dialogStatus: '',
-      dataForm: {
-        id: undefined,
-        name: undefined,
-        address: undefined,
-        principal: undefined,
-        phone: undefined
+      handleDelete(row) {
+        deleteDepot({id: row.id}).then(response => {
+          this.listDepot();
+          this.$notify({
+            title: '成功',
+            message: '操作成功',
+            type: 'success',
+            duration: 2000
+          })
+        }).catch(response => {
+          this.listDepot();
+          this.$notify.error({
+            title: '移除失败',
+            message: response.data.errmsg
+          })
+        })
       },
 
-      rules: {
-        name: [{required: true, message: '标题不能为空', trigger: 'blur'}],
-        address: [{required: true, message: '开始时间不能为空', trigger: 'blur'}]
+      handleCreate() {
+        this.dialogStatus = 'create'
+        this.dialogFormVisible = true
+        const data = {
+          id: undefined,
+          name: undefined,
+          address: undefined,
+          principal: undefined,
+          phone: undefined
+        };
+        this.dataForm = data;
+        this.$nextTick(() => {
+          this.$refs['dataForm'].clearValidate()
+        })
+      },
+
+      handleEdit(row) {
+        this.dataForm = Object.assign({}, row)
+        this.dialogStatus = 'update'
+        this.dialogFormVisible = true
+        this.$nextTick(() => {
+          this.$refs['dataForm'].clearValidate()
+        })
+      },
+
+      saveOrUpdate(data) {
+        saveOrUpdate(data).then(() => {
+          this.dialogFormVisible = false
+          this.listDepot()
+          this.$notify.success({
+            title: '成功',
+            message: '操作成功！'
+          })
+        }).catch(response => {
+          this.listDepot()
+          this.$notify.error({
+            title: '失败',
+            message: response.data.errmsg
+          })
+        })
+      },
+
+      createData() {
+        this.$refs['dataForm'].validate(valid => {
+          if (valid) {
+            this.saveOrUpdate(this.dataForm);
+          }
+        })
+      },
+      updateData() {
+        this.$refs['dataForm'].validate(valid => {
+          if (valid) {
+            this.saveOrUpdate(this.dataForm);
+          }
+        })
+      },
+
+      changeData(data) {
+        this.saveOrUpdate(data);
       }
-    };
-  },
-  created() {
-    this.listDepot();
-  },
-  methods: {
-    listDepot() {
-      this.listLoading = true
-      listDepot(this.erpDepotVo, this.params.page, this.params.limit).then(response => {
-        this.list = response.data.data.list
-        this.total = response.data.data.total
-        this.listLoading = false
-      }).catch(() => {
-        this.list = []
-        this.total = 0
-        this.listLoading = false
-      })
     },
-    handleDelete(row) {
-      deleteSupplier({id: row.id}).then((res) => {
-        this.listSupplier();
-      });
-    },
-
-    handleCreate() {
-      this.dialogStatus = 'create'
-      this.dialogFormVisible = true
-      this.$nextTick(() => {
-        this.$refs['dataForm'].clearValidate()
-      })
-    },
-
-    handleEdit(row) {
-      this.dataForm = Object.assign({}, row)
-      this.dialogStatus = 'update'
-      this.dialogFormVisible = true
-      this.$nextTick(() => {
-        this.$refs['dataForm'].clearValidate()
-      })
-    },
-
-    saveOrUpdate(data) {
-      saveOrUpdate(data).then(() => {
-        this.dialogFormVisible = false
-        this.listDepot()
-        this.$notify.success({
-          title: '成功',
-          message: '更新成功'
-        })
-      }).catch(response => {
-        this.listDepot()
-        this.$notify.error({
-          title: '失败',
-          message: response.data.errmsg
-        })
-      })
-    },
-
-    createData() {
-      this.$refs['dataForm'].validate(valid => {
-        if (valid) {
-          this.saveOrUpdate(this.dataForm);
-        }
-      })
-    },
-    updateData() {
-      this.$refs['dataForm'].validate(valid => {
-        if (valid) {
-          this.saveOrUpdate(this.dataForm);
-        }
-      })
-    },
-
-    changeData(data) {
-      this.saveOrUpdate(data);
-    }
-  },
-};
+  };
 </script>
 
 <style lang="scss" scoped>
-.app-container {
-  .roles-table {
-    margin-top: 30px;
-  }
+  .app-container {
+    .roles-table {
+      margin-top: 30px;
+    }
 
-  .permission-tree {
-    margin-bottom: 30px;
+    .permission-tree {
+      margin-bottom: 30px;
+    }
   }
-}
 </style>

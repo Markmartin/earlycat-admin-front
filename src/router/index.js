@@ -116,7 +116,7 @@ export const asyncRouterMap = [
         component: () => import('@/views/erp/erpSupplier'),
         name: 'erpSupplier',
         meta: {
-          perms: ['POST /admin/erp/erpSupplier/list', 'POST /admin/erp/erpSupplier/saveOrUpdate', 'GET /admin/erp/erpSupplier/delete'],
+          perms: ['POST /admin/erp/supplier/list', 'POST /admin/erp/supplier/saveOrUpdate', 'GET /admin/erp/supplier/delete'],
           title: '供应商管理',
           noCache: true
         }

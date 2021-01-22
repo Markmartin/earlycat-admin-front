@@ -7,8 +7,8 @@
       <el-form-item label="电话">
         <el-input v-model="supplierVo.phone" placeholder="电话"></el-input>
       </el-form-item>
-      <el-button type="primary" @click="initSupplier" v-permission="['GET /admin/supplier/list']">查询</el-button>
-      <el-button type="primary" @click="$router.push({ path: '/po/supplierEdit' })" v-permission="['GET /admin/supplier/create']">新增</el-button>
+      <el-button type="primary" @click="initSupplier" v-permission="['POST /admin/erp/supplier/list']">查询</el-button>
+      <el-button type="primary" @click="$router.push({ path: '/po/supplierEdit' })" v-permission="['POST /admin/erp/supplier/saveOrUpdate']">新增</el-button>
     </el-form>
 
     <el-table v-loading="listLoading" :data="list" style="width: 100%" border :row-style="{ height: '1px' }" :cell-style="{ padding: '5px' }">
@@ -35,8 +35,8 @@
       </el-table-column>
       <el-table-column align="center" label="操作" width="250" class-name="small-padding fixed-width">
         <template slot-scope="scope">
-          <el-button v-permission="['GET /admin/supplier/detail']" type="primary" size="mini" @click="$router.push({ path: '/po/supplierEdit', query: scope.row })">编辑</el-button>
-          <el-button v-permission="['GET /admin/supplier/delete']" type="danger" size="mini" @click="handleDelete(scope.row)">删除</el-button>
+          <el-button v-permission="['POST /admin/erp/supplier/saveOrUpdate']" type="primary" size="mini" @click="$router.push({ path: '/po/supplierEdit', query: scope.row })">编辑</el-button>
+          <el-button v-permission="['GET /admin/erp/supplier/delete']" type="danger" size="mini" @click="handleDelete(scope.row)">删除</el-button>
         </template>
       </el-table-column>
     </el-table>
