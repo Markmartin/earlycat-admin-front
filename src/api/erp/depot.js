@@ -1,8 +1,8 @@
 import request from '@/utils/request'
 
-export function listSupplier(data, page, limit) {
+export function listDepot(data, page, limit) {
   return request({
-    url: '/erp/supplier/list',
+    url: '/erp/depot/list',
     headers: { 'Content-Type': 'application/json' },
     method: 'post',
     params: {
@@ -13,17 +13,17 @@ export function listSupplier(data, page, limit) {
   })
 }
 
-export function save(data) {
+export function saveOrUpdate(data) {
     return request({
-      url: '/supplier/save',
+      url: '/erp/depot/saveOrUpdate',
       method: 'post',
       data
     })
   }
 
-export function deleteSupplier(params) {
+export function deleteDepot(params) {
     return request({
-      url: '/supplier/delete',
+      url: '/erp/depot/delete',
       method: 'get',
       params: params
     })

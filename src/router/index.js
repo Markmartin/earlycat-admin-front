@@ -11,13 +11,13 @@ import Layout from '@/views/layout/Layout'
  **/
 
 /**
-* hidden: true                   if `hidden:true` will not show in the sidebar(default is false)
-* alwaysShow: true               if set true, will always show the root menu, whatever its child routes length
-*                                if not set alwaysShow, only more than one route under the children
-*                                it will becomes nested mode, otherwise not show the root menu
-* redirect: noredirect           if `redirect:noredirect` will no redirect in the breadcrumb
-* name:'router-name'             the name is used by <keep-alive> (must set!!!)
-* meta : {
+ * hidden: true                   if `hidden:true` will not show in the sidebar(default is false)
+ * alwaysShow: true               if set true, will always show the root menu, whatever its child routes length
+ *                                if not set alwaysShow, only more than one route under the children
+ *                                it will becomes nested mode, otherwise not show the root menu
+ * redirect: noredirect           if `redirect:noredirect` will no redirect in the breadcrumb
+ * name:'router-name'             the name is used by <keep-alive> (must set!!!)
+ * meta : {
     perms: ['GET /aaa','POST /bbb']     will control the page perms (you can set multiple perms)
     title: 'title'               the name show in submenu and breadcrumb (recommend set)
     icon: 'svg-name'             the icon show in the sidebar,
@@ -94,6 +94,7 @@ export const asyncRouterMap = [
         path: 'spuList',
         name: 'spuList',
         component: () => import('@/views/erp/spu/index'),
+        perms: ['GET /admin/erp/supplier/spu'],
         meta: {title: '物料列表'}
       },
       {
@@ -115,17 +116,17 @@ export const asyncRouterMap = [
         component: () => import('@/views/erp/erpSupplier'),
         name: 'erpSupplier',
         meta: {
-          perms: ['GET /admin/erp/supplier/list'],
+          perms: ['POST /admin/erp/erpSupplier/list', 'POST /admin/erp/erpSupplier/saveOrUpdate', 'GET /admin/erp/erpSupplier/delete'],
           title: '供应商管理',
           noCache: true
         }
       },
       {
         path: 'erpDepot',
-        component: () => import('@/views/erp/erpDepot'),
+        component: () => import('@/views/erp/depot/erpDepot'),
         name: 'erpDepot',
         meta: {
-          perms: ['GET /admin/erp/supplier/spu'],
+          perms: ['POST /admin/erp/depot/list', 'POST /admin/erp/depot/saveOrUpdate', 'GET /admin/erp/depot/delete'],
           title: '仓库管理',
           noCache: true
         }
@@ -639,7 +640,7 @@ export const asyncRouterMap = [
         component: () => import('@/views/goods/autoStock'),
         name: 'autoStock',
         meta: {
-          perms: ['GET /admin/autoStock/list','POST /admin/autoStock/update','POST /admin/autoStock/add','DELETE /admin/autoStock/delete'],
+          perms: ['GET /admin/autoStock/list', 'POST /admin/autoStock/update', 'POST /admin/autoStock/add', 'DELETE /admin/autoStock/delete'],
           title: '定时库存',
           noCache: true
         },
@@ -1135,7 +1136,7 @@ export const asyncRouterMap = [
         path: 'password',
         component: () => import('@/views/profile/password'),
         name: 'password',
-        meta: { title: '修改密码', noCache: true }
+        meta: {title: '修改密码', noCache: true}
       }
     ],
     hidden: true
@@ -1164,5 +1165,5 @@ export const asyncRouterMap = [
     ]
   },
 
-  { path: '*', redirect: '/404', hidden: true }
+  {path: '*', redirect: '/404', hidden: true}
 ]
