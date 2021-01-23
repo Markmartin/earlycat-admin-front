@@ -13,9 +13,9 @@ export function listSupplier(data, page, limit) {
   })
 }
 
-export function save(data) {
+export function saveOrUpdate(data) {
     return request({
-      url: '/supplier/save',
+      url: '/erp/supplier/saveOrUpdate',
       method: 'post',
       data
     })
@@ -23,7 +23,7 @@ export function save(data) {
 
 export function deleteSupplier(params) {
     return request({
-      url: '/supplier/delete',
+      url: '/erp/supplier/delete',
       method: 'get',
       params: params
     })
