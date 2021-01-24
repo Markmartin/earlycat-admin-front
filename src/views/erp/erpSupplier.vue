@@ -217,6 +217,7 @@
       },
 
       saveOrUpdate(data) {
+        debugger
         saveOrUpdate(data).then(() => {
           this.dialogFormVisible = false
           this.listSupplier()

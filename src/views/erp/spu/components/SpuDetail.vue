@@ -4,7 +4,6 @@
       <el-step title="填写物料信息"></el-step>
       <el-step title="填写物料规格信息"></el-step>
       <el-step title="填写物库存属性"></el-step>
-      <el-step title="选择商品关联"></el-step>
     </el-steps>
     <spu-info-detail v-show="showStatus[0]" v-model="productParam" :is-edit="isEdit" @nextStep="nextStep"></spu-info-detail>
     <spu-unit-detail v-show="showStatus[1]" v-model="productParam" :is-edit="isEdit" @nextStep="nextStep" @prevStep="prevStep"></spu-unit-detail>
@@ -16,7 +15,6 @@
   import SpuInfoDetail from './SpuInfoDetail';
   import SpuUnitDetail from './SpuUnitDetail';
   import SpuAttrDetail from './SpuAttrDetail';
-  import ProductRelationDetail from './ProductRelationDetail';
   import {createProduct,getProduct,updateProduct} from '@/api/test/product';
 
   const defaultProductParam = {
@@ -82,7 +80,7 @@
   };
   export default {
     name: 'SpuDetail',
-    components: {SpuInfoDetail, SpuUnitDetail, SpuAttrDetail, ProductRelationDetail},
+    components: {SpuInfoDetail, SpuUnitDetail, SpuAttrDetail},
     props: {
       isEdit: {
         type: Boolean,

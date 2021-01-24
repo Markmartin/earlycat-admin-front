@@ -7,9 +7,6 @@
       <el-form-item label="出库单位：">
         <el-input v-model="value.detailDesc"></el-input>
       </el-form-item>
-      <el-form-item label="商品关键字：">
-        <el-input v-model="value.keywords"></el-input>
-      </el-form-item>
       <el-form-item label="商品备注：">
         <el-input v-model="value.note" type="textarea" :autoSize="true"></el-input>
       </el-form-item>
