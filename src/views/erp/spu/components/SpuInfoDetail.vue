@@ -2,7 +2,7 @@
   <div style="margin-top: 50px">
     <el-form :model="erpSpuVo" :rules="rules" ref="productInfoForm" label-width="120px" style="width: 600px" size="small">
       <el-form-item label="物料分类：" prop="categoryId">
-        <el-cascader v-model="selectProductCateValue" :options="categoryList"></el-cascader>
+        <el-cascader v-model="erpSpuVo.categoryId" :options="categoryList"></el-cascader>
       </el-form-item>
       <el-form-item label="商品名称：" prop="name">
         <el-input v-model="erpSpuVo.name"></el-input>

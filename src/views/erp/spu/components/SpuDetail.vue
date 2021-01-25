@@ -2,13 +2,12 @@
   <el-card class="form-container" shadow="never">
     <el-steps :active="active" finish-status="success" align-center>
       <el-step title="填写物料信息"></el-step>
-      <el-step title="填写物料规格信息"></el-step>
-      <el-step title="填写物库存属性"></el-step>
+      <el-step title="填写物料属性信息"></el-step>
+      <el-step title="填写物库存信息"></el-step>
     </el-steps>
     <spu-info-detail v-show="showStatus[0]" v-model="productParam" :is-edit="isEdit" @nextStep="nextStep"></spu-info-detail>
     <spu-unit-detail v-show="showStatus[1]" v-model="productParam" :is-edit="isEdit" @nextStep="nextStep" @prevStep="prevStep"></spu-unit-detail>
-    <spu-attr-detail v-show="showStatus[2]" v-model="productParam" :is-edit="isEdit" @nextStep="nextStep" @prevStep="prevStep"></spu-attr-detail>
-    <product-relation-detail v-show="showStatus[3]" v-model="productParam" :is-edit="isEdit" @prevStep="prevStep" @finishCommit="finishCommit"></product-relation-detail>
+    <spu-attr-detail v-show="showStatus[2]" v-model="productParam" :is-edit="isEdit" @nextStep="prevStep" @finishCommit="finishCommit"></spu-attr-detail>
   </el-card>
 </template>
 <script>
