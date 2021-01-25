@@ -1,6 +1,6 @@
 <template>
   <div style="margin-top: 50px">
-    <el-form :model="erpSpuVo" :rules="rules" ref="productInfoForm" label-width="120px" style="width: 600px" size="small">
+    <el-form :model="erpSpuVo" :rules="rules" ref="productInfoForm" label-width="300px" style="width: 1500px" size="small">
       <el-form-item label="物料分类：" prop="categoryId">
         <el-cascader v-model="erpSpuVo.categoryId" :options="categoryList"></el-cascader>
       </el-form-item>

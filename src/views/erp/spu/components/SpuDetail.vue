@@ -1,5 +1,5 @@
 <template>
-  <el-card class="form-container" shadow="never">
+  <el-card class="filter-container" shadow="never">
     <el-steps :active="active" finish-status="success" align-center>
       <el-step title="填写物料信息"></el-step>
       <el-step title="填写物料属性信息"></el-step>

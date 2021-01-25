@@ -821,7 +821,6 @@
                 this.goodsCategoryIds=[];
                 this.goodsCategoryIds.push(this.categoryIds);
               }
-              debugger
             }
 
             for (var i = 0; i < this.products.length; i++) {
