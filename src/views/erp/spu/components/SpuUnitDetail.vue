@@ -8,10 +8,10 @@
                 @deleteIndex="del"
                 @uploadData="getData">
       </spu-unit>
-      <button @click="add">添加</button>
       <el-form-item style="text-align: center">
-        <el-button size="medium" @click="handlePrev">上一步，填写商品信息</el-button>
-        <el-button type="primary" size="medium" @click="handleNext">下一步，填写商品属性</el-button>
+        <el-button size="medium" @click="handlePrev">上一步，填写物料信息</el-button>
+        <el-button size="medium" @click="add">添加</el-button>
+        <el-button type="primary" size="medium" @click="handleNext">下一步，填写物料属性</el-button>
       </el-form-item>
     </el-form>
   </div>
@@ -83,7 +83,6 @@ export default {
       }
 
       this.items.push(viewData)
-      console.log('add:', JSON.stringify(this.items))
     },
     // delete student
     del: function (index) {
@@ -91,7 +90,6 @@ export default {
       if (index !== 0) {
         this.items.splice(index, 1)
         this.items.spuSupplierList = this.supplierList;
-        console.log('deleted:', JSON.stringify(this.items))
       }
     },
     //  get the data from child

@@ -7,7 +7,7 @@
     </el-steps>
     <spu-info-detail v-show="showStatus[0]" v-model="productParam" :is-edit="isEdit" @nextStep="nextStep"></spu-info-detail>
     <spu-unit-detail v-show="showStatus[1]" v-model="productParam" :is-edit="isEdit" @nextStep="nextStep" @prevStep="prevStep"></spu-unit-detail>
-    <spu-attr-detail v-show="showStatus[2]" v-model="productParam" :is-edit="isEdit" @nextStep="prevStep" @finishCommit="finishCommit"></spu-attr-detail>
+    <spu-attr-detail v-show="showStatus[2]" v-model="productParam" :is-edit="isEdit" @prevStep="prevStep" @finishCommit="finishCommit"></spu-attr-detail>
   </el-card>
 </template>
 <script>

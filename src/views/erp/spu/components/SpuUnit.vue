@@ -2,7 +2,8 @@
   <div style="margin-top: 100px">
     <el-form :model="spuUnitVo" ref="spuUnitVo" label-width="100px" style="width: 400px" size="small">
       <el-row>
-        <el-form-item label="物料供应商：" prop="supplierId">
+        <h1> 物料属性 {{ index+1 }}:</h1>
+        <el-form-item label="物料供应商：" prop="supplierId" style="width:100%;text-align:left">
           <el-select v-model="spuUnitVo.supplierId" placeholder="请选择品牌" clearable>
             <el-option v-for="item in supplierList" :key="item.id" :label="item.name" :value="item.id"></el-option>
           </el-select>
@@ -14,8 +15,9 @@
         </el-form-item>
         <el-form-item label="出库价格￥：">
           <el-input v-model="spuUnitVo.outPrice"></el-input>
-          <i slot="suffix" style="font-style:normal;margin-right: 10px;">元</i><button @click="deleteSpuUnit">删除</button>
+          <i slot="suffix" style="font-style:normal;margin-right: 10px;">元</i>
         </el-form-item>
+        <el-button v-if="index>0" @click="deleteSpuUnit">删除</el-button>
       </el-row>
     </el-form>
   </div>
@@ -23,67 +25,68 @@
 
 <script>
 
-  import {listSupplier} from "@/api/erp/supplier";
+import {listSupplier} from "@/api/erp/supplier";
 
-  export default {
-    props: {
-      index: {
-        type: Number,
-        required: true
+export default {
+  props: {
+    index: {
+      type: Number,
+      required: true
+    },
+    items: {
+      type: Array,
+      default: Array
+    }
+  },
+  data() {
+    return {
+      supplierList: [],
+      spuUnitVo: {
+        id: undefined,
+        supplierId: '',
+        inPrice: '',
+        outPrice: ''
       },
-      items: {
-        type: Array,
-        default: Array
-      }
-    },
-    data() {
-      return {
-        supplierList: [],
-        spuUnitVo: {
-          id: undefined,
-          supplierId: '',
-          inPrice: '',
-          outPrice: ''
-        },
-        viewData: {
-          spuUnitVo: undefined,
-          supplierList: undefined
-        }
-      }
-    },
-    watch: {
       viewData: {
-        handler(newV, oldV) {
-          debugger
-          if (newV.spuUnitVo.supplierId.length === 0) {
-            return false
-          }
-          if (newV.spuUnitVo.inPrice.length === 0) {
-            return false
-          }
-          if (newV.spuUnitVo.outPrice.length === 0) {
-            return false
-          }
-          this.supplierList = newV.supplierList;
-          this.$emit('uploadData', {index: this.index, data: newV.spuUnitVo})
-        },
-        deep: true
-      },
-      items: {
-        handler(newV, oldV) {
-          if (newV.length !== 0) {
-            this.spuUnitVo = {...newV[this.index].spuUnitVo}
-          }
-        },
-        deep: true
-      }
-    },
-    methods: {
-      deleteSpuUnit: function () {
-        this.$emit('deleteIndex', this.index)
+        spuUnitVo: undefined,
+        supplierList: undefined
       }
     }
+  },
+  watch: {
+    viewData: {
+      handler(newV, oldV) {
+        debugger
+        if (newV.spuUnitVo.supplierId.length === 0) {
+          return false
+        }
+        if (newV.spuUnitVo.inPrice.length === 0) {
+          return false
+        }
+        if (newV.spuUnitVo.outPrice.length === 0) {
+          return false
+        }
+        this.supplierList = newV.supplierList;
+        this.$emit('uploadData', {index: this.index, data: newV.spuUnitVo})
+      },
+      deep: true
+    },
+    items: {
+      handler(newV, oldV) {
+        if (newV.length !== 0) {
+          this.spuUnitVo = {...newV[this.index].spuUnitVo}
+        }
+      },
+      deep: true
+    }
+  },
+
+  methods: {
+    deleteSpuUnit: function () {
+      this.$emit('deleteIndex', this.index)
+    }
   }
+}
 </script>
 
 <style scoped>
