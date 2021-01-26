@@ -25,19 +25,25 @@
                   v-for="item in onlineOptions"
                   :key="item.value"
                   :label="item.label"
-                  :value="item.value">
+                  :value="item.value"
+                >
                 </el-option>
               </el-select>
             </el-form-item>
           </el-col>
           <el-col :span="8">
             <el-form-item label="物品类型">
-              <el-select v-model="goods.acStatus" placeholder="请选择物品类型" @change="handleLimit">
+              <el-select
+                v-model="goods.acStatus"
+                placeholder="请选择物品类型"
+                @change="handleLimit"
+              >
                 <el-option
                   v-for="item in presellOptions"
                   :key="item.value"
                   :label="item.label"
-                  :value="item.value">
+                  :value="item.value"
+                >
                 </el-option>
               </el-select>
             </el-form-item>
@@ -45,20 +51,46 @@
           <el-col :span="8">
             <el-form-item label="所属品牌商">
               <el-select v-model="goods.brandId">
-                <el-option v-for="item in brandList" :key="item.value" :label="item.label" :value="item.value"/>
+                <el-option
+                  v-for="item in brandList"
+                  :key="item.value"
+                  :label="item.label"
+                  :value="item.value"
+                />
               </el-select>
             </el-form-item>
           </el-col>
         </el-row>
         <el-row>
           <el-col :span="12">
-            <el-form-item label="线上分类" prop="goodsCategoryId"  v-show="goods.saleType !=2 ">
-              <el-cascader :options=" categoryList"  :props="props"  v-model="goodsCategoryIds" expand-trigger="hover" clearable  @change="handleGoodsCategoryChange" />
+            <el-form-item
+              label="线上分类"
+              prop="goodsCategoryId"
+              v-show="goods.saleType != 2"
+            >
+              <el-cascader
+                :options="categoryList"
+                :props="props"
+                v-model="goodsCategoryIds"
+                expand-trigger="hover"
+                clearable
+                @change="handleGoodsCategoryChange"
+              />
             </el-form-item>
           </el-col>
           <el-col :span="12">
-            <el-form-item label="线下分类" prop="categoryId"  v-show="goods.saleType !=1 ">
-              <el-cascader :options="categoryList" v-model="categoryIds" expand-trigger="hover" clearable  @change="handleCategoryChange"/>
+            <el-form-item
+              label="线下分类"
+              prop="categoryId"
+              v-show="goods.saleType != 1"
+            >
+              <el-cascader
+                :options="categoryList"
+                v-model="categoryIds"
+                expand-trigger="hover"
+                clearable
+                @change="handleCategoryChange"
+              />
             </el-form-item>
           </el-col>
         </el-row>
@@ -316,24 +348,27 @@
             </el-form-item>
           </el-col>
         </el-row>
-        <!-- <el-row>
+        <el-row>
           <el-col :span="24">
             <el-form-item label="分享图片">
               <div class="share-dom" id="share-dom">
-                <img class="goods-image" :src="shareImage" />
-                <div class="goods-tips-container">
-                  <span class="goods-price">¥ 11.18*2</span>
-                  <span class="goods-specification">(1000g)</span>
+                <img class="goods-image" :src="goodsImage" />
+                <div class="tips">
+                  <div class="main">
+                    <span class="price">{{ goodsOnlinePrice }}</span>
+                    <span class="original-price">{{ goodsCounterPrice }}</span>
+                    <span class="specification">{{
+                      goodsSpecification ? `(${goodsSpecification})` : null
+                    }}</span>
+                  </div>
+                  <div class="desc">
+                    {{ goodsSubtitle }}
+                  </div>
                 </div>
               </div>
-
-              <img :src="shareImageData" class="share-image" />
-              <el-button type="primary" @click="generatePoster">
-                生成海报图片
-              </el-button>
             </el-form-item>
           </el-col>
-        </el-row> -->
+        </el-row>
         <el-form-item label="所属小区">
           <el-select
             v-model="communities"
@@ -624,7 +659,8 @@
         v-permission="['POST /admin/goods/create']"
         type="primary"
         @click="submitCreateForm('goods')"
-        >上架
+      >
+        上架
       </el-button>
     </div>
   </div>
@@ -633,20 +669,18 @@
 <script>
 import { publishGoods, listCatAndBrand, getStationList } from "@/api/goods";
 import { createStorage, uploadPath } from "@/api/storage";
+import generateSharingGraph from "@/utils/generateSharingGraph";
 import { listCommunity } from "@/api/community";
 import Editor from "@tinymce/tinymce-vue";
 import { MessageBox } from "element-ui";
 import { getToken } from "@/utils/auth";
-import domtoimage from "dom-to-image-scale";
 
 export default {
   name: "GoodsCreate",
   components: { Editor },
-
   data() {
     return {
       props: { multiple: true },
-      shareImage: require("./aiways.jpg"),
       shareImageData: null,
       presellOptions: [
         {
@@ -692,7 +726,7 @@ export default {
       newKeyword: "",
       keywords: [],
       categoryList: [],
-      goodsCategoryIdList:[],
+      goodsCategoryIdList: [],
       brandList: [],
       communities: [],
       galleryFileList: [],
@@ -712,6 +746,7 @@ export default {
         gallery: [],
         unit: "克"
       },
+      blobUrl: null,
       specVisiable: false,
       specForm: { specification: "", value: "", picUrl: "" },
       multipleSpec: false,
@@ -800,6 +835,21 @@ export default {
       return {
         "X-Wali-Token": getToken()
       };
+    },
+    goodsImage() {
+      return this.blobUrl || this.goods.picUrl || null;
+    },
+    goodsOnlinePrice() {
+      return this.goods.onlinePrice || null;
+    },
+    goodsCounterPrice() {
+      return this.goods.counterPrice || null;
+    },
+    goodsSpecification() {
+      return this.specifications[0].value || null;
+    },
+    goodsSubtitle() {
+      return this.goods.subtitle || null;
     }
   },
   created() {
@@ -809,7 +859,7 @@ export default {
     init: function() {
       listCatAndBrand().then(response => {
         this.categoryList = response.data.data.categoryList;
-        this.goodsCategoryIdList = response.data.data.categoryList
+        this.goodsCategoryIdList = response.data.data.categoryList;
         this.brandList = response.data.data.brandList;
       });
     },
@@ -845,7 +895,6 @@ export default {
         this.communityList = [];
       }
     },
-
     handleLimit(value) {
       if (value === 2) {
         this.goods.isChoice = true;
@@ -857,27 +906,25 @@ export default {
           (this.goods.counterPrice = 0.0);
       }
     },
-
     handleUnit(value) {
       for (var i = 0; i < this.products.length; i++) {
         const v = this.products[i];
         v.unit = value;
       }
     },
-
     handleCategoryChange(value) {
-       this.goods.categoryId = value[value.length - 1];
+      this.goods.categoryId = value[value.length - 1];
     },
     handleCancel: function() {
       this.$router.push({ path: "/goods/list" });
     },
-
     handleGoodsCategoryChange(value) {
       this.goodsCategoryIds = value;
     },
-
-    submitCreateForm(formName) {
-      this.$refs[formName].validate(valid => {
+    // 上架
+    async submitCreateForm(formName) {
+      let _this = this;
+      this.$refs[formName].validate(async valid => {
         if (valid) {
           if (
             (this.goods.acStatus === 2 || this.goods.isChoice) &&
@@ -909,9 +956,13 @@ export default {
               this.$message.error("线上售价未填！！");
               return false;
             }
-            if (this.goodsCategoryIds === undefined || this.goodsCategoryIds === '' || this.goodsCategoryIds.length === 0) {
-              this.$message.error('线上种类未选！！')
-              return false
+            if (
+              this.goodsCategoryIds === undefined ||
+              this.goodsCategoryIds === "" ||
+              this.goodsCategoryIds.length === 0
+            ) {
+              this.$message.error("线上种类未选！！");
+              return false;
             }
           }
           //线下物品校验
@@ -930,13 +981,12 @@ export default {
               this.$message.error("线下物品价格未填！！");
               return false;
             }
-            if(this.goods.saleType == 2){
+            if (this.goods.saleType == 2) {
               //一维数组转二维数组
-              this.goodsCategoryIds=[];
+              this.goodsCategoryIds = [];
               this.goodsCategoryIds.push(this.categoryIds);
             }
           }
-
           for (var i = 0; i < this.products.length; i++) {
             const v = this.products[i];
             if (v.number === undefined || v.number < 0) {
@@ -945,9 +995,55 @@ export default {
             }
           }
 
+          let response = {};
+          if (this.goods.saleType != 2) {
+            //处理生成图片
+            if (!_this.goodsImage) {
+              _this.$message({
+                type: "warning",
+                message: "商品图片不能为空"
+              });
+              return;
+            }
+
+            if (!_this.goodsOnlinePrice) {
+              _this.$message({
+                type: "warning",
+                message: "线上售价不能为空"
+              });
+              return;
+            }
+
+            if (!_this.goodsCounterPrice) {
+              _this.$message({
+                type: "warning",
+                message: "专柜价格不能为空"
+              });
+              return;
+            }
+
+            response = await generateSharingGraph.call(
+              _this,
+              _this.goods.picUrl,
+              _this.goods.shareUrl,
+              "share-dom",
+              "blobUrl"
+            );
+            if (!response.status) {
+              this.$message({
+                type: "warning",
+                message: "生成分享图片失败"
+              });
+              return;
+            }
+          }
+
           const finalGoods = {
             communities: this.communities,
-            goods: this.goods,
+            goods: {
+              ...this.goods,
+              shareUrl: this.goods.saleType != 2 ? response.data : null
+            },
             specifications: this.specifications,
             products: this.products,
             rebates: this.rebates,
@@ -974,7 +1070,6 @@ export default {
         }
       });
     },
-
     handleClose(tag) {
       this.keywords.splice(this.keywords.indexOf(tag), 1);
       this.goods.keywords = this.keywords.toString();
@@ -1079,7 +1174,6 @@ export default {
 
       this.specToProduct();
     },
-
     handleSpecificationUpdate() {
       this.specifications = [];
       this.specifications.push(this.specForm);
@@ -1090,7 +1184,6 @@ export default {
         v.specifications.push(this.specForm.value);
       }
     },
-
     handleSpecificationUpdateShow(row) {
       this.specForm = Object.assign({}, row);
       this.specVisiable = true;
@@ -1243,26 +1336,15 @@ export default {
     handleRebateDelete(row) {
       const index = this.rebates.indexOf(row);
       this.rebates.splice(index, 1);
-    },
-    generatePoster() {
-      console.log("generate poster");
-      let _this = this;
-      let node = document.getElementById("share-dom");
-      domtoimage
-        .toPng(node)
-        .then(dataUrl => {
-          console.log(dataUrl);
-          this.shareImageData = dataUrl;
-        })
-        .catch(err => {
-          console.error("生成海报失败", error);
-        });
     }
   }
 };
 </script>
 
 <style lang="scss" scoped>
+$theme-color: #80ba64;
+$dark-color: #d3d3d3;
+
 .el-card {
   margin-bottom: 10px;
 }
@@ -1309,39 +1391,69 @@ export default {
 .share-dom {
   display: inline-block;
   position: relative;
-  width: 1000px;
-  height: 800px;
-  background-color: goldenrod;
+  width: 500px;
+  height: 400px;
   .goods-image {
     position: absolute;
     display: block;
     width: 100%;
-    height: 800px;
+    height: 100%;
   }
-  .goods-tips-container {
+  .tips {
     position: absolute;
-    // left: 0;
+    left: 0;
     bottom: 0;
     width: 100%;
-    height: 120px;
+    // min-height: 80px;
     background-color: rgba($color: #000000, $alpha: 0.5);
-    .goods-price {
-      color: #67e12a;
-      line-height: 120px;
-      font-size: 80px;
+    padding: 10px 10px 5px;
+    box-sizing: border-box;
+    .main {
+      display: flex;
+      height: 50px;
+      // line-height: 50px;
+      align-items: baseline;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      span + span {
+        margin-left: 10px;
+      }
+
+      .price {
+        font-size: 50px;
+        color: $theme-color;
+      }
+
+      .original-price {
+        font-size: 30px;
+        color: $dark-color;
+        text-decoration: line-through;
+      }
+
+      .specification {
+        font-size: 40px;
+        color: white;
+      }
     }
-    .goods-specification {
+
+    .desc {
+      line-height: 30px;
+      font-size: 20px;
       color: white;
-      line-height: 120px;
-      font-size: 80px;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      display: -webkit-box;
+      -webkit-line-clamp: 2;
+      -webkit-box-orient: vertical;
+      text-align: left;
     }
   }
 }
 
-.share-image {
-  position: relative;
-  display: inline-block;
-  width: 1000px;
-  height: 800px;
-}
+// .share-image {
+//   position: relative;
+//   display: inline-block;
+//   width: 1000px;
+//   height: 800px;
+// }
 </style>
