@@ -1,6 +1,6 @@
 <template>
   <div style="margin-top: 100px">
-    <el-form :model="spuUnitVo" ref="productSaleForm" label-width="100px" style="width: 400px" size="small">
+    <el-form :model="spuUnitVo" ref="spuUnitVo" label-width="100px" style="width: 400px" size="small">
       <el-row>
         <el-form-item label="物料供应商：" prop="supplierId">
           <el-select v-model="spuUnitVo.supplierId" placeholder="请选择品牌" clearable>
@@ -13,7 +13,7 @@
           <i slot="suffix" style="font-style:normal;margin-right: 10px;">元</i>
         </el-form-item>
         <el-form-item label="出库价格￥：">
-          <el-input v-model="spuUnitVo.inPrice"></el-input>
+          <el-input v-model="spuUnitVo.outPrice"></el-input>
           <i slot="suffix" style="font-style:normal;margin-right: 10px;">元</i><button @click="deleteSpuUnit">删除</button>
         </el-form-item>
       </el-row>
@@ -44,31 +44,35 @@
           supplierId: '',
           inPrice: '',
           outPrice: ''
+        },
+        viewData: {
+          spuUnitVo: undefined,
+          supplierList: undefined
         }
       }
     },
     watch: {
-      spuUnitVo: {
+      viewData: {
         handler(newV, oldV) {
-          if (newV.supplierId.length === 0) {
+          debugger
+          if (newV.spuUnitVo.supplierId.length === 0) {
             return false
           }
-          if (newV.inPrice.length === 0) {
+          if (newV.spuUnitVo.inPrice.length === 0) {
             return false
           }
-          if (newV.outPrice.length === 0) {
+          if (newV.spuUnitVo.outPrice.length === 0) {
             return false
           }
-          this.supplierList = newV.supplierList
-
-          this.$emit('uploadData', {index: this.index, data: newV})
+          this.supplierList = newV.supplierList;
+          this.$emit('uploadData', {index: this.index, data: newV.spuUnitVo})
         },
         deep: true
       },
       items: {
         handler(newV, oldV) {
           if (newV.length !== 0) {
-            this.spuUnitVo = {...newV[this.index]}
+            this.spuUnitVo = {...newV[this.index].spuUnitVo}
           }
         },
         deep: true
