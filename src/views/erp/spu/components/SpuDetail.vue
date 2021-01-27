@@ -2,13 +2,14 @@
   <el-card class="filter-container" shadow="never">
     <el-steps :active="active" finish-status="success" align-center>
       <el-step title="填写物料信息"></el-step>
-      <el-step title="填写物料属性信息"></el-step>
-      <el-step title="填写物库存信息"></el-step>
+      <el-step title="填写供应商规格信息"></el-step>
+      <el-step title="填写供应商价格信息"></el-step>
+      <el-step title="填写库存信息"></el-step>
     </el-steps>
     <spu-info-detail
       v-show="showStatus[0]"
       :is-edit="isEdit"
-      :erpSpuVo="erpSpuVo"
+      :form="form"
       @nextStep="nextStep"
     ></spu-info-detail>
     <spu-unit-detail
@@ -42,7 +43,12 @@ export default {
     return {
       active: 0,
       showStatus: [true, false, false, false],
-      erpSpuVo: { id: null, sort: 10 },
+      form: {
+        id: null,
+        sort: 10,
+        spuUnitVos: [],
+        spuSpriceVos: []
+      },
       supplierList: [{}]
     };
   },

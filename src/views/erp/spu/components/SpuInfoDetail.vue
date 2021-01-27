@@ -1,24 +1,30 @@
 <template>
-  <div style="margin-top: 50px">
+  <div class="spu-info-detail">
     <el-form
-      :model="erpSpuVo"
+      class="form"
+      :model="form"
       :rules="rules"
       ref="productInfoForm"
-      label-width="300px"
-      style="width: 1500px"
-      size="small"
+      label-width="150px"
     >
       <el-form-item label="物料分类：" prop="categoryId">
         <el-cascader
-          v-model="erpSpuVo.categoryId"
+          style="width:100%"
+          v-model="form.categoryId"
           :options="categoryList"
         ></el-cascader>
       </el-form-item>
+
       <el-form-item label="商品名称：" prop="name">
-        <el-input v-model="erpSpuVo.name"></el-input>
+        <el-input v-model="form.name"></el-input>
       </el-form-item>
+
       <el-form-item label="商品品牌：" prop="brandId">
-        <el-select v-model="erpSpuVo.brandId" placeholder="请选择品牌">
+        <el-select
+          style="width:100%"
+          v-model="form.brandId"
+          placeholder="请选择品牌"
+        >
           <el-option
             v-for="item in brandList"
             :key="item.erpSpuVo"
@@ -28,17 +34,18 @@
         </el-select>
       </el-form-item>
       <el-form-item label="专柜价格：">
-        <el-input v-model="erpSpuVo.counterPrice"></el-input>
+        <el-input v-model="form.counterPrice"></el-input>
       </el-form-item>
       <el-form-item label="零售价格：">
-        <el-input v-model="erpSpuVo.retailPrice"></el-input>
+        <el-input v-model="form.retailPrice"></el-input>
       </el-form-item>
       <el-form-item label="最低售价：">
-        <el-input v-model="erpSpuVo.lowPrice"></el-input>
+        <el-input v-model="form.lowPrice"></el-input>
       </el-form-item>
       <el-form-item label="保质期：">
         <el-date-picker
-          v-model="erpSpuVo.expirationDate"
+          style="width:100%"
+          v-model="form.expirationDate"
           value-format="timestamp"
           type="date"
           :picker-options="pickerOptions1"
@@ -47,15 +54,16 @@
       </el-form-item>
 
       <el-form-item label="排序：">
-        <el-input v-model="erpSpuVo.sort"></el-input>
+        <el-input v-model="form.sort"></el-input>
       </el-form-item>
       <el-form-item style="text-align: center">
         <el-button
           type="primary"
           size="medium"
           @click="handleNext('productInfoForm')"
-          >下一步，填写商品促销</el-button
         >
+          下一步，填写商品促销
+        </el-button>
       </el-form-item>
     </el-form>
   </div>
@@ -68,19 +76,13 @@ export default {
   name: "SpuInfoDetail",
   props: {
     isEdit: { type: Boolean, default: false },
-    erpSpuVo: { required: true }
+    form: { required: true }
   },
   data() {
     return {
       hasEditCreated: false,
-      //选中商品分类的值
-      selectProductCateValue: [],
       categoryList: [],
       brandList: [],
-      // erpSpuVo: {
-      //   id: undefined,
-      //   sort: 10
-      // },
       //日期选择器配置
       pickerOptions1: {
         disabledDate(time) {
@@ -121,20 +123,7 @@ export default {
       this.brandList = response.data.data.brandList;
     });
   },
-  watch: {
-    selectProductCateValue: function(value) {
-      this.erpSpuVo.categoryId = value[value.length - 1];
-    }
-  },
   methods: {
-    //处理编辑逻辑
-    handleEditCreated() {
-      if (this.value.productCategoryId != null) {
-        //          this.selectProductCateValue.push(this.value.cateParentId);
-        //          this.selectProductCateValue.push(this.value.productCategoryId);
-      }
-      this.hasEditCreated = true;
-    },
     handleNext(formName) {
       this.$refs[formName].validate(valid => {
         if (valid) {
@@ -153,4 +142,14 @@ export default {
 };
 </script>
 
-<style scoped></style>
+<style lang="scss" scoped>
+.spu-info-detail {
+  position: relative;
+  margin-top: 50px;
+  width: 100%;
+  .form {
+    width: 800px;
+    margin: 0 auto;
+  }
+}
+</style>
