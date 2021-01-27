@@ -972,6 +972,7 @@ export default {
       });
     },
     submitEditForm(formName) {
+      let _this = this;
       this.$refs[formName].validate(async valid => {
         if (valid) {
           if (
