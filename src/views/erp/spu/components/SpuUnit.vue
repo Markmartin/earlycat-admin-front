@@ -1,87 +1,97 @@
 <template>
-  <div style="margin-top: 100px">
-    <el-form :model="spuUnitVo" ref="productSaleForm" label-width="100px" style="width: 400px" size="small">
-      <el-row>
-        <el-form-item label="物料供应商：" prop="supplierId">
-          <el-select v-model="spuUnitVo.supplierId" placeholder="请选择品牌" clearable>
-            <el-option v-for="item in supplierList" :key="item.id" :label="item.name" :value="item.id"></el-option>
-          </el-select>
-        </el-form-item>
-        <el-form-item label="入库价格￥：">
-          <el-input v-model="spuUnitVo.inPrice">
-          </el-input>
-          <i slot="suffix" style="font-style:normal;margin-right: 10px;">元</i>
-        </el-form-item>
-        <el-form-item label="出库价格￥：">
-          <el-input v-model="spuUnitVo.inPrice"></el-input>
-          <i slot="suffix" style="font-style:normal;margin-right: 10px;">元</i><button @click="deleteSpuUnit">删除</button>
-        </el-form-item>
+  <div class="unit-cell">
+    <el-form class="unit-cell-form" :model="item" label-width="100px">
+      <el-row :gutter="30">
+        <el-col :span="7">
+          <el-form-item label="物料供应商：" prop="supplierId">
+            <el-select
+              v-model="item.supplierId"
+              @change="updateSupplier"
+              placeholder="请选择品牌"
+              clearable
+              style="width:100%"
+              :remote-method="updateSupplierOptions"
+              remote
+              filterable
+            >
+              <el-option
+                v-for="item in supplierOptions"
+                :key="item.id"
+                :label="item.name"
+                :value="item.id"
+              ></el-option>
+            </el-select>
+          </el-form-item>
+        </el-col>
+
+        <el-col :span="7">
+          <el-form-item label="入库价格￥：">
+            <el-input v-model="item.inPrice">
+              <template slot="append">
+                元
+              </template>
+            </el-input>
+          </el-form-item>
+        </el-col>
+
+        <el-col :span="7">
+          <el-form-item label="出库价格￥：">
+            <el-input v-model="item.outPrice">
+              <template slot="append">
+                元
+              </template>
+            </el-input>
+          </el-form-item>
+        </el-col>
+
+        <el-col :span="3">
+          <el-form-item label-width="20px">
+            <el-button type="primary" @click="deleteSpuUnit">删除</el-button>
+          </el-form-item>
+        </el-col>
       </el-row>
     </el-form>
   </div>
 </template>
 
 <script>
+import { updateSupplierByName } from "@/api/erp/supplier";
 
-  import {listSupplier} from "@/api/erp/supplier";
-
-  export default {
-    props: {
-      index: {
-        type: Number,
-        required: true
-      },
-      items: {
-        type: Array,
-        default: Array
+export default {
+  props: {
+    index: { type: Number, required: true },
+    item: { default: () => ({}) }
+  },
+  data() {
+    return { supplierOptions: [] };
+  },
+  methods: {
+    async updateSupplierOptions(keyword) {
+      const response = await updateSupplierByName(keyword);
+      if (response.status) {
+        const { list } = response.data;
+        this.supplierOptions = [...list];
       }
     },
-    data() {
-      return {
-        supplierList: [],
-        spuUnitVo: {
-          id: undefined,
-          supplierId: '',
-          inPrice: '',
-          outPrice: ''
-        }
-      }
+    updateSupplier(value) {
+      //传递供应商名称
+      let supplier = this.supplierOptions.find(item => item.id == value);
+      this.$emit("uploadData", { index: this.index, data: supplier });
     },
-    watch: {
-      spuUnitVo: {
-        handler(newV, oldV) {
-          if (newV.supplierId.length === 0) {
-            return false
-          }
-          if (newV.inPrice.length === 0) {
-            return false
-          }
-          if (newV.outPrice.length === 0) {
-            return false
-          }
-          this.supplierList = newV.supplierList
-
-          this.$emit('uploadData', {index: this.index, data: newV})
-        },
-        deep: true
-      },
-      items: {
-        handler(newV, oldV) {
-          if (newV.length !== 0) {
-            this.spuUnitVo = {...newV[this.index]}
-          }
-        },
-        deep: true
-      }
-    },
-    methods: {
-      deleteSpuUnit: function () {
-        this.$emit('deleteIndex', this.index)
-      }
+    deleteSpuUnit: function() {
+      this.$emit("deleteIndex", this.index);
     }
   }
+};
 </script>
 
-<style scoped>
-
+<style lang="scss" scoped>
+.unit-cell {
+  position: relative;
+  width: 100%;
+  margin: 10px auto 0;
+  .unit-cell-form {
+    width: 100%;
+  }
+}
 </style>
