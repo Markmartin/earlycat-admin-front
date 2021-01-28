@@ -128,6 +128,10 @@
           {
             label: "消费",
             value: 1
+          },
+          {
+            label: "退款",
+            value: 2
           }
         ],
         dialogFormVisible: false,
