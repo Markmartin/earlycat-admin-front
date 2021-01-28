@@ -25,12 +25,12 @@
       >
         <el-button type="primary">导入</el-button>
       </el-upload>
-       <!-- <el-button
+       <el-button
         type="primary"
         @click="tempSendEgg"
         v-permission="['GET /admin/order/getOrderByAcStatus']"
         >赠送鸡蛋（勿点）</el-button
-      > -->
+      >
     </el-form>
 
     <el-table
@@ -127,11 +127,11 @@ export default {
     onError() {
       this.$message.error("导入失败");
     },
-    // tempSendEgg(){
-    //   tempSendEgg({date: '2020-12-12',fullPrice: 59}).then(res => {
+    tempSendEgg(){
+      tempSendEgg({date: '2020-12-24'}).then(res => {
 
-    //   })
-    // }
+      })
+    }
   },
 };
 </script>

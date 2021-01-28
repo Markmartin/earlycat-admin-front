@@ -2,7 +2,7 @@
   <div class="app-container">
     <el-form :inline="true" :model="params" class="demo-form-inline">
       <el-form-item label="名称">
-        <el-input v-model="params.name" placeholder="名称"></el-input>
+        <el-input v-model="params.name" placeholder="名称" clearable></el-input>
       </el-form-item>
       <el-form-item label="分类">
         <el-select
@@ -107,17 +107,6 @@
           </el-select>
         </template>
       </el-table-column>
-      <el-table-column label="入库价" align="center">
-        <template slot-scope="scope">
-          <el-input
-            v-model="scope.row.price"
-            placeholder="入库价"
-            type="number"
-            min="0"
-            @input="inStock(scope.row)"
-          ></el-input>
-        </template>
-      </el-table-column>
       <el-table-column label="数量" align="center">
         <template slot-scope="scope">
           <el-input
@@ -126,6 +115,18 @@
             type="number"
             min="0"
             @input="inStock(scope.row)"
+          ></el-input>
+        </template>
+      </el-table-column>
+      <el-table-column label="入库价" align="center">
+        <template slot-scope="scope">
+          <el-input
+            v-model="scope.row.price"
+            placeholder="入库价"
+            type="number"
+            min="0"
+            @input="inStock(scope.row)"
+            @focus="onFClear(scope.row)"
           ></el-input>
         </template>
       </el-table-column>
@@ -210,6 +211,7 @@ export default {
           m.inDate = this.inDate;
           if (m.litemallPurchaseJob) {
             m.supplierId = m.litemallPurchaseJob.supplierId;
+            m.price = m.inPrice
           }
           return m;
         });
@@ -262,6 +264,7 @@ export default {
             message: "保存成功",
             type: "success",
           });
+          // this.params.name = null;
           this.listByAdmin();
         })
         .catch((e) => {
@@ -275,6 +278,9 @@ export default {
         row.payPricePH = null
       }
     },
+    onFClear(row){
+      row.price = null;
+    }
   },
 };
 </script>
