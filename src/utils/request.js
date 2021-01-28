@@ -98,12 +98,12 @@ service.interceptors.response.use(
 
 export default service;
 
-export const wxRequest = axios.create({
-  baseURL: process.env.BASE_WX_API,
+export const downloadRequest = axios.create({
+  baseURL: process.env.BASE_API,
   timeout: 25000
 });
 
-wxRequest.interceptors.request.use(
+downloadRequest.interceptors.request.use(
   config => {
     // Do something before request is sent
     if (store.getters.token) {

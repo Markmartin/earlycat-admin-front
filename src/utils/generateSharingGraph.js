@@ -20,7 +20,9 @@ async function generateSharingGraph(
   domId = "share-dom",
   blobUrlKey = "blobUrl"
 ) {
-  const downloadResp = await downloadStorage(new URL(goodsUrl).pathname);
+  const downloadResp = await downloadStorage(
+    new URL(goodsUrl).pathname.split("/")[1]
+  );
   if (!downloadResp.data || downloadResp.status != 200) {
     return formatResponse(false, null, "下载图片失败");
   }

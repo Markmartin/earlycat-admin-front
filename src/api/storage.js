@@ -1,4 +1,4 @@
-import request, { wxRequest } from "@/utils/request";
+import request, { downloadRequest } from "@/utils/request";
 
 export function listStorage(query) {
   return request({
@@ -41,10 +41,11 @@ export function deleteStorage(data) {
 }
 
 export async function downloadStorage(key) {
-  return await wxRequest({
-    url: `/storage/download${key}`,
+  return await downloadRequest({
+    url: `/storage/download`,
     method: "get",
-    responseType: "blob"
+    responseType: "blob",
+    params: { key }
   });
 }
 
